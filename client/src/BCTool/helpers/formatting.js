@@ -12,7 +12,7 @@ export function readableNumber(number, places = 3, suffix = '') {
     return "N/A";
   }
 
-  if(number < 1) {
+  if(number < 1 && number > -1) {
     let factor = Math.pow(10, places);
 
     return numberWithCommas(Math.round((number + Number.EPSILON) * factor) / factor) + suffix;
