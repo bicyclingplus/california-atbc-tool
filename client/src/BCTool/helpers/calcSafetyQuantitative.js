@@ -15,7 +15,7 @@ const alpha_lookup = require('../data/alpha_lookup.json');
 const quantitative = require('../data/quantitative.json');
 const travel_volume = require('../data/travel_volume.json');
 
-const _calc = (Vmj_existing, Vmj_projected, Lmjvf, selectedInfrastructure, user_input) => {
+const _calc = (Vmj_existing, Vmj_projected, Ljvf, selectedInfrastructure, user_input) => {
 
   const internalCalc = () => {
 
@@ -238,10 +238,10 @@ const _calc = (Vmj_existing, Vmj_projected, Lmjvf, selectedInfrastructure, user_
   const _CCmojvf = (m, o, j, v, f) => {
 
     const alpha = alpha_lookup[m][o][j][v][f];
-    const _Lmjvf = Lmjvf[m][j][v][f];
+    const _Ljvf = Ljvf[j][v][f];
     const Vmj = Vmj_existing[m][j];
 
-    return Math.exp(alpha) * _Lmjvf * Math.pow(Vmj, POWER_SAFETY_IN_NUMBERS);
+    return Math.exp(alpha) * _Ljvf * Math.pow(Vmj, POWER_SAFETY_IN_NUMBERS);
   };
 
   // NEW CRASHES
@@ -257,7 +257,7 @@ const _calc = (Vmj_existing, Vmj_projected, Lmjvf, selectedInfrastructure, user_
       for(let volume of VOLUMES) {
 
         let alpha = alpha_lookup[m][o][j][volume][functional_class];
-        let _Lmjvf = Lmjvf[m][j][volume][functional_class];
+        let _Ljvf = Ljvf[j][volume][functional_class];
         let Vmj = Vmj_projected[m][j][estimate];
 
         // crash reduction factor default to 1 (no reduction)
@@ -289,7 +289,7 @@ const _calc = (Vmj_existing, Vmj_projected, Lmjvf, selectedInfrastructure, user_
 
         total += (
           Math.exp(alpha) *
-          _Lmjvf *
+          _Ljvf *
           Math.pow(Vmj, POWER_SAFETY_IN_NUMBERS) *
           CRFmoji
         );
@@ -351,23 +351,18 @@ const calcSafetyQuantitative = (
   }
 
   // need a lookup for length/count by volume and functional class and location type
-  let Lmjvf = {};
+  let Ljvf = {};
 
-  for(let mode of MODES) {
+  for(let location_type of LOCATION_TYPES) {
 
-    Lmjvf[mode] = {};
+    Ljvf[location_type] = {};
 
-    for(let location_type of LOCATION_TYPES) {
+    for(let volume of VOLUMES) {
 
-      Lmjvf[mode][location_type] = {};
+      Ljvf[location_type][volume] = {};
 
-      for(let volume of VOLUMES) {
-
-        Lmjvf[mode][location_type][volume] = {};
-
-        for(let functional_class of FUNCTIONAL_CLASSES) {
-          Lmjvf[mode][location_type][volume][functional_class] = 0;
-        }
+      for(let functional_class of FUNCTIONAL_CLASSES) {
+        Ljvf[location_type][volume][functional_class] = 0;
       }
     }
   }
@@ -409,7 +404,7 @@ const calcSafetyQuantitative = (
     // populate Lvfj
     let functional_class = way.properties.functional;
     let volume_bike = way.properties.bicycle_exposure_class;
-    let volume_ped = way.properties.pedestrian_link_exposure_class;
+    // let volume_ped = way.properties.pedestrian_link_exposure_class;
     let length = way.properties.length;
 
     // console.log(`functional_class ${functional_class}`);
@@ -417,12 +412,12 @@ const calcSafetyQuantitative = (
     // console.log(`volume_ped ${volume_ped}`);
 
     if(volume_bike) {
-      Lmjvf.bicycling.roadway[volume_bike.toLowerCase()][functional_class] += length;
+      Ljvf.roadway[volume_bike.toLowerCase()][functional_class] += length;
     }
 
-    if(volume_ped) {
-      Lmjvf.walking.roadway[volume_ped.toLowerCase()][functional_class] += length;
-    }
+    // if(volume_ped) {
+    //   Lmjvf.walking.roadway[volume_ped.toLowerCase()][functional_class] += length;
+    // }
   }
 
   let avgIntBikeExp = avgProp(selectedIntersections, 'bicycle_node_exposure');
@@ -455,21 +450,21 @@ const calcSafetyQuantitative = (
       Vmj_existing.jobs.walking.intersection += pedExp / jobs;
     }
 
-    // populate Lvfj
+    // populate Ljvf
     let functional_class = intersection.properties.functional;
-    let volume_bike = intersection.properties.bicycle_exposure_class;
+    // let volume_bike = intersection.properties.bicycle_exposure_class;
     let volume_ped = intersection.properties.pedestrian_exposure_class;
 
     // console.log(`functional_class ${functional_class}`);
     // console.log(`volume_bike ${volume_bike}`);
     // console.log(`volume_ped ${volume_ped}`);
 
-    if(volume_bike) {
-      Lmjvf.bicycling.intersection[volume_bike.toLowerCase()][functional_class]++;
-    }
+    // if(volume_bike) {
+    //   Lmjvf.bicycling.intersection[volume_bike.toLowerCase()][functional_class]++;
+    // }
 
     if(volume_ped) {
-      Lmjvf.walking.intersection[volume_ped.toLowerCase()][functional_class]++;
+      Ljvf.intersection[volume_ped.toLowerCase()][functional_class]++;
     }
   }
 
@@ -484,18 +479,18 @@ const calcSafetyQuantitative = (
     }
   }
 
-  for(let location_type of LOCATION_TYPES) {
+  // for(let location_type of LOCATION_TYPES) {
 
-    for(let volume of VOLUMES) {
+  //   for(let volume of VOLUMES) {
 
-      for(let functional_class of FUNCTIONAL_CLASSES) {
-        Lmjvf.combined[location_type][volume][functional_class] = (
-          Lmjvf.walking[location_type][volume][functional_class] +
-          Lmjvf.bicycling[location_type][volume][functional_class]
-        );
-      }
-    }
-  }
+  //     for(let functional_class of FUNCTIONAL_CLASSES) {
+  //       Lmjvf.combined[location_type][volume][functional_class] = (
+  //         Lmjvf.walking[location_type][volume][functional_class] +
+  //         Lmjvf.bicycling[location_type][volume][functional_class]
+  //       );
+  //     }
+  //   }
+  // }
 
   // need a lookup for projected volume by mode and location type
   let Vmj_projected = {};
@@ -618,7 +613,7 @@ const calcSafetyQuantitative = (
   console.log('-----------------------------------');
   console.log(Vmj_existing.safety);
   console.log(Vmj_projected.safety);
-  console.log(Lmjvf);
+  console.log(Ljvf);
   console.log('-----------------------------------');
 
   // generate output for each set of columns in the safety benefits table
@@ -626,7 +621,7 @@ const calcSafetyQuantitative = (
 
   for(let column of COLUMNS) {
     console.log(`--------------------------------------${column}---------------------------------------------`)
-    benefits[column] = _calc(Vmj_existing[column], Vmj_projected[column], Lmjvf, selectedInfrastructure, user_input);
+    benefits[column] = _calc(Vmj_existing[column], Vmj_projected[column], Ljvf, selectedInfrastructure, user_input);
   }
 
   console.log(benefits);
