@@ -66,7 +66,8 @@ const calcBenefits = (
       	selectedInfrastructure,
       	project_length,
       	num_intersections,
-      	safety
+      	safety,
+      	project_time_frame
       );
 	  }
 

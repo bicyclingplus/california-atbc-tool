@@ -15,7 +15,13 @@ const alpha_lookup = require('../data/alpha_lookup.json');
 const quantitative = require('../data/quantitative.json');
 const travel_volume = require('../data/travel_volume.json');
 
-const _calc = (Vmj_existing, Vmj_projected, Ljvf, selectedInfrastructure, user_input) => {
+const _calc = (
+  Vmj_existing,
+  Vmj_projected,
+  Ljvf,
+  selectedInfrastructure,
+  user_input,
+  project_time_frame) => {
 
   const internalCalc = () => {
 
@@ -57,6 +63,19 @@ const _calc = (Vmj_existing, Vmj_projected, Ljvf, selectedInfrastructure, user_i
 
             change[mode][outcome][estimate] += NC - EC;
           }
+        }
+      }
+    }
+
+    // calculate discount over project timespan
+    // this is opposite of all the other benefits
+    for(let mode of MODES) {
+      for(let outcome of OUTCOMES) {
+        for(let estimate of ESTIMATES) {
+          let current = change[mode][outcome][estimate];
+          let discounted = calcDiscount(current, project_time_frame);
+
+          change[mode][outcome][estimate] = discounted;
         }
       }
     }
@@ -333,7 +352,8 @@ const calcSafetyQuantitative = (
   selectedInfrastructure,
   project_length,
   num_intersections,
-  user_input) => {
+  user_input,
+  project_time_frame) => {
 
   // need a lookup for existing volume by mode and location type
   let Vmj_existing = {};
@@ -621,7 +641,14 @@ const calcSafetyQuantitative = (
 
   for(let column of COLUMNS) {
     console.log(`--------------------------------------${column}---------------------------------------------`)
-    benefits[column] = _calc(Vmj_existing[column], Vmj_projected[column], Ljvf, selectedInfrastructure, user_input);
+    benefits[column] = _calc(
+      Vmj_existing[column],
+      Vmj_projected[column],
+      Ljvf,
+      selectedInfrastructure,
+      user_input,
+      project_time_frame
+    );
   }
 
   console.log(benefits);
