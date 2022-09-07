@@ -191,7 +191,7 @@ const _calc = (
 
       // 5 or more years, use user input directly
       if(UIy >= 5) {
-        return user_input[m][o][j];
+        return user_input[m][o][j] / UIy;
       }
       // more than 0 but less than 5, split between
       // model and user input
