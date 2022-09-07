@@ -355,6 +355,9 @@ const calcSafetyQuantitative = (
   user_input,
   project_time_frame) => {
 
+  console.log(selectedWays);
+  console.log(selectedIntersections);
+
   // need a lookup for existing volume by mode and location type
   let Vmj_existing = {};
 
@@ -425,7 +428,7 @@ const calcSafetyQuantitative = (
     let functional_class = way.properties.functional;
     let volume_bike = way.properties.bicycle_exposure_class;
     // let volume_ped = way.properties.pedestrian_link_exposure_class;
-    let length = way.properties.length;
+    let length = way.properties.length / 5280;
 
     // console.log(`functional_class ${functional_class}`);
     // console.log(`volume_bike ${volume_bike}`);
