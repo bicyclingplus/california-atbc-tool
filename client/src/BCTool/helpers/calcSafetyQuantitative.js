@@ -293,7 +293,7 @@ const _calc = (
 
 
               // only apply benefits meant for this m/o/j
-              if(benefit.mode === m &&
+              if((benefit.mode === m || m === 'combined') &&
                 benefit.outcome === o &&
                 benefit.location_type === j) {
 
