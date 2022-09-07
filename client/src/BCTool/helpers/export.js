@@ -67,7 +67,10 @@ const ExportPDF = (state, project_id) => {
 		'Project-Level Quantitative Benefits',
 		'Safety'
 	], 10, 10);
-	doc.autoTable({ html: '#safety-simple', startY: 30});
+	doc.autoTable({ html: '#safety-simple-change', startY: 30});
+
+	doc.addPage();
+	doc.autoTable({ html: '#safety-simple-rates'});
 
 	doc.addPage();
 	doc.text(['VMT and Emissions'], 10, 10);
