@@ -651,6 +651,8 @@ class BCTool extends React.Component {
             </div>
             <div className="modal-body">
               <p>This tool has been developed by the UC Davis <a href="https://bicyclingplus.ucdavis.edu/" target="_blank" rel="noreferrer">Bicycling<span className="fst-italic">Plus</span> Research Collaborative</a> to estimate expected benefits of proposed active transportation projects. It can help government agencies, practitioners, and community members understand project-specific cost effectiveness and explore options for improving project design.</p>
+              <p><a href={`${process.env.PUBLIC_URL}/Caltrans ATP BC Tool Technical Documentation Final Draft.pdf`} target="_blank" rel="noreferrer">Technical Documentation</a></p>
+              <p><a href={`${process.env.PUBLIC_URL}/Caltrans ATP B C Tool Literature Review Final Draft.pdf`} target="_blank" rel="noreferrer">Literature Review</a></p>
               <p>Choose a county below to begin.</p>
 
 
