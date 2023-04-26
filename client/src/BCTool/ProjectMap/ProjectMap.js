@@ -156,7 +156,7 @@ class ProjectMap extends React.Component {
       let { updateSelectedWaysAndIntersections } = this.props;
 
       let selectedWayIds = selectedWays.map((w) =>  w.properties.edge_uid);
-      let selectedIntersectionIds = selectedIntersections.map((i) => i.properties.node_id);
+      // let selectedIntersectionIds = selectedIntersections.map((i) => i.properties.node_id);
 
       let feature = e.target.feature;
       let featureId = feature.properties.edge_uid;
@@ -215,30 +215,30 @@ class ProjectMap extends React.Component {
         feature.properties.length = length;
         selectedWays.push(feature);
 
-        let intA = feature.properties.source;
-        let intB = feature.properties.target;
+        // let intA = feature.properties.source;
+        // let intB = feature.properties.target;
 
-        if(!selectedIntersectionIds.includes(intA)) {
+        // if(!selectedIntersectionIds.includes(intA)) {
 
-          // find the feature for this intersection
-          for(let intersection of this.intersections) {
-            if(intersection.properties.node_id === intA) {
-              selectedIntersections.push(intersection);
-              break;
-            }
-          }
-        }
+        //   // find the feature for this intersection
+        //   for(let intersection of this.intersections) {
+        //     if(intersection.properties.node_id === intA) {
+        //       selectedIntersections.push(intersection);
+        //       break;
+        //     }
+        //   }
+        // }
 
-        if(!selectedIntersectionIds.includes(intB)) {
+        // if(!selectedIntersectionIds.includes(intB)) {
 
-          // find the feature for this intersection
-          for(let intersection of this.intersections) {
-            if(intersection.properties.node_id === intB) {
-              selectedIntersections.push(intersection);
-              break;
-            }
-          }
-        }
+        //   // find the feature for this intersection
+        //   for(let intersection of this.intersections) {
+        //     if(intersection.properties.node_id === intB) {
+        //       selectedIntersections.push(intersection);
+        //       break;
+        //     }
+        //   }
+        // }
       }
 
       updateSelectedWaysAndIntersections(selectedWays, selectedIntersections);
