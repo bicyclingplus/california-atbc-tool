@@ -279,13 +279,6 @@
 					"calc_units": "count"
 				},
 				{
-					"label": "Shorten Crossing",
-					"shortname": "shorten-crossing",
-					"description": "",
-					"units": "count",
-					"calc_units": "count"
-				},
-				{
 					"label": "Signal Phasing",
 					"shortname": "signal-phasing",
 					"description": "",

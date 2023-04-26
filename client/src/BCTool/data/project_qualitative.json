@@ -35,8 +35,7 @@
 				"roundabout",
 				"signal-phasing",
 				"traffic-signal",
-				"flashing-beacon",
-				"shorten-crossing"
+				"flashing-beacon"
 			],
 			"parent": null,
 			"description": {
