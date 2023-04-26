@@ -5,13 +5,17 @@ const PORT = process.env.PORT || 3001;
 const app = express();
 const tool = express();
 const morgan = require('morgan');
-const bodyParser = require('body-parser')
+const bodyParser = require('body-parser');
+const compression = require('compression');
 require('dotenv').config();
 
 const { MongoClient, ObjectId } = require("mongodb");
 
+app.use(compression());
 app.use(morgan('combined'));
-app.use(bodyParser.json())
+app.use(bodyParser.json({
+  limit: '10mb',
+}));
 
 tool.use(express.static(path.resolve(__dirname, '../client/build')));
 
