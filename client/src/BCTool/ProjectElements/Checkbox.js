@@ -9,7 +9,7 @@ class Checkbox extends React.Component {
         let { description, shortname } = this.props;
 
         if(description !== '') {
-            this.tooltip = new Tooltip(document.getElementById(`label-check-${shortname}`));
+            this.tooltip = new Tooltip(document.getElementById(`element-tooltip-${shortname}`));
         }
     }
 
@@ -40,12 +40,16 @@ class Checkbox extends React.Component {
                     onChange={this.onChange} />
                 <label
                     className="form-check-label"
-                    htmlFor={"check-"+shortname}
-                    id={`label-check-${shortname}`}
-                    data-bs-toggle="tooltip"
-                    title={description}>
+                    htmlFor={"check-"+shortname}>
                     {label}
                 </label>
+                { description !== '' ?
+                    <i id={`element-tooltip-${shortname}`}
+                      className="bi bi-info-circle ms-2"
+                      data-bs-toggle="tooltip"
+                      title={description}>
+                    </i>
+                : null }
             </div>
         )
     }
