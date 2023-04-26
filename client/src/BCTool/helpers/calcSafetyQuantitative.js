@@ -355,6 +355,33 @@ const calcSafetyQuantitative = (
   user_input,
   project_time_frame) => {
 
+  let max_length = 0;
+
+  // if any of the selected infrastructure elements have a length
+  // greater than the project length, use that greater length
+  // to weight element length against rather than the project length
+  for(let category of infrastructure.categories) {
+
+    for(let item of category.items) {
+
+      if(item.shortname in selectedInfrastructure) {
+
+        for(let type in SCALING_FACTORS) {
+
+          let value = selectedInfrastructure[item.shortname][type];
+
+          max_length = value > max_length ? value : max_length;
+        }
+      }
+    }
+  }
+
+  const length_to_use = Math.max(project_length, max_length);
+
+  // console.log(`project_length: ${project_length}`);
+  // console.log(`max_length: ${max_length}`);
+  // console.log(`length_to_use: ${length_to_use}`);
+
   console.log(selectedWays);
   console.log(selectedIntersections);
 
@@ -577,10 +604,10 @@ const calcSafetyQuantitative = (
                       // total project length
                       // all are assumed to be per 100 feet right now
                       // this will probably change at some point.
-                      share = (value * 100) / project_length;
+                      share = (value * 100) / length_to_use;
                   }
                   else if(item.units === 'length') {
-                      share = value / project_length;
+                      share = value / length_to_use;
                   }
               }
               else if(item.calc_units === 'count') {
