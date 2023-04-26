@@ -1,6 +1,23 @@
 import React from 'react';
 
+const Tooltip = require('bootstrap/js/dist/tooltip');
+
 class Checkbox extends React.Component {
+
+    componentDidMount() {
+
+        let { description, shortname } = this.props;
+
+        if(description !== '') {
+            this.tooltip = new Tooltip(document.getElementById(`label-check-${shortname}`));
+        }
+    }
+
+    componentWillUnmount() {
+        if(this.tooltip) {
+            this.tooltip.dispose();
+        }
+    }
 
     onChange = (e) => {
 
@@ -11,7 +28,7 @@ class Checkbox extends React.Component {
 
     render() {
 
-        let { checked, label, shortname } = this.props;
+        let { checked, label, shortname, description } = this.props;
 
         return (
             <div className="form-check">
@@ -23,7 +40,10 @@ class Checkbox extends React.Component {
                     onChange={this.onChange} />
                 <label
                     className="form-check-label"
-                    htmlFor={"check-"+shortname}>
+                    htmlFor={"check-"+shortname}
+                    id={`label-check-${shortname}`}
+                    data-bs-toggle="tooltip"
+                    title={description}>
                     {label}
                 </label>
             </div>

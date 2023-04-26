@@ -15,6 +15,7 @@ class CheckboxList extends React.Component {
                         key={item.shortname}
                         label={item.label}
                         shortname={item.shortname}
+                        description={item.description}
                         checked={selected.includes(item.shortname)}
                         onChange={onChange}
                     />
