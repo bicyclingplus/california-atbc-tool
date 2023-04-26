@@ -37,15 +37,15 @@
 					"label": "Bike Parking",
 					"shortname": "bike-parking",
 					"description": "",
-					"units": "length",
-					"calc_units": "length"
+					"units": "count",
+					"calc_units": "count"
 				},
 				{
 					"label": "Bikeshare Infrastructure",
 					"shortname": "bikeshare-infrastructure",
 					"description": "",
-					"units": "length",
-					"calc_units": "length"
+					"units": "count",
+					"calc_units": "count"
 				},
 				{
 					"label": "Landscaping",
@@ -212,15 +212,15 @@
 					"label": "Crosswalk",
 					"shortname": "crosswalk",
 					"description": "",
-					"units": "length",
-					"calc_units": "length"
+					"units": "count",
+					"calc_units": "count"
 				},
 				{
 					"label": "Curb Extension",
 					"shortname": "curb-extension",
 					"description": "",
-					"units": "length",
-					"calc_units": "length"
+					"units": "count",
+					"calc_units": "count"
 				},
 				{
 					"label": "Flashing Beacon",
@@ -268,7 +268,7 @@
 					"label": "Raised Intersection",
 					"shortname": "raised-intersection",
 					"description": "",
-					"units": "length",
+					"units": "count",
 					"calc_units": "count"
 				},
 				{
