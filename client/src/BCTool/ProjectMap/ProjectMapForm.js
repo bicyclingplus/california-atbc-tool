@@ -60,7 +60,7 @@ class ProjectMapForm extends React.Component {
       	finishTwoWay,
       } = this.props;
 
-      let existingClasses = mode === 'existing' ? `btn btn-existing` : `btn btn-outline-existing`;
+      let existingClasses = mode === 'existing' ? `btn btn-existing active` : `btn btn-outline-existing`;
       let addClasses = mode === 'add' ? `btn btn-user-defined active` : `btn btn-outline-user-defined`;
 
       let wayClasses = selection === 'way' ? `btn btn-secondary active` : `btn btn-outline-secondary`;
