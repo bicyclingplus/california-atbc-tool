@@ -13,13 +13,16 @@ const _weightDemand = (
 	// Calculating the average distance per intersection for the project
 	let proj_distance_per_unit = proj_distance/proj_units;
 
+  // console.log(`proj_distance_per_unit: ${proj_distance_per_unit}`)
+
 	// Convert miles into intersections
     let unit_distribution = {};
     let distribution_den = 0;
 
     for(let dist in miles_distribution) {
 
-    	unit_distribution[dist] = Math.floor(parseFloat(dist)/proj_distance_per_unit);
+    	// unit_distribution[dist] = Math.floor(parseFloat(dist)/proj_distance_per_unit);
+      unit_distribution[dist] = parseFloat(dist)/proj_distance_per_unit;
 
     	// If on average people walk more than the number of intersections in the project,
     	// then consider they have walked through all of the project intersections
@@ -31,7 +34,13 @@ const _weightDemand = (
     	distribution_den += unit_distribution[dist]*miles_distribution[dist];
     }
 
+    // console.log('unit_distribution')
+    // console.log(unit_distribution);
+    // console.log(`distribution_den: ${distribution_den}`);
+
     let people = Math.floor(proj_volume/distribution_den);
+
+    // console.log(`people: ${people}`);
 
     // Calculating the distance walked in the project
     let distance = 0;
@@ -44,6 +53,8 @@ const _weightDemand = (
     		distance += parseFloat(dist)*miles_distribution[dist]*people;
     	}
     }
+
+    // console.log(`distance: ${distance}`);
 
     // return Math.round((distance + Number.EPSILON) * 100) / 100;
     // Changed the original rounding to match bike demand
@@ -108,9 +119,9 @@ const _calcPedDemand = (
 
     if(numIntersections > 0) {
 
-      console.log('ped')
+      // console.log('ped')
 
-      console.log(existingTravel.miles.pedestrian.mean);
+      // console.log(`existingTravel.miles.pedestrian.mean before weighting: ${existingTravel.miles.pedestrian.mean}`)
 
       existingTravel.miles.pedestrian.mean = _weightDemand(
         projectLengthMiles,
@@ -119,7 +130,11 @@ const _calcPedDemand = (
         config.pedestrian
       );
 
-      console.log(existingTravel.miles.pedestrian.mean);
+      // console.log(`projectLengthMiles: ${projectLengthMiles}`)
+      // console.log(`numIntersections: ${numIntersections}`)
+      // console.log(`existingTravel.miles.pedestrian.mean after weighting: ${existingTravel.miles.pedestrian.mean}`)
+      // console.log(`config.pedestrian`)
+      // console.log(config.pedestrian)
 
       existingTravel.capita.pedestrian.mean = _weightDemand(
         projectLengthMiles,
