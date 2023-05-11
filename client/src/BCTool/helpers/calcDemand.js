@@ -21,7 +21,6 @@ const _weightDemand = (
 
     for(let dist in miles_distribution) {
 
-    	// unit_distribution[dist] = Math.floor(parseFloat(dist)/proj_distance_per_unit);
       unit_distribution[dist] = parseFloat(dist)/proj_distance_per_unit;
 
     	// If on average people walk more than the number of intersections in the project,
@@ -38,7 +37,7 @@ const _weightDemand = (
     // console.log(unit_distribution);
     // console.log(`distribution_den: ${distribution_den}`);
 
-    let people = Math.floor(proj_volume/distribution_den);
+    let people = proj_volume/distribution_den;
 
     // console.log(`people: ${people}`);
 
