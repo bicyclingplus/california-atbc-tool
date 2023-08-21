@@ -25,19 +25,21 @@ import ExportPDF from './helpers/export';
 
 const Modal = require('bootstrap/js/dist/modal');
 
-const counties = require('./data/counties.json');
-const infrastructure = require('./data/infrastructure.json');
-const nonInfrastructure = require('./data/non_infrastructure.json');
-
 class BCTool extends React.Component {
 
   constructor(props) {
     super(props);
 
-    this.state = this.createDefaultState();
+    this.state = {
+      infrastructure: [],
+      nonInfrastructure: [],
+      counties: [],
+      ...this.createDefaultProjectState(),
+    };
   }
 
   componentDidMount() {
+
     this.startModal = new Modal(document.getElementById('bc-tool-start'), {
       backdrop: 'static',
     });
@@ -46,7 +48,27 @@ class BCTool extends React.Component {
       backdrop: 'static',
     });
 
-    this.initProject();
+    let url = `${process.env.PUBLIC_URL}/api/dropdowns`;
+
+    fetch(url)
+      .then((response) => {
+        if(!response.ok) {
+          throw new Error();
+        }
+        return response.json();
+      })
+      .then(result => {
+        this.setState({
+          infrastructure: result.infrastructure,
+          nonInfrastructure: result.nonInfrastructure,
+          counties: result.counties.counties,
+        }, () => {
+          this.initProject();
+        });
+      })
+      .catch(error => {
+        console.log('Error loading dropdowns');
+      });
   }
 
   componentDidUpdate(prevProps) {
@@ -55,7 +77,7 @@ class BCTool extends React.Component {
     }
   }
 
-  createDefaultState = () => {
+  createDefaultProjectState = () => {
 
     let safety = {};
 
@@ -121,7 +143,7 @@ class BCTool extends React.Component {
   }
 
   initProject = () => {
-    this.setState(this.createDefaultState(), () => {
+    this.setState(this.createDefaultProjectState(), () => {
       this.startModal.show();
       this.props.projectStarted();
     });
@@ -182,7 +204,7 @@ class BCTool extends React.Component {
     let hasMultiSelected = false;
 
     outer:
-    for(let category of infrastructure.categories) {
+    for(let category of this.state.infrastructure.categories) {
       for(let item of category.items) {
         if(item.shortname in this.state.selectedInfrastructure && category.shortname === 'multi') {
           hasMultiSelected = true;
@@ -331,7 +353,6 @@ class BCTool extends React.Component {
         transit: transit,
         totalLength: totalLength,
         totalIntersections: totalIntersections,
-        infrastructure: infrastructure,
         existingTravel: existingTravel,
         selectedInfrastructure: selectedInfrastructure,
         selectedNonInfrastructure: selectedNonInfrastructure,
@@ -421,7 +442,7 @@ class BCTool extends React.Component {
 
     let selectedCounty;
 
-    for(let c of counties.counties) {
+    for(let c of this.state.counties) {
       if(c.name === e.target.value) {
         selectedCounty = c;
       }
@@ -718,7 +739,7 @@ class BCTool extends React.Component {
               <select id="county" className="form-select mt-4" value={this.state.county} onChange={this.updateCounty}>
                 <option value='' disabled>Select County</option>
                 {
-                  counties.counties.map((county) => (
+                  this.state.counties.map((county) => (
                     <option key={county.name} value={county.name}>{county.name}</option>
                   ))
                 }
@@ -841,8 +862,8 @@ class BCTool extends React.Component {
           <div className="col-sm-12">
             <ProjectElements
               type={this.state.type}
-              infrastructure={infrastructure}
-              nonInfrastructure={nonInfrastructure}
+              infrastructure={this.state.infrastructure}
+              nonInfrastructure={this.state.nonInfrastructure}
               onInfrastructureChange={this.onInfrastructureChange}
               onNonInfrastructureChange={this.onNonInfrastructureChange}
               isAddingUserWay={this.state.isAddingUserWay}
@@ -858,7 +879,7 @@ class BCTool extends React.Component {
         <div className="row mb-3">
           <div className="col-sm-12">
             <SelectedInfrastructure
-              categories={infrastructure.categories}
+              categories={this.state.infrastructure.categories}
               onChange={this.onInfrastructureValueChange}
               multi={this.state.hasMultiSelected}
               selections={this.state.selectedInfrastructure}

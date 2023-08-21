@@ -7,11 +7,17 @@ import bodyParser from 'body-parser';
 import compression from 'compression';
 import dotenv from 'dotenv';
 import { MongoClient, ObjectId } from 'mongodb';
-
+import { createRequire } from "module";
 
 import calcDemand from './helpers/calcDemand.js';
 import calcProjectLength from './helpers/calcProjectLength.js';
 import calcBenefits from './helpers/calcBenefits.js';
+
+const require = createRequire(import.meta.url);
+
+const infrastructure = require('./data/infrastructure.json');
+const nonInfrastructure = require('./data/non_infrastructure.json');
+const counties = require('./data/counties.json');
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const PORT = process.env.PORT || 3001;
@@ -245,7 +251,6 @@ tool.post('/api/benefits', async(req, res) => {
     transit,
     totalLength,
     totalIntersections,
-    infrastructure,
     existingTravel,
     selectedInfrastructure,
     selectedNonInfrastructure,
@@ -264,7 +269,6 @@ tool.post('/api/benefits', async(req, res) => {
         transit,
         totalLength,
         totalIntersections,
-        infrastructure,
         existingTravel,
         selectedInfrastructure,
         selectedNonInfrastructure,
@@ -278,6 +282,14 @@ tool.post('/api/benefits', async(req, res) => {
     benefits: benefits,
   });
 
+});
+
+tool.get('/api/dropdowns', async(req, res) => {
+  return res.json({
+    infrastructure: infrastructure,
+    nonInfrastructure: nonInfrastructure,
+    counties: counties,
+  });
 });
 
 app.use('/', tool);

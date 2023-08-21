@@ -20,8 +20,6 @@ const calcBenefits = (
 	project_length,
 	num_intersections,
 
-	infrastructure,
-
 	existingTravel,
 
 	selectedInfrastructure,
@@ -45,7 +43,6 @@ const calcBenefits = (
 		if(!hasOnlyUserMapSelections) {
 
       benefits.travel = calcTravel(
-      	infrastructure,
       	selectedInfrastructure,
       	existingTravel,
       	project_length,
@@ -62,7 +59,6 @@ const calcBenefits = (
       benefits.safetyQuantitative = calcSafetyQuantitative(
       	selectedWays,
       	selectedIntersections,
-      	infrastructure,
       	selectedInfrastructure,
       	project_length,
       	num_intersections,
@@ -72,7 +68,7 @@ const calcBenefits = (
 	  }
 
 	  benefits.safetyQualitative = calcSafetyQualitative(
-      	infrastructure, selectedInfrastructure);
+	  	selectedInfrastructure);
 
   }
 

@@ -17,6 +17,7 @@ const require = createRequire(import.meta.url);
 const alpha_lookup = require('../data/alpha_lookup.json');
 const quantitative = require('../data/quantitative.json');
 const travel_volume = require('../data/travel_volume.json');
+const infrastructure = require('../data/infrastructure.json');
 
 const _calc = (
   Vmj_existing,
@@ -351,7 +352,6 @@ const avgProp = (items, property) => {
 const calcSafetyQuantitative = (
   selectedWays,
   selectedIntersections,
-  infrastructure,
   selectedInfrastructure,
   project_length,
   num_intersections,
