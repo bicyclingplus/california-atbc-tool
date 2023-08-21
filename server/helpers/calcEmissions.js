@@ -3,8 +3,10 @@ import {
   VEHICLE_TYPES,
   EMISSION_TYPES,
   ESTIMATES
-} from './constants';
+} from './constants.js';
 
+import { createRequire } from "module";
+const require = createRequire(import.meta.url);
 const fleet_makeup = require('../data/fleet_makeup.json');
 const emission_rates = require('../data/emission_rates.json');
 

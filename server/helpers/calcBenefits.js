@@ -1,10 +1,10 @@
-import calcProjectQualitative from './calcProjectQualitative';
-import calcTravel from './calcTravel';
-import calcVMTReductions from './calcVMTReductions';
-import calcEmissions from './calcEmissions';
-import calcHealth from './calcHealth';
-import calcSafetyQualitative from './calcSafetyQualitative';
-import calcSafetyQuantitative from './calcSafetyQuantitative';
+import calcProjectQualitative from './calcProjectQualitative.js';
+import calcTravel from './calcTravel.js';
+import calcVMTReductions from './calcVMTReductions.js';
+import calcEmissions from './calcEmissions.js';
+import calcHealth from './calcHealth.js';
+import calcSafetyQualitative from './calcSafetyQualitative.js';
+import calcSafetyQuantitative from './calcSafetyQuantitative.js';
 
 const calcBenefits = (
 	project_type,

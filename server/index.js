@@ -11,6 +11,7 @@ import { MongoClient, ObjectId } from 'mongodb';
 
 import calcDemand from './helpers/calcDemand.js';
 import calcProjectLength from './helpers/calcProjectLength.js';
+import calcBenefits from './helpers/calcBenefits.js';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const PORT = process.env.PORT || 3001;
@@ -229,6 +230,52 @@ tool.post('/api/demand', async(req, res) => {
   return res.json({
     projectLength: projectLength,
     existingTravel: existingTravel,
+  });
+
+});
+
+tool.post('/api/benefits', async(req, res) => {
+
+  let {
+    type,
+    subtype,
+    county,
+    year,
+    timeframe,
+    transit,
+    totalLength,
+    totalIntersections,
+    infrastructure,
+    existingTravel,
+    selectedInfrastructure,
+    selectedNonInfrastructure,
+    hasOnlyUserMapSelections,
+    selectedWays,
+    selectedIntersections,
+    safety,
+  } = req.body;
+
+  let benefits = calcBenefits(
+        type,
+        subtype,
+        county,
+        year,
+        timeframe,
+        transit,
+        totalLength,
+        totalIntersections,
+        infrastructure,
+        existingTravel,
+        selectedInfrastructure,
+        selectedNonInfrastructure,
+        hasOnlyUserMapSelections,
+        selectedWays,
+        selectedIntersections,
+        safety
+      )
+
+  return res.json({
+    benefits: benefits,
   });
 
 });

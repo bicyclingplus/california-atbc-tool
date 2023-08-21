@@ -21,7 +21,6 @@ import ProjectBenefits from './ProjectBenefits/ProjectBenefits';
 import BenefitsButton from './benefits-button';
 import ExportButton from './export-button';
 
-import calcBenefits from './helpers/calcBenefits';
 import ExportPDF from './helpers/export';
 
 const Modal = require('bootstrap/js/dist/modal');
@@ -297,27 +296,70 @@ class BCTool extends React.Component {
   }
 
   updateBenefits = () => {
-    this.setState({
-      inputsChanged: false,
-      benefits: calcBenefits(
-        this.state.type,
-        this.state.subtype,
-        this.state.county,
-        this.state.year,
-        this.state.timeframe,
-        this.state.transit,
-        this.state.totalLength,
-        this.state.totalIntersections,
-        infrastructure,
-        this.state.existingTravel,
-        this.state.selectedInfrastructure,
-        this.state.selectedNonInfrastructure,
-        this.state.hasOnlyUserMapSelections,
-        this.state.selectedWays,
-        this.state.selectedIntersections,
-        this.state.safety
-      ),
-    }, this.updateStatuses);
+
+    let {
+      type,
+      subtype,
+      county,
+      year,
+      timeframe,
+      transit,
+      totalLength,
+      totalIntersections,
+      existingTravel,
+      selectedInfrastructure,
+      selectedNonInfrastructure,
+      hasOnlyUserMapSelections,
+      selectedWays,
+      selectedIntersections,
+      safety,
+    } = this.state;
+
+    let url = `${process.env.PUBLIC_URL}/api/benefits`;
+
+    fetch(url, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        type: type,
+        subtype: subtype,
+        county: county,
+        year: year,
+        timeframe: timeframe,
+        transit: transit,
+        totalLength: totalLength,
+        totalIntersections: totalIntersections,
+        infrastructure: infrastructure,
+        existingTravel: existingTravel,
+        selectedInfrastructure: selectedInfrastructure,
+        selectedNonInfrastructure: selectedNonInfrastructure,
+        hasOnlyUserMapSelections: hasOnlyUserMapSelections,
+        selectedWays: selectedWays,
+        selectedIntersections: selectedIntersections,
+        safety: safety,
+      })
+    })
+    .then((response) => {
+      if(!response.ok) {
+        throw new Error();
+      }
+      return response.json();
+    })
+    .then(result => {
+
+        this.setState({
+          inputsChanged: false,
+          benefits: result.benefits,
+        }, () => {
+          this.updateStatuses();
+        });
+      }
+    )
+    .catch(error => {
+      console.log('Error getting benefits');
+    });
   }
 
   updateName = (e) => {

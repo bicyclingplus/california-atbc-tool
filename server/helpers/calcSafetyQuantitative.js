@@ -8,8 +8,11 @@ import {
   LOCATION_TYPES,
   VOLUMES,
   OUTCOMES,
-} from './constants';
-import calcDiscount from './calcDiscount';
+} from './constants.js';
+import calcDiscount from './calcDiscount.js';
+
+import { createRequire } from "module";
+const require = createRequire(import.meta.url);
 
 const alpha_lookup = require('../data/alpha_lookup.json');
 const quantitative = require('../data/quantitative.json');

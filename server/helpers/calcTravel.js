@@ -5,8 +5,10 @@ import {
     ROUTE_SHIFT,
     CAR_SHIFT,
     OTHER_SHIFT,
-} from './constants';
+} from './constants.js';
 
+import { createRequire } from "module";
+const require = createRequire(import.meta.url);
 const travel_volume = require('../data/travel_volume.json');
 
 const _calcPartial = (total, percent) => {

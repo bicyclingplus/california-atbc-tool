@@ -3,9 +3,9 @@ import {
     CARPOOL_FACTOR,
     TRANSIT_FACTOR,
     TRANSIT_WALK_FRACTION,
-} from './constants';
+} from './constants.js';
 
-import calcDiscount from './calcDiscount';
+import calcDiscount from './calcDiscount.js';
 
 const _calcBike = (travel) => {
   return (

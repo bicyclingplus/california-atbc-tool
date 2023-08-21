@@ -4,9 +4,9 @@ import {
   WALK_MMET,
   BIKE_SPEED,
   BIKE_MMET,
-} from './constants';
+} from './constants.js';
 
-import calcDiscount from './calcDiscount';
+import calcDiscount from './calcDiscount.js';
 
 // Calculate health benefits
 // (travel increase in miles / speed in mph)

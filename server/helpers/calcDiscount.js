@@ -1,4 +1,4 @@
-import { DISCOUNT_RATE } from './constants';
+import { DISCOUNT_RATE } from './constants.js';
 
 const calcDiscount = (annual_benefit, time_frame) => {
 
