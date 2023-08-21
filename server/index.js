@@ -1,15 +1,23 @@
-const path = require('path');
-const express = require('express');
+import path, { dirname } from 'path';
+import { fileURLToPath } from 'url';
 
+import express from 'express';
+import morgan from 'morgan';
+import bodyParser from 'body-parser';
+import compression from 'compression';
+import dotenv from 'dotenv';
+import { MongoClient, ObjectId } from 'mongodb';
+
+
+import calcDemand from './helpers/calcDemand.js';
+import calcProjectLength from './helpers/calcProjectLength.js';
+
+const __dirname = dirname(fileURLToPath(import.meta.url));
 const PORT = process.env.PORT || 3001;
 const app = express();
 const tool = express();
-const morgan = require('morgan');
-const bodyParser = require('body-parser');
-const compression = require('compression');
-require('dotenv').config();
 
-const { MongoClient, ObjectId } = require("mongodb");
+dotenv.config();
 
 app.use(compression());
 app.use(morgan('combined'));
@@ -111,14 +119,14 @@ tool.get("/api/bounds", async (req, res) => {
       }
     }
 
-    $query2 = {
+    let query2 = {
       'properties.node_id': {
         '$in': node_ids,
       }
     };
 
     collection = database.collection('intersections');
-    const intersections = await collection.find($query2).toArray();
+    const intersections = await collection.find(query2).toArray();
 
     res.json({
       "ways": {
@@ -196,6 +204,32 @@ tool.post('/api/projects', async (req, res) => {
   finally {
     await client.close();
   }
+
+});
+
+tool.post('/api/demand', async(req, res) => {
+
+  let {
+    selectedWays,
+    selectedIntersections,
+    userWays,
+    userIntersections,
+  } = req.body;
+
+  let projectLength = calcProjectLength(selectedWays, userWays);
+
+  let existingTravel = calcDemand(
+    selectedWays,
+    userWays,
+    selectedIntersections,
+    userIntersections,
+    projectLength
+  );
+
+  return res.json({
+    projectLength: projectLength,
+    existingTravel: existingTravel,
+  });
 
 });
 

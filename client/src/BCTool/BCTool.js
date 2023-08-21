@@ -21,8 +21,6 @@ import ProjectBenefits from './ProjectBenefits/ProjectBenefits';
 import BenefitsButton from './benefits-button';
 import ExportButton from './export-button';
 
-import calcDemand from './helpers/calcDemand';
-import calcProjectLength from './helpers/calcProjectLength';
 import calcBenefits from './helpers/calcBenefits';
 import ExportPDF from './helpers/export';
 
@@ -432,22 +430,41 @@ class BCTool extends React.Component {
       userIntersections,
     } = this.state;
 
-    let projectLength = calcProjectLength(selectedWays, userWays);
+    let url = `${process.env.PUBLIC_URL}/api/demand`;
 
-    let existingTravel = calcDemand(
-      selectedWays,
-      userWays,
-      selectedIntersections,
-      userIntersections,
-      projectLength
-    );
+    fetch(url, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        selectedWays: selectedWays,
+        userWays: userWays,
+        selectedIntersections: selectedIntersections,
+        userIntersections: userIntersections,
+      })
+    })
+    .then((response) => {
+      if(!response.ok) {
+        throw new Error();
+      }
+      return response.json();
+    })
+    .then(result => {
 
-    this.setState({
-      totalLength: projectLength,
-      totalIntersections: selectedIntersections.length + userIntersections.length,
-      existingTravel: existingTravel,
-      inputsChanged: true,
-    }, this.updateStatuses);
+        this.setState({
+          totalLength: result.projectLength,
+          totalIntersections: selectedIntersections.length + userIntersections.length,
+          existingTravel: result.existingTravel,
+          inputsChanged: true,
+        }, () => {
+          this.updateStatuses();
+        });
+      }
+    )
+    .catch(error => {
+      console.log('Error getting demand');
+    });
   }
 
   updateUserWayStatus = (status) => {

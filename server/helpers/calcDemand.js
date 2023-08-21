@@ -2,7 +2,14 @@
 // and ported to JS by me
 // JSON file required below also taken from the same repo
 // Input of 1.8, 10, 1234 should yield output of 258.42, verified
+// const config = require('../data/volume_to_miles.json');
+
+// import config from '../data/volume_to_miles.json' assert { type: "json" };
+
+import { createRequire } from "module";
+const require = createRequire(import.meta.url);
 const config = require('../data/volume_to_miles.json');
+
 
 const _weightDemand = (
   proj_distance,
