@@ -157,22 +157,12 @@ const _calcPedDemand = (
 
     if(numIntersections > 0) {
 
-      // console.log('ped')
-
-      // console.log(`existingTravel.miles.pedestrian.mean before weighting: ${existingTravel.miles.pedestrian.mean}`)
-
       existingTravel.miles.pedestrian.mean = _weightDemand(
         projectLengthMiles,
         numIntersections,
         existingTravel.miles.pedestrian.mean,
         config.pedestrian
       );
-
-      // console.log(`projectLengthMiles: ${projectLengthMiles}`)
-      // console.log(`numIntersections: ${numIntersections}`)
-      // console.log(`existingTravel.miles.pedestrian.mean after weighting: ${existingTravel.miles.pedestrian.mean}`)
-      // console.log(`config.pedestrian`)
-      // console.log(config.pedestrian)
 
       existingTravel.capita.pedestrian.mean = _weightDemand(
         projectLengthMiles,
@@ -332,18 +322,12 @@ const _calcBikeDemand = (
 
     // if(numWays > 0) {
 
-    //   console.log('bike');
-
-    //   console.log(existingTravel.miles.bike.mean);
-
     //   existingTravel.miles.bike.mean = _weightDemand(
     //     projectLengthMiles,
     //     numWays,
     //     existingTravel.miles.bike.mean,
     //     config.bike
     //   );
-
-    //   console.log(existingTravel.miles.bike.mean);
 
     //   existingTravel.capita.bike.mean = _weightDemand(
     //     projectLengthMiles,
