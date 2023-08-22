@@ -7,9 +7,7 @@ docker compose exec -T db sh -c 'mongorestore --archive --username bctool --pass
 docker compose exec db mongo --username bctool --password phev
 use bctool;
 
-docker compose exec db mongosh -u bctool -p bctool
-
-
+docker compose exec db mongosh -u bctool -p
 
 # index for spatial query
 db.intersections.createIndex({"geometry": "2dsphere"});
