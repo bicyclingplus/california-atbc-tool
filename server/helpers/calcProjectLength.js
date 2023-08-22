@@ -1,16 +1,26 @@
+import c from '../collector.js';
+
 const calcProjectLength = (selectedWays, userWays) => {
 
-	let projectLength = 0;
+	let network_length = 0;
+	let user_length = 0;
 
 	for(let way of selectedWays) {
-		projectLength += way.properties.length;
+		c.put('scope', 'ways', ['network', way.properties.length]);
+		network_length += way.properties.length;
 	}
+
+	c.put('scope', 'ways', ['network total', network_length]);
 
 	for(let way of userWays) {
-		projectLength += way.properties.length;
+		c.put('scope', 'ways', ['user', way.properties.length]);
+		user_length += way.properties.length;
 	}
 
-	return projectLength;
+	c.put('scope', 'ways', ['user total', user_length]);
+	c.put('scope', 'ways', ['project total', network_length + user_length]);
+
+	return network_length + user_length;
 
 }
 

@@ -4,6 +4,8 @@
 // Input of 1.8, 10, 1234 should yield output of 258.42, verified
 // const config = require('../data/volume_to_miles.json');
 
+import c from '../collector.js';
+
 // import config from '../data/volume_to_miles.json' assert { type: "json" };
 
 import { createRequire } from "module";
@@ -94,7 +96,6 @@ const _calcPedDemand = (
     let avgIntersectionPops = intersectionPops.length ? intersectionPops.reduce((a,b) => a+b) / intersectionPops.length : null;
     let avgIntersectionJobs = intersectionJobs.length ? intersectionJobs.reduce((a,b) => a+b) / intersectionJobs.length : null;
 
-
     // CALCULATE PEDESTRIAN DEMAND FOR USER SELECTED INTERSECTIONS
     // each selected intersection has some prediction of pedestrian demand,
     // we add these to the total here
@@ -107,15 +108,47 @@ const _calcPedDemand = (
       existingTravel.miles.pedestrian.mean += mean;
       existingTravel.capita.pedestrian.mean += mean / population;
       existingTravel.jobs.pedestrian.mean += mean / jobs;
+
+      c.put('demand', 'ped_intersections', [
+        'network',
+        mean,
+        population,
+        jobs,
+        mean,
+        mean / population,
+        mean / jobs,
+      ]);
     }
 
     // CALCULATE PEDESTRIAN DEMAND FOR USER DEFINED INTERSECTIONS
     // user defined intersections won't have the necessary properties, so we use averages
     // since they're all the same no need to loop through, just multiply by the
     // number of user defined intersections
-    existingTravel.miles.pedestrian.mean += avgIntersectionAvg * userIntersections.length;
-    existingTravel.capita.pedestrian.mean += (avgIntersectionAvg * userIntersections.length) / avgIntersectionPops;
-    existingTravel.jobs.pedestrian.mean += (avgIntersectionAvg * userIntersections.length) / avgIntersectionJobs;
+
+    const userIntDemand = avgIntersectionAvg * userIntersections.length;
+    const userIntDemandCapita = userIntDemand / avgIntersectionPops;
+    const userIntDemandJobs = userIntDemand / avgIntersectionJobs;
+
+    existingTravel.miles.pedestrian.mean += userIntDemand;
+    existingTravel.capita.pedestrian.mean += userIntDemandCapita;
+    existingTravel.jobs.pedestrian.mean += userIntDemandJobs;
+
+    c.put('demand', 'ped_intersections', [
+      'user',
+      avgIntersectionAvg,
+      avgIntersectionPops,
+      avgIntersectionJobs,
+      userIntDemand,
+      userIntDemandCapita,
+      userIntDemandJobs,
+    ]);
+
+    c.put('demand', 'ped', [
+      'total',
+      existingTravel.miles.pedestrian.mean,
+      existingTravel.capita.pedestrian.mean,
+      existingTravel.jobs.pedestrian.mean,
+    ])
 
     // then the pedestrian demand is weighted by the project length and
     // number of intersections
@@ -155,6 +188,13 @@ const _calcPedDemand = (
         config.pedestrian);
     }
 
+    c.put('demand', 'ped', [
+      'weighted',
+      existingTravel.miles.pedestrian.mean,
+      existingTravel.capita.pedestrian.mean,
+      existingTravel.jobs.pedestrian.mean,
+    ])
+
     return existingTravel;
 }
 
@@ -176,12 +216,13 @@ const _calcBikeDemand = (
       if(way.properties.bicyclist_demand) {
         wayAvg.push(parseInt(way.properties.bicyclist_demand));
       }
-      if(way.properties.jobs) {
-        wayJobs.push(way.properties.jobs);
-      }
       if(way.properties.population) {
         wayPops.push(way.properties.population);
       }
+      if(way.properties.jobs) {
+        wayJobs.push(way.properties.jobs);
+      }
+
     }
 
     let avgWayAvg = wayAvg.length ? wayAvg.reduce((a,b) => a+b) / wayAvg.length : null;
@@ -190,6 +231,7 @@ const _calcBikeDemand = (
 
     // Array of demand objects per user selected or user defined way
     let waysTravel = [];
+    let totalMiles = 0;
 
     // CALCULATE BIKE DEMAND PER USER SELECTED WAY
     for(let way of selectedWays) {
@@ -208,6 +250,7 @@ const _calcBikeDemand = (
 
       // demand calcs all based on miles so convert feet -> miles here
       let wayLengthMiles = way.properties.length / 5280;
+      totalMiles += wayLengthMiles
 
       current.miles.mean = mean * wayLengthMiles;
 
@@ -216,6 +259,17 @@ const _calcBikeDemand = (
 
       // divide by jobs for per jobs
       current.jobs.mean = current.miles.mean / jobs;
+
+      c.put('demand', 'bike_ways', [
+        'network',
+        mean,
+        population,
+        jobs,
+        wayLengthMiles,
+        current.miles.mean,
+        current.capita.mean,
+        current.jobs.mean,
+      ]);
 
       waysTravel.push(current);
     }
@@ -231,6 +285,7 @@ const _calcBikeDemand = (
 
       // demand calcs all based on miles so convert feet -> miles here
       let wayLengthMiles = way.properties.length / 5280;
+      totalMiles += wayLengthMiles
 
       // use averages for everything here because user defined ways
       // won't have any of these properties
@@ -239,6 +294,17 @@ const _calcBikeDemand = (
       current.capita.mean = current.miles.mean / avgWayPop;
 
       current.jobs.mean = current.miles.mean / avgWayJobs;
+
+      c.put('demand', 'bike_ways', [
+        'user',
+        avgWayAvg,
+        avgWayPop,
+        avgWayJobs,
+        wayLengthMiles,
+        current.miles.mean,
+        current.capita.mean,
+        current.jobs.mean,
+      ])
 
       waysTravel.push(current);
     }
@@ -251,6 +317,13 @@ const _calcBikeDemand = (
 
       existingTravel.jobs.bike.mean += travel.jobs.mean;
     }
+
+    c.put('demand', 'bike', [
+      'total',
+      existingTravel.miles.bike.mean,
+      existingTravel.capita.bike.mean,
+      existingTravel.jobs.bike.mean,
+    ])
 
     // then the bike demand is weighted by the project length and
     // number of ways
@@ -294,6 +367,13 @@ const _calcBikeDemand = (
     existingTravel.miles.bike.mean *= 2;
     existingTravel.capita.bike.mean *= 2;
     existingTravel.jobs.bike.mean *= 2;
+
+    c.put('demand', 'bike', [
+      'weighted',
+      existingTravel.miles.bike.mean,
+      existingTravel.capita.bike.mean,
+      existingTravel.jobs.bike.mean,
+    ])
 
     return existingTravel;
 
