@@ -62,8 +62,6 @@ class BCTool extends React.Component {
           infrastructure: result.infrastructure,
           nonInfrastructure: result.nonInfrastructure,
           counties: result.counties.counties,
-        }, () => {
-          this.initProject();
         });
       })
       .catch(error => {
