@@ -1,31 +1,54 @@
 import { MongoClient, ObjectId } from 'mongodb';
 import dotenv from 'dotenv';
+import fs from 'fs';
 
 import scope from './debug_helpers/scope.js';
 import demand from './debug_helpers/demand.js';
 import safety from './debug_helpers/safety.js';
 
-if(process.argv.length < 3) {
-	console.log('Usage: node debug.js [projectId]');
-}
-
 dotenv.config();
 
-const projectId = process.argv[2]
 const client = new MongoClient(process.env.MONGO_URI);
 
-try {
-
-    const db = client.db('bctool');
-	const projects = db.collection('projects');
-	const project = await projects.findOne({
-		'_id': new ObjectId(projectId),
-	});
-
+const debug = (project) => {
 	scope(project);
 	demand(project);
 	safety(project);
+};
+
+fs.rmSync('debug_output', {recursive: true, force: true });
+
+if(process.argv.length === 3) {
+
+	const projectId = process.argv[2]
+
+	try {
+
+	    const db = client.db('bctool');
+		const projects = db.collection('projects');
+		const project = await projects.findOne({
+			'_id': new ObjectId(projectId),
+		});
+
+		debug(project);
+	}
+	finally {
+		await client.close();
+	}
 }
-finally {
-	await client.close();
+else {
+	try {
+
+	    const db = client.db('bctool');
+		const projects = db.collection('projects');
+		const cursor = await projects.find({});
+
+		for await (const project of cursor) {
+			console.log(`Debugging ${project._id.toString()}`);
+			debug(project);
+		}
+	}
+	finally {
+		await client.close();
+	}
 }

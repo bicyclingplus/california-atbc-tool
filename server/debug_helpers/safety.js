@@ -18,6 +18,11 @@ const safety = (project) => {
 	const project_length = calcProjectLength(segments, userSegments);
 	const num_intersections = intersections.length + userIntersections.length;
 
+	if(project.details.safety === undefined) {
+		console.log("skipping -- old project before user safety inputs");
+		return;
+	}
+
 	calcSafetyQuantitative(
 		segments,
 		intersections,
