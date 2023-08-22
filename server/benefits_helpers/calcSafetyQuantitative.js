@@ -344,7 +344,10 @@ const calcSafetyQuantitative = (
 
   // need a lookup for projected volume by mode and location type
   const Vmj_projected = calcVmj_projected(
-    selectedInfrastructure, project_length, Vmj_existing);
+    Vmj_existing,
+    selectedInfrastructure,
+    project_length,
+    num_intersections);
 
   // need a lookup for length/count by volume and functional class and location type
   const Ljvf = calcLjvf(selectedWays, selectedIntersections);

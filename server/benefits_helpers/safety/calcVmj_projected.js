@@ -15,11 +15,10 @@ const travel_volume = require('../../data/travel_volume.json');
 const infrastructure = require('../../data/infrastructure.json');
 
 const calcVmj_projected = (
+    Vmj_existing,
     selectedInfrastructure,
     project_length,
-    Vmj_existing) => {
-
-    const length_to_use = calcLength(selectedInfrastructure, project_length);
+    num_intersections) => {
 
     const Vmj_projected = {};
 
@@ -41,6 +40,8 @@ const calcVmj_projected = (
             }
         }
     }
+
+    const length_to_use = calcLength(selectedInfrastructure, project_length);
 
     // for selected elements go through travel volume benefits and apply
     for(let category of infrastructure.categories) {
