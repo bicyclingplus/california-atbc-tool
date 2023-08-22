@@ -1,8 +1,8 @@
 import c from '../collector.js';
 import writeCSV from './writeCSV.js';
 
-import calcProjectLength from '../helpers/calcProjectLength.js';
-import calcSafetyQuantitative from '../helpers/calcSafetyQuantitative.js';
+import calcProjectLength from '../benefits_helpers/calcProjectLength.js';
+import calcSafetyQuantitative from '../benefits_helpers/calcSafetyQuantitative.js';
 
 const safety = (project) => {
 

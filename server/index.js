@@ -9,9 +9,9 @@ import dotenv from 'dotenv';
 import { MongoClient, ObjectId } from 'mongodb';
 import { createRequire } from "module";
 
-import calcDemand from './helpers/calcDemand.js';
-import calcProjectLength from './helpers/calcProjectLength.js';
-import calcBenefits from './helpers/calcBenefits.js';
+import calcDemand from './benefits_helpers/calcDemand.js';
+import calcProjectLength from './benefits_helpers/calcProjectLength.js';
+import calcBenefits from './benefits_helpers/calcBenefits.js';
 
 const require = createRequire(import.meta.url);
 

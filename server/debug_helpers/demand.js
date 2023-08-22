@@ -1,8 +1,8 @@
 import c from '../collector.js';
 import writeCSV from './writeCSV.js';
 
-import calcProjectLength from '../helpers/calcProjectLength.js';
-import calcDemand from '../helpers/calcDemand.js';
+import calcProjectLength from '../benefits_helpers/calcProjectLength.js';
+import calcDemand from '../benefits_helpers/calcDemand.js';
 
 const demand = (project) => {
 
