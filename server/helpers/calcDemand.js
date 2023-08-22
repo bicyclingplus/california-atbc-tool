@@ -4,6 +4,7 @@
 // Input of 1.8, 10, 1234 should yield output of 258.42, verified
 // const config = require('../data/volume_to_miles.json');
 
+import avgProp from './avgProp.js';
 import c from '../collector.js';
 
 // import config from '../data/volume_to_miles.json' assert { type: "json" };
@@ -75,26 +76,9 @@ const _calcPedDemand = (
   projectLength) => {
 
     // Grab the averages
-    // Avg lower/mean/upper/pops/jobs used for user defined intersections
-    let intersectionAvg = [];
-    let intersectionPops = [];
-    let intersectionJobs = [];
-
-    for(let intersection of selectedIntersections) {
-      if(intersection.properties.ped_demand) {
-        intersectionAvg.push(parseInt(intersection.properties.ped_demand));
-      }
-      if(intersection.properties.population) {
-        intersectionPops.push(parseInt(intersection.properties.population));
-      }
-      if(intersection.properties.jobs) {
-        intersectionJobs.push(parseInt(intersection.properties.jobs));
-      }
-    }
-
-    let avgIntersectionAvg = intersectionAvg.length ? intersectionAvg.reduce((a,b) => a+b) / intersectionAvg.length : null;
-    let avgIntersectionPops = intersectionPops.length ? intersectionPops.reduce((a,b) => a+b) / intersectionPops.length : null;
-    let avgIntersectionJobs = intersectionJobs.length ? intersectionJobs.reduce((a,b) => a+b) / intersectionJobs.length : null;
+    const avgIntersectionAvg = avgProp(selectedIntersections, 'ped_demand');
+    const avgIntersectionPops = avgProp(selectedIntersections, 'population');
+    const avgIntersectionJobs = avgProp(selectedIntersections, 'jobs');
 
     // CALCULATE PEDESTRIAN DEMAND FOR USER SELECTED INTERSECTIONS
     // each selected intersection has some prediction of pedestrian demand,
@@ -198,26 +182,9 @@ const _calcBikeDemand = (
     // Avg lower/mean/upper used for user defined ways
     // Avg pops/jobs used for user selected ways that are missing
     // these properties as well as user defined ways
-    let wayAvg = [];
-    let wayPops = [];
-    let wayJobs = [];
-
-    for(let way of selectedWays) {
-      if(way.properties.bicyclist_demand) {
-        wayAvg.push(parseInt(way.properties.bicyclist_demand));
-      }
-      if(way.properties.population) {
-        wayPops.push(way.properties.population);
-      }
-      if(way.properties.jobs) {
-        wayJobs.push(way.properties.jobs);
-      }
-
-    }
-
-    let avgWayAvg = wayAvg.length ? wayAvg.reduce((a,b) => a+b) / wayAvg.length : null;
-    let avgWayPop = wayPops.length ? wayPops.reduce((a,b) => a+b) / wayPops.length : null;
-    let avgWayJobs = wayPops.length ? wayJobs.reduce((a,b) => a+b) / wayJobs.length : null;
+    const avgWayAvg = avgProp(selectedWays, 'bicyclist_demand');
+    const avgWayPop = avgProp(selectedWays, 'population');
+    const avgWayJobs = avgProp(selectedWays, 'jobs');
 
     // Array of demand objects per user selected or user defined way
     let waysTravel = [];
