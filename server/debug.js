@@ -3,6 +3,7 @@ import dotenv from 'dotenv';
 
 import scope from './debug_helpers/scope.js';
 import demand from './debug_helpers/demand.js';
+import safety from './debug_helpers/safety.js';
 
 if(process.argv.length < 3) {
 	console.log('Usage: node debug.js [projectId]');
@@ -23,6 +24,7 @@ try {
 
 	scope(project);
 	demand(project);
+	safety(project);
 }
 finally {
 	await client.close();
