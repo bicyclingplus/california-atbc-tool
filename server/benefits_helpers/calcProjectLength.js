@@ -6,19 +6,19 @@ const calcProjectLength = (selectedWays, userWays) => {
 	let user_length = 0;
 
 	for(let way of selectedWays) {
-		c.put('scope', 'ways', ['network', way.properties.length]);
+		c.put('reach', 'ways', ['network', way.properties.length]);
 		network_length += way.properties.length;
 	}
 
-	c.put('scope', 'ways', ['network total', network_length]);
+	c.put('reach', 'ways', ['network total', network_length]);
 
 	for(let way of userWays) {
-		c.put('scope', 'ways', ['user', way.properties.length]);
+		c.put('reach', 'ways', ['user', way.properties.length]);
 		user_length += way.properties.length;
 	}
 
-	c.put('scope', 'ways', ['user total', user_length]);
-	c.put('scope', 'ways', ['project total', network_length + user_length]);
+	c.put('reach', 'ways', ['user total', user_length]);
+	c.put('reach', 'ways', ['project total', network_length + user_length]);
 
 	return network_length + user_length;
 

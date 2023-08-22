@@ -3,7 +3,7 @@ import writeCSV from './writeCSV.js';
 
 import calcProjectLength from '../benefits_helpers/calcProjectLength.js';
 
-const scope = (project) => {
+const reach = (project) => {
 	const projectId = project._id.toString();
 
 	const {
@@ -17,24 +17,24 @@ const scope = (project) => {
 
 	writeCSV(
 		projectId,
-		'scope_ways',
+		'reach_ways',
 		['type', 'length (ft)'],
-		c.get('scope', 'ways')
+		c.get('reach', 'ways')
 	);
 
-	c.put('scope', 'intersections', ['network', intersections.length]);
-	c.put('scope', 'intersections', ['user', userIntersections.length]);
-	c.put('scope', 'intersections', [
+	c.put('reach', 'intersections', ['network', intersections.length]);
+	c.put('reach', 'intersections', ['user', userIntersections.length]);
+	c.put('reach', 'intersections', [
 		'project',
 		intersections.length + userIntersections.length
 	]);
 
 	writeCSV(
 		projectId,
-		'scope_intersections',
+		'reach_intersections',
 		['type', 'count'],
-		c.get('scope', 'intersections')
+		c.get('reach', 'intersections')
 	);
 }
 
-export default scope;
+export default reach;

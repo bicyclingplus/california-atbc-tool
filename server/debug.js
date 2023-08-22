@@ -2,7 +2,7 @@ import { MongoClient, ObjectId } from 'mongodb';
 import dotenv from 'dotenv';
 import fs from 'fs';
 
-import scope from './debug_helpers/scope.js';
+import reach from './debug_helpers/reach.js';
 import demand from './debug_helpers/demand.js';
 import safety from './debug_helpers/safety.js';
 
@@ -11,7 +11,7 @@ dotenv.config();
 const client = new MongoClient(process.env.MONGO_URI);
 
 const debug = (project) => {
-	scope(project);
+	reach(project);
 	demand(project);
 	safety(project);
 };
