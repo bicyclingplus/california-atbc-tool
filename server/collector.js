@@ -6,7 +6,24 @@ class Collector {
 
 	constructor() {
 		this.enabled = parseInt(process.env.DEBUG) === 1;
-		this.data = {}
+		this.data = {};
+		this.prepends = {};
+	}
+
+	addPrepends(ns1, ns2, prepends) {
+		this.prepends[ns1][ns2] = [
+			...this.prepends[ns1][ns2],
+			...prepends,
+		];
+	}
+
+	setPrepends(ns1, ns2, prepends) {
+
+		if(!(ns1 in this.prepends)) {
+			this.prepends[ns1] = {};
+		}
+
+		this.prepends[ns1][ns2] = prepends;
 	}
 
 	put(ns1, ns2, row) {
@@ -23,7 +40,18 @@ class Collector {
 			this.data[ns1][ns2] = [];
 		}
 
-		this.data[ns1][ns2].push(row);
+		if(ns1 in this.prepends &&
+			ns2 in this.prepends[ns1]) {
+
+			this.data[ns1][ns2].push([
+				...this.prepends[ns1][ns2],
+				...row,
+			])
+		}
+		else {
+
+			this.data[ns1][ns2].push(row);
+		}
 	}
 
 	get(ns1, ns2) {

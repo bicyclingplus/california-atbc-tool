@@ -19,7 +19,6 @@ import { calcECmoj, calcECmoj_debug } from './safety/calcECmoj.js';
 import calcNCmoj from './safety/calcNCmoj.js';
 
 const _calc = (
-  column,
   Ljvf,
   Vmj_existing,
   Vmj_projected,
@@ -65,7 +64,7 @@ const _calc = (
         // to return numbers for all possibilities
         // as well as which number was used
         if(c.enabled) {
-          const ec_debug = calcECmoj_debug(
+          const d = calcECmoj_debug(
             safety_inputs,
             Ljvf,
             Vmj_existing,
@@ -75,14 +74,13 @@ const _calc = (
           );
 
           c.put('safety', 'ECmoj', [
-            column,
             m,
             o,
             j,
-            ec_debug.user,
-            ec_debug.split,
-            ec_debug.model,
-            ec_debug.used,
+            d.user,
+            d.split,
+            d.model,
+            d.used,
           ]);
         }
 
@@ -103,14 +101,7 @@ const _calc = (
 
           NCmoj[m][o][j][e] = NC;
 
-          c.put('safety', 'NCmoj', [
-            column,
-            m,
-            o,
-            j,
-            e,
-            NC,
-          ])
+          c.put('safety', 'NCmoj', [m, o, j, e, NC]);
 
           change[m][o][j] += NC - EC;
         }
@@ -241,12 +232,15 @@ const calcSafetyQuantitative = (
   // generate output for each set of columns in the safety benefits table
   const benefits = {};
 
-  for(let column of COLUMNS) {
-    benefits[column] = _calc(
-      column,
+  for(let c of COLUMNS) {
+
+    c.setPrepends('safety', 'ECmoj', [c]);
+    c.setPrepends('safety', 'NCmoj', [c]);
+
+    benefits[c] = _calc(
       Ljvf,
-      Vmj_existing[column],
-      Vmj_projected[column],
+      Vmj_existing[c],
+      Vmj_projected[c],
       infrastructure,
       safety_inputs,
       project_time_frame
