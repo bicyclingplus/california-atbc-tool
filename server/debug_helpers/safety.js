@@ -212,6 +212,24 @@ const safety = (project) => {
 		c.get('safety', 'NCmoj')
 	);
 
+	writeCSV(
+		projectId,
+		'safety_CCmojvf',
+		[
+			'column',
+			'mode',
+			'outcome',
+			'location type',
+			'volume',
+			'functional class',
+			'Amojvf',
+			'Ljvf',
+			'Vmj',
+			'CCmojvf',
+		],
+		c.get('safety', 'CCmojvf')
+	);
+
 
 }
 

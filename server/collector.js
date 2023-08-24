@@ -11,10 +11,28 @@ class Collector {
 	}
 
 	addPrepends(ns1, ns2, prepends) {
+
+		if(!(ns1 in this.prepends) || !(ns2 in this.prepends[ns1])) {
+			console.log(`${ns1}_${ns2} has no prepends to add on to!`);
+			return;
+		}
+
 		this.prepends[ns1][ns2] = [
 			...this.prepends[ns1][ns2],
 			...prepends,
 		];
+	}
+
+	changePrepend(ns1, ns2, idx, newVal) {
+
+		if(!(ns1 in this.prepends) ||
+			!(ns2 in this.prepends[ns1]) ||
+			this.prepends[ns1][ns2][idx] === undefined) {
+			console.log(`${ns1}_${ns2} has no prepend at idx ${idx}!`);
+			return;
+		}
+
+		this.prepends[ns1][ns2][idx] = newVal;
 	}
 
 	setPrepends(ns1, ns2, prepends) {
@@ -24,6 +42,18 @@ class Collector {
 		}
 
 		this.prepends[ns1][ns2] = prepends;
+	}
+
+	dumpPrepends(ns1, ns2) {
+
+		console.log(`Dumping ${ns1}_${ns2} prepends`);
+
+		if(!(ns1 in this.prepends) || !(ns2 in this.prepends[ns1])) {
+			console.log(`None`);
+			return;
+		}
+
+		console.log(this.prepends[ns1][ns2]);
 	}
 
 	put(ns1, ns2, row) {
@@ -55,11 +85,12 @@ class Collector {
 	}
 
 	get(ns1, ns2) {
-		if(ns1 in this.data && ns2 in this.data[ns1]) {
-			return this.data[ns1][ns2];
+		if(!(ns1 in this.data) ||
+			!(ns2 in this.data[ns1])) {
+			return [];
 		}
 
-		return [];
+		return this.data[ns1][ns2];
 	}
 
 	on() {

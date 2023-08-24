@@ -44,7 +44,6 @@ const calcECmoj_model = (Ljvf, Vmj, m, o, j) => {
 
   for(let f of FUNCTIONAL_CLASSES) {
     for(let v of VOLUMES) {
-
       total += calcCCmojvf(Ljvf, Vmj, m, o, j, v, f);
     }
   }
@@ -111,9 +110,15 @@ const calcECmoj_debug = (UI, Ljvf, Vmj, m, o, j) => {
     used = 'model';
   }
 
+  // we only want to observe one stream of CCmojvf
+  // we'll the one from the model only calc
+  c.off();
+  const split = calcECmoj_split(UI, Ljvf, Vmj, m, o, j)
+  c.on();
+
   return {
     user: UIy && UIy > 0 ? calcECmoj_user(UI, m, o, j) : null,
-    split: calcECmoj_split(UI, Ljvf, Vmj, m, o, j),
+    split: split,
     model: calcECmoj_model(Ljvf, Vmj, m, o, j),
     used: used,
   }

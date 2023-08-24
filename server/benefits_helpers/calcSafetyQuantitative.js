@@ -51,6 +51,9 @@ const _calc = (
 
       for(let j of LOCATION_TYPES) {
 
+        // we only want to observe one stream of CCmojvf
+        // we'll use the separate debug calc below
+        c.off();
         let EC = calcECmoj(
           safety_inputs,
           Ljvf,
@@ -59,8 +62,9 @@ const _calc = (
           o,
           j
         );
+        c.on();
 
-        // do separate debugging for ECmoj
+        // do separate debugging for ECmoj / CCmojvf
         // to return numbers for all possibilities
         // as well as which number was used
         if(c.enabled) {
@@ -232,15 +236,16 @@ const calcSafetyQuantitative = (
   // generate output for each set of columns in the safety benefits table
   const benefits = {};
 
-  for(let c of COLUMNS) {
+  for(let column of COLUMNS) {
 
-    c.setPrepends('safety', 'ECmoj', [c]);
-    c.setPrepends('safety', 'NCmoj', [c]);
+    c.setPrepends('safety', 'ECmoj', [column]);
+    c.setPrepends('safety', 'NCmoj', [column]);
+    c.setPrepends('safety', 'CCmojvf', [column]);
 
-    benefits[c] = _calc(
+    benefits[column] = _calc(
       Ljvf,
-      Vmj_existing[c],
-      Vmj_projected[c],
+      Vmj_existing[column],
+      Vmj_projected[column],
       infrastructure,
       safety_inputs,
       project_time_frame

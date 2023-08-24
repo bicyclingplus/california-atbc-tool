@@ -23,8 +23,11 @@ const calcCCmojvf = (Ljvf, Vmj, m, o, j, v, f) => {
   const A = Amojvf[m][o][j][v][f];
   const L = Ljvf[j][v][f];
   const V = Vmj[m][j];
+  const CC = Math.exp(A) * L * Math.pow(V, POWER_SAFETY_IN_NUMBERS);
 
-  return Math.exp(A) * L * Math.pow(V, POWER_SAFETY_IN_NUMBERS);
+  c.put('safety', 'CCmojvf', [m, o, j, v, f, A, L, V, CC]);
+
+  return CC;
 }
 
 export default calcCCmojvf;
