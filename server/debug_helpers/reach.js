@@ -4,6 +4,7 @@ import writeCSV from './writeCSV.js';
 import calcProjectLength from '../benefits_helpers/calcProjectLength.js';
 
 const reach = (project) => {
+
 	const projectId = project._id.toString();
 
 	const {

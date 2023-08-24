@@ -30,6 +30,11 @@ if(process.argv.length === 3) {
 			'_id': new ObjectId(projectId),
 		});
 
+		if(project === null) {
+			console.log(`Couldn't find project with id ${projectId}`);
+			process.exit()
+		}
+
 		debug(project);
 	}
 	finally {

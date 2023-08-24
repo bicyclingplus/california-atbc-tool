@@ -1,3 +1,9 @@
+import {
+  MODES,
+  LOCATION_TYPES,
+  OUTCOMES,
+} from '../benefits_helpers/constants.js';
+
 import c from '../collector.js';
 import writeCSV from './writeCSV.js';
 
@@ -22,6 +28,33 @@ const safety = (project) => {
 		console.log("skipping -- old project before user safety inputs");
 		return;
 	}
+
+	for(let m of MODES) {
+		for(let o of OUTCOMES) {
+			for(let l of LOCATION_TYPES) {
+				c.put('safety', 'UI', [
+					m,
+					o,
+					l,
+					project.details.safety[m][o][l],
+					project.details.safety[m].years[l],
+				])
+			}
+		}
+	}
+
+	writeCSV(
+		projectId,
+		'safety_UI',
+		[
+			'mode',
+			'outcome',
+			'location',
+			'input',
+			'years',
+		],
+		c.get('safety', 'UI')
+	);
 
 	calcSafetyQuantitative(
 		segments,
@@ -148,6 +181,37 @@ const safety = (project) => {
 		],
 		c.get('safety', 'vmj_projected')
 	);
+
+	writeCSV(
+		projectId,
+		'safety_ECmoj',
+		[
+			'column',
+			'mode',
+			'outcome',
+			'location type',
+			'ECmoj_user',
+			'ECmoj_split',
+			'ECmoj_model',
+			'used',
+		],
+		c.get('safety', 'ECmoj')
+	);
+
+	writeCSV(
+		projectId,
+		'safety_NCmoj',
+		[
+			'column',
+			'mode',
+			'outcome',
+			'location type',
+			'estimate',
+			'NCmoj',
+		],
+		c.get('safety', 'NCmoj')
+	);
+
 
 }
 
