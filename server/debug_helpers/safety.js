@@ -230,7 +230,19 @@ const safety = (project) => {
 		c.get('safety', 'CCmojvf')
 	);
 
-
+	writeCSV(
+		projectId,
+		'safety_change',
+		[
+			'column',
+			'mode',
+			'outcome',
+			'location type',
+			'estimate',
+			'change',
+		],
+		c.get('safety', 'change')
+	);
 }
 
 export default safety;

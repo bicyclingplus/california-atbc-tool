@@ -1,22 +1,25 @@
-import { createRequire } from "module";
 import {
   ESTIMATES,
-  FUNCTIONAL_CLASSES,
   COLUMNS,
   MODES,
   LOCATION_TYPES,
-  VOLUMES,
   OUTCOMES,
 } from './constants.js';
 
 import c from '../collector.js';
+
+// helpers
 import calcDiscount from './calcDiscount.js';
 
+// safety helpers
 import calcVmj_existing from './safety/calcVmj_existing.js';
 import calcVmj_projected from './safety/calcVmj_projected.js';
 import calcLjvf from './safety/calcLjvf.js';
-import { calcECmoj, calcECmoj_debug } from './safety/calcECmoj.js';
 import calcNCmoj from './safety/calcNCmoj.js';
+import {
+  calcECmoj,
+  calcECmoj_debug
+} from './safety/calcECmoj.js';
 
 const _calc = (
   Ljvf,
@@ -29,32 +32,45 @@ const _calc = (
   // calculate crash change by mode and outcome
   // calculate new crashes by mode, outcome, and location type
   // calculate existing crashes by mode, outcome, and location type
-  const change = {};
-  const NCmoj = {};
   const ECmoj = {};
+  const NCmoj = {};
+  const change = {};
 
+  // init objects
+  // EC split by m, o, j
+  // NC and change split by m, o, j e
+  // change init to zero as it is a running total
   for(let m of MODES) {
 
-    change[m] = {};
-    NCmoj[m] = {};
     ECmoj[m] = {};
+    NCmoj[m] = {};
+    change[m] = {};
 
     for(let o of OUTCOMES) {
 
-      change[m][o] = {};
-      NCmoj[m][o] = {};
       ECmoj[m][o] = {};
+      NCmoj[m][o] = {};
+      change[m][o] = {};
 
-      for(let e of ESTIMATES) {
-        change[m][o][e] = 0;
+      for(let j of LOCATION_TYPES) {
+        NCmoj[m][o][j] = {};
+        change[m][o][j] = {};
+
+        for(let e of ESTIMATES) {
+          change[m][o][j][e] = 0;
+        }
       }
+    }
+  }
 
+  for(let m of MODES) {
+    for(let o of OUTCOMES) {
       for(let j of LOCATION_TYPES) {
 
         // we only want to observe one stream of CCmojvf
         // we'll use the separate debug calc below
         c.off();
-        let EC = calcECmoj(
+        const EC = calcECmoj(
           safety_inputs,
           Ljvf,
           Vmj_existing,
@@ -89,11 +105,10 @@ const _calc = (
         }
 
         ECmoj[m][o][j] = EC;
-        NCmoj[m][o][j] = {};
 
         // by estimate
         for(let e of ESTIMATES) {
-          let NC = calcNCmoj(
+          const NC = calcNCmoj(
             Ljvf,
             Vmj_projected,
             m,
@@ -103,11 +118,22 @@ const _calc = (
             infrastructure
           );
 
-          NCmoj[m][o][j][e] = NC;
-
           c.put('safety', 'NCmoj', [m, o, j, e, NC]);
 
-          change[m][o][j] += NC - EC;
+          NCmoj[m][o][j][e] = NC;
+          change[m][o][j][e] += NC - EC;
+        }
+      }
+    }
+  }
+
+  if(c.enabled) {
+    for(let m of MODES) {
+      for(let o of OUTCOMES) {
+        for(let j of LOCATION_TYPES) {
+          for(let e of ESTIMATES) {
+            c.put('safety', 'change', [m, o, j, e, change[m][o][j][e]]);
+          }
         }
       }
     }
@@ -118,8 +144,8 @@ const _calc = (
   for(let m of MODES) {
     for(let o of OUTCOMES) {
       for(let e of ESTIMATES) {
-        let current = change[m][o][e];
-        let discounted = calcDiscount(current, project_time_frame);
+        const current = change[m][o][e];
+        const discounted = calcDiscount(current, project_time_frame);
 
         change[m][o][e] = discounted;
       }
@@ -241,6 +267,7 @@ const calcSafetyQuantitative = (
     c.setPrepends('safety', 'ECmoj', [column]);
     c.setPrepends('safety', 'NCmoj', [column]);
     c.setPrepends('safety', 'CCmojvf', [column]);
+    c.setPrepends('safety', 'change', [column]);
 
     benefits[column] = _calc(
       Ljvf,

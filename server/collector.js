@@ -100,10 +100,6 @@ class Collector {
 	off() {
 		this.enabled = false;
 	}
-
-	enabled() {
-		return this.enabled;
-	}
 }
 
 const c = new Collector();
