@@ -23,8 +23,8 @@ const _calc = (
   Ljvf,
   Vmj_existing,
   Vmj_projected,
-  selectedInfrastructure,
-  user_input,
+  infrastructure,
+  safety_inputs,
   project_time_frame) => {
 
   // calculate crash change by mode and outcome
@@ -34,49 +34,51 @@ const _calc = (
   const NCmoj = {};
   const ECmoj = {};
 
-  for(let mode of MODES) {
+  for(let m of MODES) {
 
-    change[mode] = {};
-    NCmoj[mode] = {};
-    ECmoj[mode] = {};
+    change[m] = {};
+    NCmoj[m] = {};
+    ECmoj[m] = {};
 
-    for(let outcome of OUTCOMES) {
+    for(let o of OUTCOMES) {
 
-      change[mode][outcome] = {};
-      NCmoj[mode][outcome] = {};
-      ECmoj[mode][outcome] = {};
+      change[m][o] = {};
+      NCmoj[m][o] = {};
+      ECmoj[m][o] = {};
 
-      for(let estimate of ESTIMATES) {
-        change[mode][outcome][estimate] = 0;
+      for(let e of ESTIMATES) {
+        change[m][o][e] = 0;
       }
 
-      for(let location_type of LOCATION_TYPES) {
+      for(let j of LOCATION_TYPES) {
 
         let EC = calcECmoj(
-          user_input,
+          safety_inputs,
           Ljvf,
           Vmj_existing,
-          mode,
-          outcome,
-          location_type
+          m,
+          o,
+          j
         );
 
+        // do separate debugging for ECmoj
+        // to return numbers for all possibilities
+        // as well as which number was used
         if(c.enabled) {
-
           const ec_debug = calcECmoj_debug(
-            user_input,
+            safety_inputs,
             Ljvf,
             Vmj_existing,
-            mode,
-            outcome,
-            location_type
+            m,
+            o,
+            j
           );
 
           c.put('safety', 'ECmoj', [
             column,
-            mode,
-            outcome,
-            location_type,
+            m,
+            o,
+            j,
             ec_debug.user,
             ec_debug.split,
             ec_debug.model,
@@ -84,35 +86,33 @@ const _calc = (
           ]);
         }
 
-        ECmoj[mode][outcome][location_type] = EC;
-
-
-        NCmoj[mode][outcome][location_type] = {};
+        ECmoj[m][o][j] = EC;
+        NCmoj[m][o][j] = {};
 
         // by estimate
-        for(let estimate of ESTIMATES) {
+        for(let e of ESTIMATES) {
           let NC = calcNCmoj(
             Ljvf,
             Vmj_projected,
-            mode,
-            outcome,
-            location_type,
-            estimate,
-            selectedInfrastructure
+            m,
+            o,
+            j,
+            e,
+            infrastructure
           );
 
-          NCmoj[mode][outcome][location_type][estimate] = NC;
+          NCmoj[m][o][j][e] = NC;
 
           c.put('safety', 'NCmoj', [
             column,
-            mode,
-            outcome,
-            location_type,
-            estimate,
+            m,
+            o,
+            j,
+            e,
             NC,
           ])
 
-          change[mode][outcome][estimate] += NC - EC;
+          change[m][o][j] += NC - EC;
         }
       }
     }
@@ -120,13 +120,13 @@ const _calc = (
 
   // calculate discount over project timespan
   // this is opposite of all the other benefits
-  for(let mode of MODES) {
-    for(let outcome of OUTCOMES) {
-      for(let estimate of ESTIMATES) {
-        let current = change[mode][outcome][estimate];
+  for(let m of MODES) {
+    for(let o of OUTCOMES) {
+      for(let e of ESTIMATES) {
+        let current = change[m][o][e];
         let discounted = calcDiscount(current, project_time_frame);
 
-        change[mode][outcome][estimate] = discounted;
+        change[m][o][e] = discounted;
       }
     }
   }
@@ -161,64 +161,52 @@ const _calc = (
   //   }
   // }
 
-  console.log('change');
-  console.log(change);
-  console.log('ECmoj');
-  console.log(ECmoj);
-  console.log('NCmoj');
-  console.log(NCmoj);
-
   // calc before crash outcomes per 1000 volume by mode and outcome
   // calc after crash outcomes per 1000 volume by mode and outcome
   let before = {};
   let after = {};
 
-  for(let mode of MODES) {
+  for(let m of MODES) {
 
-    before[mode] = {};
-    after[mode] = {};
+    before[m] = {};
+    after[m] = {};
 
-    for(let outcome of OUTCOMES) {
+    for(let o of OUTCOMES) {
 
-      before[mode][outcome] = 0;
-      after[mode][outcome] = {};
+      before[m][o] = 0;
+      after[m][o] = {};
 
-      for(let estimate of ESTIMATES) {
-        after[mode][outcome][estimate] = 0;
+      for(let e of ESTIMATES) {
+        after[m][o][e] = 0;
       }
 
-      for(let location_type of LOCATION_TYPES) {
+      for(let j of LOCATION_TYPES) {
 
         // existing travel lookup for Vmj
-        before[mode][outcome] += (
-          ECmoj[mode][outcome][location_type] / Vmj_existing[mode][location_type]);
+        before[m][o] += (
+          ECmoj[m][o][j] / Vmj_existing[m][j]);
 
-        for(let estimate of ESTIMATES) {
+        for(let e of ESTIMATES) {
 
           // projected travel lookup for Vmj
-          after[mode][outcome][estimate] += (
-            NCmoj[mode][outcome][location_type][estimate] /
-            Vmj_projected[mode][location_type][estimate]
+          after[m][o][e] += (
+            NCmoj[m][o][j][e] /
+            Vmj_projected[m][j][e]
           );
         }
       }
     }
   }
 
-  for(let mode of MODES) {
-    for(let outcome of OUTCOMES) {
-      before[mode][outcome] *= 1000;
+  for(let m of MODES) {
+    for(let o of OUTCOMES) {
+      before[m][o] *= 1000;
 
-      for(let estimate of ESTIMATES) {
-        after[mode][outcome][estimate] *= 1000;
+      for(let e of ESTIMATES) {
+        after[m][o][e] *= 1000;
       }
     }
   }
-
-  console.log('before');
-  console.log(before);
-  console.log('after');
-  console.log(after);
 
   return {
     change: change,
@@ -227,27 +215,26 @@ const _calc = (
   };
 };
 
-
 const calcSafetyQuantitative = (
-  selectedWays,
-  selectedIntersections,
-  selectedInfrastructure,
+  ways,
+  intersections,
+  infrastructure,
   project_length,
   num_intersections,
-  user_input,
+  safety_inputs,
   project_time_frame) => {
 
   // need a lookup for length/count by volume and functional class and location type
-  const Ljvf = calcLjvf(selectedWays, selectedIntersections);
+  const Ljvf = calcLjvf(ways, intersections);
 
   // need a lookup for existing volume by mode and location type
   const Vmj_existing = calcVmj_existing(
-    selectedWays, selectedIntersections);
+    ways, intersections);
 
   // need a lookup for projected volume by mode and location type
   const Vmj_projected = calcVmj_projected(
     Vmj_existing,
-    selectedInfrastructure,
+    infrastructure,
     project_length,
     num_intersections);
 
@@ -260,8 +247,8 @@ const calcSafetyQuantitative = (
       Ljvf,
       Vmj_existing[column],
       Vmj_projected[column],
-      selectedInfrastructure,
-      user_input,
+      infrastructure,
+      safety_inputs,
       project_time_frame
     );
   }
