@@ -35,40 +35,47 @@ const _calc = (
   const ECmoj = {};
   const NCmoj = {};
   const change = {};
+  const discount = {};
 
   // init objects
-  // EC split by m, o, j
-  // NC and change split by m, o, j e
-  // change init to zero as it is a running total
+  // existing crashes split by m, o, j
+  // new crashes split by m, o, j, e
+  // change split by m, o, e (rolls up j)
+  // discount split by m, o, e (discounted version of change)
+  // start each change at zero as they are running totals
   for(let m of MODES) {
 
     ECmoj[m] = {};
     NCmoj[m] = {};
     change[m] = {};
+    discount[m] = {};
 
     for(let o of OUTCOMES) {
 
       ECmoj[m][o] = {};
       NCmoj[m][o] = {};
       change[m][o] = {};
+      discount[m][o] = {};
 
       for(let j of LOCATION_TYPES) {
         NCmoj[m][o][j] = {};
-        change[m][o][j] = {};
+      }
 
-        for(let e of ESTIMATES) {
-          change[m][o][j][e] = 0;
-        }
+      for(let e of ESTIMATES) {
+        change[m][o][e] = 0;
       }
     }
   }
 
+  // calc existing crashes
+  // calc new crashes
+  // calc change in crashes
   for(let m of MODES) {
     for(let o of OUTCOMES) {
       for(let j of LOCATION_TYPES) {
 
-        // we only want to observe one stream of CCmojvf
-        // we'll use the separate debug calc below
+        // don't collect anything on this call
+        // we'll use the separate debug call below
         c.off();
         const EC = calcECmoj(
           safety_inputs,
@@ -80,9 +87,12 @@ const _calc = (
         );
         c.on();
 
+        ECmoj[m][o][j] = EC;
+
         // do separate debugging for ECmoj / CCmojvf
         // to return numbers for all possibilities
         // as well as which number was used
+        // also sends a single stream for CCmojvf
         if(c.enabled) {
           const d = calcECmoj_debug(
             safety_inputs,
@@ -104,8 +114,6 @@ const _calc = (
           ]);
         }
 
-        ECmoj[m][o][j] = EC;
-
         // by estimate
         for(let e of ESTIMATES) {
           const NC = calcNCmoj(
@@ -118,10 +126,13 @@ const _calc = (
             infrastructure
           );
 
+          NCmoj[m][o][j][e] = NC;
+
           c.put('safety', 'NCmoj', [m, o, j, e, NC]);
 
-          NCmoj[m][o][j][e] = NC;
-          change[m][o][j][e] += NC - EC;
+          // running total of the changes for each split
+          change[m][o][e] += (
+            NCmoj[m][o][j][e] - ECmoj[m][o][j]);
         }
       }
     }
@@ -130,10 +141,8 @@ const _calc = (
   if(c.enabled) {
     for(let m of MODES) {
       for(let o of OUTCOMES) {
-        for(let j of LOCATION_TYPES) {
-          for(let e of ESTIMATES) {
-            c.put('safety', 'change', [m, o, j, e, change[m][o][j][e]]);
-          }
+        for(let e of ESTIMATES) {
+          c.put('safety', 'change', [m, o, e, change[m][o][e]]);
         }
       }
     }
@@ -144,43 +153,20 @@ const _calc = (
   for(let m of MODES) {
     for(let o of OUTCOMES) {
       for(let e of ESTIMATES) {
-        const current = change[m][o][e];
-        const discounted = calcDiscount(current, project_time_frame);
-
-        change[m][o][e] = discounted;
+        discount[m][o][e] = calcDiscount(change[m][o][e], project_time_frame);
       }
     }
   }
 
-  // add bicycling and walking to combined total
-  // for(let outcome of OUTCOMES) {
-  //   for(let location_type of LOCATION_TYPES) {
-
-  //     ECmoj.combined[outcome][location_type] += (
-  //       ECmoj.walking[outcome][location_type] +
-  //       ECmoj.bicycling[outcome][location_type]
-  //     );
-
-  //     for(let estimate of ESTIMATES) {
-
-  //       NCmoj.combined[outcome][location_type][estimate] += (
-  //         NCmoj.walking[outcome][location_type][estimate] +
-  //         NCmoj.bicycling[outcome][location_type][estimate]
-  //       )
-  //     }
-  //   }
-  // }
-
-  // for(let outcome of OUTCOMES) {
-
-  //   for(let estimate of ESTIMATES) {
-
-  //     change.combined[outcome][estimate] += (
-  //       change.walking[outcome][estimate] +
-  //       change.bicycling[outcome][estimate]
-  //     );
-  //   }
-  // }
+  if(c.enabled) {
+    for(let m of MODES) {
+      for(let o of OUTCOMES) {
+        for(let e of ESTIMATES) {
+          c.put('safety', 'discount', [m, o, e, discount[m][o][e]]);
+        }
+      }
+    }
+  }
 
   // calc before crash outcomes per 1000 volume by mode and outcome
   // calc after crash outcomes per 1000 volume by mode and outcome
@@ -229,6 +215,39 @@ const _calc = (
     }
   }
 
+  if(c.enabled) {
+    for(let m of MODES) {
+      for(let o of OUTCOMES) {
+        c.put('safety', 'before', [m, o, before[m][o]]);
+
+        c.put('safety', 'before_exploded', [
+          m,
+          o,
+          ECmoj[m][o].roadway,
+          Vmj_existing[m].roadway,
+          ECmoj[m][o].intersection,
+          Vmj_existing[m].intersection,
+          before[m][o],
+        ]);
+
+        for(let e of ESTIMATES) {
+          c.put('safety', 'after', [m, o, e, after[m][o][e]]);
+
+          c.put('safety', 'after_exploded', [
+            m,
+            o,
+            e,
+            NCmoj[m][o].roadway[e],
+            Vmj_projected[m].roadway[e],
+            NCmoj[m][o].intersection[e],
+            Vmj_projected[m].intersection[e],
+            after[m][o][e],
+          ]);
+        }
+      }
+    }
+  }
+
   return {
     change: change,
     before: before,
@@ -268,6 +287,11 @@ const calcSafetyQuantitative = (
     c.setPrepends('safety', 'NCmoj', [column]);
     c.setPrepends('safety', 'CCmojvf', [column]);
     c.setPrepends('safety', 'change', [column]);
+    c.setPrepends('safety', 'discount', [column]);
+    c.setPrepends('safety', 'before', [column]);
+    c.setPrepends('safety', 'before_exploded', [column]);
+    c.setPrepends('safety', 'after', [column]);
+    c.setPrepends('safety', 'after_exploded', [column]);
 
     benefits[column] = _calc(
       Ljvf,

@@ -237,11 +237,81 @@ const safety = (project) => {
 			'column',
 			'mode',
 			'outcome',
-			'location type',
 			'estimate',
 			'change',
 		],
 		c.get('safety', 'change')
+	);
+
+	writeCSV(
+		projectId,
+		'safety_discount',
+		[
+			'column',
+			'mode',
+			'outcome',
+			'estimate',
+			'change',
+		],
+		c.get('safety', 'discount')
+	);
+
+	writeCSV(
+		projectId,
+		'safety_before',
+		[
+			'column',
+			'mode',
+			'outcome',
+			'before crash outcomes per 1000 volume',
+		],
+		c.get('safety', 'before')
+	);
+
+	writeCSV(
+		projectId,
+		'safety_before_exploded',
+		[
+			'column',
+			'mode',
+			'outcome',
+			'ECmoj roadway',
+			'EVmj roadway',
+			'ECmoj intersection',
+			'EVmj intersection',
+			'before crash outcomes per 1000 volume',
+		],
+		c.get('safety', 'before_exploded')
+	);
+
+	writeCSV(
+		projectId,
+		'safety_after',
+		[
+			'column',
+			'mode',
+			'outcome',
+			'estimate',
+			'after crash outcomes per 1000 volume',
+		],
+		c.get('safety', 'after')
+	);
+
+	writeCSV(
+		projectId,
+		'safety_after_exploded',
+		[
+			'column',
+			'mode',
+			'outcome',
+			'estimate',
+			'NCmoje roadway',
+			'PVmje roadway',
+			'NCmoje intersection',
+			'PVmje intersection',
+			'after crash outcomes per 1000 volume',
+		],
+		c.get('safety', 'after_exploded')
 	);
 }
 
