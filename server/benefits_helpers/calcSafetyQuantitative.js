@@ -35,7 +35,7 @@ const _calc = (
   const ECmoj = {};
   const NCmoj = {};
   const change = {};
-  const discount = {};
+  const projected = {};
 
   // init objects
   // existing crashes split by m, o, j
@@ -48,14 +48,14 @@ const _calc = (
     ECmoj[m] = {};
     NCmoj[m] = {};
     change[m] = {};
-    discount[m] = {};
+    projected[m] = {};
 
     for(let o of OUTCOMES) {
 
       ECmoj[m][o] = {};
       NCmoj[m][o] = {};
       change[m][o] = {};
-      discount[m][o] = {};
+      projected[m][o] = {};
 
       for(let j of LOCATION_TYPES) {
         NCmoj[m][o][j] = {};
@@ -142,7 +142,15 @@ const _calc = (
     for(let m of MODES) {
       for(let o of OUTCOMES) {
         for(let e of ESTIMATES) {
-          c.put('safety', 'change', [m, o, e, change[m][o][e]]);
+          c.put('safety', 'change', [
+            m,
+            o,
+            e,
+            NCmoj[m][o].roadway[e],
+            ECmoj[m][o].roadway,
+            NCmoj[m][o].intersection[e],
+            ECmoj[m][o].intersection,
+            change[m][o][e]]);
         }
       }
     }
@@ -153,7 +161,7 @@ const _calc = (
   for(let m of MODES) {
     for(let o of OUTCOMES) {
       for(let e of ESTIMATES) {
-        discount[m][o][e] = calcDiscount(change[m][o][e], project_time_frame);
+        projected[m][o][e] = calcDiscount(change[m][o][e], project_time_frame);
       }
     }
   }
@@ -162,7 +170,7 @@ const _calc = (
     for(let m of MODES) {
       for(let o of OUTCOMES) {
         for(let e of ESTIMATES) {
-          c.put('safety', 'discount', [m, o, e, discount[m][o][e]]);
+          c.put('safety', 'projected', [m, o, e, projected[m][o][e]]);
         }
       }
     }
@@ -218,9 +226,8 @@ const _calc = (
   if(c.enabled) {
     for(let m of MODES) {
       for(let o of OUTCOMES) {
-        c.put('safety', 'before', [m, o, before[m][o]]);
 
-        c.put('safety', 'before_exploded', [
+        c.put('safety', 'before', [
           m,
           o,
           ECmoj[m][o].roadway,
@@ -231,9 +238,8 @@ const _calc = (
         ]);
 
         for(let e of ESTIMATES) {
-          c.put('safety', 'after', [m, o, e, after[m][o][e]]);
 
-          c.put('safety', 'after_exploded', [
+          c.put('safety', 'after', [
             m,
             o,
             e,
@@ -249,7 +255,7 @@ const _calc = (
   }
 
   return {
-    change: change,
+    change: projected,
     before: before,
     after: after,
   };
@@ -287,11 +293,9 @@ const calcSafetyQuantitative = (
     c.setPrepends('safety', 'NCmoj', [column]);
     c.setPrepends('safety', 'CCmojvf', [column]);
     c.setPrepends('safety', 'change', [column]);
-    c.setPrepends('safety', 'discount', [column]);
+    c.setPrepends('safety', 'projected', [column]);
     c.setPrepends('safety', 'before', [column]);
-    c.setPrepends('safety', 'before_exploded', [column]);
     c.setPrepends('safety', 'after', [column]);
-    c.setPrepends('safety', 'after_exploded', [column]);
 
     benefits[column] = _calc(
       Ljvf,
