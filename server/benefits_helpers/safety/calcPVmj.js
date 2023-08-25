@@ -14,28 +14,28 @@ const require = createRequire(import.meta.url);
 const travel_volume = require('../../data/travel_volume.json');
 const infrastructure = require('../../data/infrastructure.json');
 
-const calcVmj_projected = (
-    Vmj_existing,
+const calcPVmj = (
+    EVmj,
     selectedInfrastructure,
     project_length,
     num_intersections) => {
 
-    const Vmj_projected = {};
+    const PVmj = {};
 
     for(let column of COLUMNS) {
-        Vmj_projected[column] = {};
+        PVmj[column] = {};
 
         for(let mode of MODES) {
-            Vmj_projected[column][mode] = {};
+            PVmj[column][mode] = {};
 
             for(let location_type of LOCATION_TYPES) {
 
-                Vmj_projected[column][mode][location_type] = {}
+                PVmj[column][mode][location_type] = {}
 
                 for(let estimate of ESTIMATES) {
 
-                    Vmj_projected[column][mode][location_type][estimate] =
-                    Vmj_existing[column][mode][location_type];
+                    PVmj[column][mode][location_type][estimate] =
+                    EVmj[column][mode][location_type];
                 }
             }
         }
@@ -103,13 +103,13 @@ const calcVmj_projected = (
                                         // Vmj + Vmj * Ei * (Ni / L) * I
 
                                         let adjustment = (
-                                            Vmj_existing[column][mode][location_type] *
+                                            EVmj[column][mode][location_type] *
                                             (benefit[estimate] / 100) *
                                             share *
                                             SCALING_FACTORS[type]
                                         );
 
-                                        Vmj_projected[column][mode][location_type][estimate] += adjustment;
+                                        PVmj[column][mode][location_type][estimate] += adjustment;
 
                                         // debug
                                         c.put('safety', 'vmj_adjustments', [
@@ -125,7 +125,7 @@ const calcVmj_projected = (
                                             location_type,
                                             estimate,
 
-                                            Vmj_existing[column][mode][location_type],
+                                            EVmj[column][mode][location_type],
                                             benefit[estimate] / 100,
                                             share,
                                             SCALING_FACTORS[type],
@@ -145,9 +145,9 @@ const calcVmj_projected = (
     for(let column of COLUMNS) {
         for(let location_type of LOCATION_TYPES) {
             for(let estimate of ESTIMATES) {
-                Vmj_projected[column].combined[location_type][estimate] = (
-                    Vmj_projected[column].walking[location_type][estimate] +
-                    Vmj_projected[column].bicycling[location_type][estimate]
+                PVmj[column].combined[location_type][estimate] = (
+                    PVmj[column].walking[location_type][estimate] +
+                    PVmj[column].bicycling[location_type][estimate]
                 );
             }
         }
@@ -163,14 +163,14 @@ const calcVmj_projected = (
                         mode,
                         location_type,
                         estimate,
-                        Vmj_projected[column][mode][location_type][estimate],
+                        PVmj[column][mode][location_type][estimate],
                     ]);
                 }
             }
         }
     }
 
-    return Vmj_projected;
+    return PVmj;
 }
 
-export default calcVmj_projected;
+export default calcPVmj;

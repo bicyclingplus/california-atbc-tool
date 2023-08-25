@@ -12,8 +12,8 @@ import c from '../collector.js';
 import calcDiscount from './calcDiscount.js';
 
 // safety helpers
-import calcVmj_existing from './safety/calcVmj_existing.js';
-import calcVmj_projected from './safety/calcVmj_projected.js';
+import calcEVmj from './safety/calcEVmj.js';
+import calcPVmj from './safety/calcPVmj.js';
 import calcLjvf from './safety/calcLjvf.js';
 import calcNCmoj from './safety/calcNCmoj.js';
 import {
@@ -23,8 +23,8 @@ import {
 
 const _calc = (
   Ljvf,
-  Vmj_existing,
-  Vmj_projected,
+  EVmj,
+  PVmj,
   infrastructure,
   safety_inputs,
   project_time_frame) => {
@@ -80,7 +80,7 @@ const _calc = (
         const EC = calcECmoj(
           safety_inputs,
           Ljvf,
-          Vmj_existing,
+          EVmj,
           m,
           o,
           j
@@ -97,7 +97,7 @@ const _calc = (
           const d = calcECmoj_debug(
             safety_inputs,
             Ljvf,
-            Vmj_existing,
+            EVmj,
             m,
             o,
             j
@@ -118,7 +118,7 @@ const _calc = (
         for(let e of ESTIMATES) {
           const NC = calcNCmoj(
             Ljvf,
-            Vmj_projected,
+            PVmj,
             m,
             o,
             j,
@@ -199,14 +199,14 @@ const _calc = (
 
         // existing travel lookup for Vmj
         before[m][o] += (
-          ECmoj[m][o][j] / Vmj_existing[m][j]);
+          ECmoj[m][o][j] / EVmj[m][j]);
 
         for(let e of ESTIMATES) {
 
           // projected travel lookup for Vmj
           after[m][o][e] += (
             NCmoj[m][o][j][e] /
-            Vmj_projected[m][j][e]
+            PVmj[m][j][e]
           );
         }
       }
@@ -231,9 +231,9 @@ const _calc = (
           m,
           o,
           ECmoj[m][o].roadway,
-          Vmj_existing[m].roadway,
+          EVmj[m].roadway,
           ECmoj[m][o].intersection,
-          Vmj_existing[m].intersection,
+          EVmj[m].intersection,
           before[m][o],
         ]);
 
@@ -244,9 +244,9 @@ const _calc = (
             o,
             e,
             NCmoj[m][o].roadway[e],
-            Vmj_projected[m].roadway[e],
+            PVmj[m].roadway[e],
             NCmoj[m][o].intersection[e],
-            Vmj_projected[m].intersection[e],
+            PVmj[m].intersection[e],
             after[m][o][e],
           ]);
         }
@@ -274,12 +274,12 @@ const calcSafetyQuantitative = (
   const Ljvf = calcLjvf(ways, intersections);
 
   // need a lookup for existing volume by mode and location type
-  const Vmj_existing = calcVmj_existing(
+  const EVmj = calcEVmj(
     ways, intersections);
 
   // need a lookup for projected volume by mode and location type
-  const Vmj_projected = calcVmj_projected(
-    Vmj_existing,
+  const PVmj = calcPVmj(
+    EVmj,
     infrastructure,
     project_length,
     num_intersections);
@@ -299,8 +299,8 @@ const calcSafetyQuantitative = (
 
     benefits[column] = _calc(
       Ljvf,
-      Vmj_existing[column],
-      Vmj_projected[column],
+      EVmj[column],
+      PVmj[column],
       infrastructure,
       safety_inputs,
       project_time_frame

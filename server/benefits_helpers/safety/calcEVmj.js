@@ -7,18 +7,18 @@ import {
 import avgProp from '../avgProp.js';
 import c from '../../collector.js';
 
-const calcVmj_existing = (selectedWays, selectedIntersections) => {
+const calcEVmj = (selectedWays, selectedIntersections) => {
 
-	const Vmj_existing = {};
+	const EVmj = {};
 
-	for(let column of COLUMNS) {
-		Vmj_existing[column] = {};
+	for(let c of COLUMNS) {
+		EVmj[c] = {};
 
-		for(let mode of MODES) {
-			Vmj_existing[column][mode] = {};
+		for(let m of MODES) {
+			EVmj[c][m] = {};
 
-			for(let location_type of LOCATION_TYPES) {
-				Vmj_existing[column][mode][location_type] = 0;
+			for(let j of LOCATION_TYPES) {
+				EVmj[c][m][j] = 0;
 			}
 		}
 	}
@@ -47,15 +47,15 @@ const calcVmj_existing = (selectedWays, selectedIntersections) => {
 		const jobs = way.properties.jobs || avgWayJobs;
 
 		if(bikeExp) {
-			Vmj_existing.safety.bicycling.roadway += bikeExp;
-			Vmj_existing.capita.bicycling.roadway += bikeExp / population;
-			Vmj_existing.jobs.bicycling.roadway += bikeExp / jobs;
+			EVmj.safety.bicycling.roadway += bikeExp;
+			EVmj.capita.bicycling.roadway += bikeExp / population;
+			EVmj.jobs.bicycling.roadway += bikeExp / jobs;
 		}
 
 		if(pedExp) {
-			Vmj_existing.safety.walking.roadway += pedExp;
-			Vmj_existing.capita.walking.roadway += pedExp / population;
-			Vmj_existing.jobs.walking.roadway += pedExp / jobs;
+			EVmj.safety.walking.roadway += pedExp;
+			EVmj.capita.walking.roadway += pedExp / population;
+			EVmj.jobs.walking.roadway += pedExp / jobs;
 		}
 
 		// debug
@@ -92,15 +92,15 @@ const calcVmj_existing = (selectedWays, selectedIntersections) => {
 		const jobs = intersection.properties.jobs || avgIntJobs;
 
 		if(bikeExp) {
-			Vmj_existing.safety.bicycling.intersection += bikeExp;
-			Vmj_existing.capita.bicycling.intersection += bikeExp / population;
-			Vmj_existing.jobs.bicycling.intersection += bikeExp / jobs;
+			EVmj.safety.bicycling.intersection += bikeExp;
+			EVmj.capita.bicycling.intersection += bikeExp / population;
+			EVmj.jobs.bicycling.intersection += bikeExp / jobs;
 		}
 
 		if(pedExp) {
-			Vmj_existing.safety.walking.intersection += pedExp;
-			Vmj_existing.capita.walking.intersection += pedExp / population;
-			Vmj_existing.jobs.walking.intersection += pedExp / jobs;
+			EVmj.safety.walking.intersection += pedExp;
+			EVmj.capita.walking.intersection += pedExp / population;
+			EVmj.jobs.walking.intersection += pedExp / jobs;
 		}
 
 		// debug
@@ -115,31 +115,27 @@ const calcVmj_existing = (selectedWays, selectedIntersections) => {
 	}
 
 	// calc combined for Vmj_existing
-	for(let column of COLUMNS) {
-		for(let location_type of LOCATION_TYPES) {
-
-			Vmj_existing[column].combined[location_type] = (
-				Vmj_existing[column].walking[location_type] +
-				Vmj_existing[column].bicycling[location_type]
-			);
+	for(let c of COLUMNS) {
+		for(let j of LOCATION_TYPES) {
+			EVmj[c].combined[j] = EVmj[c].walking[j] + EVmj[c].bicycling[j];
 		}
 	}
 
 	// debug
 	for(let column of COLUMNS) {
-		for(let mode of MODES) {
-			for(let location_type of LOCATION_TYPES) {
+		for(let m of MODES) {
+			for(let j of LOCATION_TYPES) {
 				c.put('safety', 'vmj_existing', [
 					column,
-					mode,
-					location_type,
-					Vmj_existing[column][mode][location_type],
+					m,
+					j,
+					EVmj[column][m][j],
 				]);
 			}
 		}
 	}
 
-	return Vmj_existing;
+	return EVmj;
 }
 
-export default calcVmj_existing;
+export default calcEVmj;
