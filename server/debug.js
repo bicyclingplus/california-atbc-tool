@@ -3,6 +3,7 @@ import dotenv from 'dotenv';
 import fs from 'fs';
 
 import lookups from './debug_helpers/lookups.js';
+import constants from './debug_helpers/constants.js';
 import reach from './debug_helpers/reach.js';
 import demand from './debug_helpers/demand.js';
 import safety from './debug_helpers/safety.js';
@@ -20,6 +21,7 @@ const debug = (project) => {
 fs.rmSync('debug_output', {recursive: true, force: true });
 
 lookups();
+constants();
 
 if(process.argv.length === 3) {
 

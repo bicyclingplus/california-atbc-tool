@@ -11,6 +11,7 @@ import {
 import writeCSV from './writeCSV.js';
 
 const require = createRequire(import.meta.url);
+const miles = require('../data/volume_to_miles.json');
 const alpha = require('../data/alpha_lookup.json');
 const travel = require('../data/travel_volume.json');
 const safety = require('../data/quantitative.json');
@@ -100,6 +101,24 @@ const lookups = () => {
 		'mean adjustment (%)',
 		'upper adjustment (%)',
 	], safety_rows);
+
+	const miles_rows = [];
+
+	for(let m in miles) {
+		for(let d in miles[m]) {
+			miles_rows.push([
+				m === 'bike' ? 'bicycling' : 'walking',
+				d,
+				miles[m][d],
+			]);
+		}
+	}
+
+	writeCSV('lookups', 'miles_traveled', [
+		'mode',
+		'distance (mi)',
+		'value',
+	], miles_rows);
 
 }
 
