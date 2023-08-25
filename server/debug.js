@@ -2,6 +2,7 @@ import { MongoClient, ObjectId } from 'mongodb';
 import dotenv from 'dotenv';
 import fs from 'fs';
 
+import lookups from './debug_helpers/lookups.js';
 import reach from './debug_helpers/reach.js';
 import demand from './debug_helpers/demand.js';
 import safety from './debug_helpers/safety.js';
@@ -17,6 +18,8 @@ const debug = (project) => {
 };
 
 fs.rmSync('debug_output', {recursive: true, force: true });
+
+lookups();
 
 if(process.argv.length === 3) {
 

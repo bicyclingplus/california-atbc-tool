@@ -1,10 +1,10 @@
 import fs from 'fs';
 
-const writeCSV = (projectId, filename, headers, data) => {
+const writeCSV = (folder, filename, headers, data) => {
 
 	const outdir = './debug_output';
-	const projectdir = `${outdir}/${projectId}`;
-	const outfilename = `${projectdir}/${filename}.csv`;
+	const folderdir = `${outdir}/${folder}`;
+	const outfilename = `${folderdir}/${filename}.csv`;
 	let content = '';
 
 	// debugging output folder
@@ -12,8 +12,8 @@ const writeCSV = (projectId, filename, headers, data) => {
 		fs.mkdirSync(outdir)
 	}
 
-	if(!fs.existsSync(projectdir)) {
-		fs.mkdirSync(projectdir)
+	if(!fs.existsSync(folderdir)) {
+		fs.mkdirSync(folderdir)
 	}
 
 	content += headers.join(',') + '\n';
