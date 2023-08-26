@@ -2,6 +2,8 @@ import { MongoClient, ObjectId } from 'mongodb';
 import dotenv from 'dotenv';
 import fs from 'fs';
 
+import c from './collector.js';
+
 import lookups from './debug_helpers/lookups.js';
 import constants from './debug_helpers/constants.js';
 import inputs from './debug_helpers/inputs.js';
@@ -14,6 +16,7 @@ dotenv.config();
 const client = new MongoClient(process.env.MONGO_URI);
 
 const debug = (project) => {
+	c.reset();
 	inputs(project);
 	reach(project);
 	travel(project);

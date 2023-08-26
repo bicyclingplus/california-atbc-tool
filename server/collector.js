@@ -10,6 +10,11 @@ class Collector {
 		this.prepends = {};
 	}
 
+	reset() {
+		this.data = {};
+		this.prepends = {};
+	}
+
 	addPrepends(ns1, ns2, prepends) {
 
 		if(!(ns1 in this.prepends) || !(ns2 in this.prepends[ns1])) {
