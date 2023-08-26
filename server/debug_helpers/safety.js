@@ -214,7 +214,7 @@ const safety = (project) => {
 
 	writeCSV(
 		projectId,
-		'safety_CCmojvf',
+		'safety_ECCmojvf',
 		[
 			'column',
 			'mode',
@@ -224,10 +224,58 @@ const safety = (project) => {
 			'functional class',
 			'Amojvf',
 			'Ljvf',
-			'Vmj',
-			'CCmojvf',
+			'EVmj',
+			'ECCmojvf',
 		],
 		c.get('safety', 'CCmojvf')
+	);
+
+	writeCSV(
+		projectId,
+		'safety_NCCmojvfe',
+		[
+			'column',
+			'mode',
+			'outcome',
+			'location type',
+			'volume',
+			'functional class',
+			'estimate',
+			'Amojvf',
+			'Ljvf',
+			'PVmje',
+			'NCCmojvfe',
+		],
+		c.get('safety', 'CCmojvfe')
+	);
+
+	writeCSV(
+		projectId,
+		'safety_reductions',
+		[
+			'column',
+			'mode',
+			'outcome',
+			'location type',
+			'estimate',
+			'element',
+			'reduction %',
+		],
+		c.get('safety', 'reductions')
+	);
+
+	writeCSV(
+		projectId,
+		'safety_CRFmoje',
+		[
+			'column',
+			'mode',
+			'outcome',
+			'location type',
+			'estimate',
+			'CRFmoje',
+		],
+		c.get('safety', 'CRFmoje')
 	);
 
 	writeCSV(

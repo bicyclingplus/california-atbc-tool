@@ -292,6 +292,9 @@ const calcSafetyQuantitative = (
     c.setPrepends('safety', 'ECmoj', [column]);
     c.setPrepends('safety', 'NCmoj', [column]);
     c.setPrepends('safety', 'CCmojvf', [column]);
+    c.setPrepends('safety', 'CCmojvfe', [column]);
+    c.setPrepends('safety', 'reductions', [column]);
+    c.setPrepends('safety', 'CRFmoje', [column]);
     c.setPrepends('safety', 'change', [column]);
     c.setPrepends('safety', 'projected', [column]);
     c.setPrepends('safety', 'before', [column]);

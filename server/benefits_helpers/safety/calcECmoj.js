@@ -3,7 +3,7 @@ import {
   VOLUMES,
 } from '../constants.js';
 
-import calcCCmojvf from './calcCCmojvf.js';
+import { calcCCmojvf } from './calcCCmojvf.js';
 import c from '../../collector.js';
 
 // EXISTING CRASHES SPLIT

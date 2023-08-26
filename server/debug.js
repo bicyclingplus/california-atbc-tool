@@ -4,6 +4,7 @@ import fs from 'fs';
 
 import lookups from './debug_helpers/lookups.js';
 import constants from './debug_helpers/constants.js';
+import inputs from './debug_helpers/inputs.js';
 import reach from './debug_helpers/reach.js';
 import demand from './debug_helpers/demand.js';
 import safety from './debug_helpers/safety.js';
@@ -13,6 +14,7 @@ dotenv.config();
 const client = new MongoClient(process.env.MONGO_URI);
 
 const debug = (project) => {
+	inputs(project);
 	reach(project);
 	demand(project);
 	safety(project);
