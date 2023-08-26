@@ -56,14 +56,23 @@ const safety = (project) => {
 		c.get('safety', 'UI')
 	);
 
+	const {
+		infrastructure
+	} = project.elements;
+
+	const {
+		safety,
+		timeframe,
+	} = project.details;
+
 	calcSafetyQuantitative(
 		segments,
 		intersections,
-		project.elements.infrastructure,
+		infrastructure,
 		project_length,
 		num_intersections,
-		project.details.safety,
-		project.details.timeframe
+		safety,
+		timeframe
 	);
 
 	writeCSV(

@@ -3,8 +3,9 @@ import writeCSV from './writeCSV.js';
 
 import calcProjectLength from '../benefits_helpers/calcProjectLength.js';
 import calcDemand from '../benefits_helpers/calcDemand.js';
+import calcTravel from '../benefits_helpers/calcTravel.js';
 
-const demand = (project) => {
+const travel = (project) => {
 
 	const projectId = project._id.toString();
 
@@ -15,9 +16,14 @@ const demand = (project) => {
 		userIntersections,
 	} = project.scope;
 
-	const project_length = calcProjectLength(segments, userSegments);
+	const {
+		infrastructure
+	} = project.elements;
 
-	calcDemand(
+	const project_length = calcProjectLength(segments, userSegments);
+	const num_intersections = intersections.length + userIntersections.length;
+
+	const weighted_existing_travel = calcDemand(
 		segments,
 		userSegments,
 		intersections,
@@ -25,61 +31,68 @@ const demand = (project) => {
 		project_length
 	);
 
+	calcTravel(
+		infrastructure,
+		weighted_existing_travel,
+		project_length,
+		num_intersections
+	);
+
 	writeCSV(
 		projectId,
-		'demand_bike_ways',
+		'travel_existing_bicycling_ways',
 		[
 			'type',
 			'demand',
 			'population',
 			'jobs',
 			'length (mi)',
-			'bmt',
-			'bmt per capita',
-			'bmt per jobs',
+			'travel',
+			'travel per capita',
+			'travel per jobs',
 		],
 		c.get('demand', 'bike_ways')
 	);
 
 	writeCSV(
 		projectId,
-		'demand_bike',
+		'travel_existing_bicycling',
 		[
 			'type',
-			'bmt',
-			'bmt per capita',
-			'bmt per jobs',
+			'travel',
+			'travel per capita',
+			'travel per jobs',
 		],
 		c.get('demand', 'bike')
 	);
 
 	writeCSV(
 		projectId,
-		'demand_ped_intersections',
+		'travel_existing_walking_intersections',
 		[
 			'type',
 			'demand',
 			'population',
 			'jobs',
-			'wmt',
-			'wmt per capita',
-			'wmt per jobs',
+			'travel',
+			'travel per capita',
+			'travel per jobs',
 		],
 		c.get('demand', 'ped_intersections')
 	);
 
 	writeCSV(
 		projectId,
-		'demand_ped',
+		'travel_existing_walking',
 		[
 			'type',
-			'wmt',
-			'wmt per capita',
-			'wmt per jobs',
+			'travel',
+			'travel per capita',
+			'travel per jobs',
 		],
 		c.get('demand', 'ped')
 	);
 
 }
 
-export default demand;
+export default travel;
