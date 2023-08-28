@@ -6,7 +6,7 @@ const avgProp = (items, property) => {
   for(let item of items) {
 
     if(item.properties[property]) {
-      total+= item.properties[property];
+      total += parseFloat(item.properties[property]);
       count++;
     }
   }
