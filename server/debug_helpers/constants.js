@@ -23,11 +23,11 @@ const constants = () => {
     ['travel', 'OTHER_SHIFT_BICYCLING', OTHER_SHIFT.bicycling],
     ['travel', 'OTHER_SHIFT_WALKING', OTHER_SHIFT.walking],
 
-    ['safety', 'SCALING_FACTOR_NEW', SCALING_FACTORS.new],
-    ['safety', 'SCALING_FACTOR_UPGRADE', SCALING_FACTORS.upgrade],
-    ['safety', 'SCALING_FACTOR_RETROFIT', SCALING_FACTORS.retrofit],
     ['safety', 'POWER_SAFETY_IN_NUMBERS', POWER_SAFETY_IN_NUMBERS],
 
+    ['multiple', 'SCALING_FACTOR_NEW', SCALING_FACTORS.new],
+    ['multiple', 'SCALING_FACTOR_UPGRADE', SCALING_FACTORS.upgrade],
+    ['multiple', 'SCALING_FACTOR_RETROFIT', SCALING_FACTORS.retrofit],
     ['multiple', 'DISCOUNT_RATE', DISCOUNT_RATE],
   ];
 
