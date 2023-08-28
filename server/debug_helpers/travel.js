@@ -43,7 +43,7 @@ const travel = (project) => {
 		'travel_existing_bicycling_ways',
 		[
 			'type',
-			'demand',
+			'bicyclist_demand',
 			'population',
 			'jobs',
 			'length (mi)',
@@ -51,7 +51,7 @@ const travel = (project) => {
 			'travel per capita',
 			'travel per jobs',
 		],
-		c.get('demand', 'bike_ways')
+		c.get('travel', 'existing_bicycling_ways')
 	);
 
 	writeCSV(
@@ -63,7 +63,7 @@ const travel = (project) => {
 			'travel per capita',
 			'travel per jobs',
 		],
-		c.get('demand', 'bike')
+		c.get('travel', 'existing_bicycling')
 	);
 
 	writeCSV(
@@ -71,14 +71,14 @@ const travel = (project) => {
 		'travel_existing_walking_intersections',
 		[
 			'type',
-			'demand',
+			'ped_demand',
 			'population',
 			'jobs',
 			'travel',
 			'travel per capita',
 			'travel per jobs',
 		],
-		c.get('demand', 'ped_intersections')
+		c.get('travel', 'existing_walking_intersections')
 	);
 
 	writeCSV(
@@ -90,7 +90,19 @@ const travel = (project) => {
 			'travel per capita',
 			'travel per jobs',
 		],
-		c.get('demand', 'ped')
+		c.get('travel', 'existing_walking')
+	);
+
+	writeCSV(
+		projectId,
+		'travel_PTcmk',
+		[
+			'column',
+			'mode',
+			'estimate',
+			'PTcmk',
+		],
+		c.get('travel', 'PTcmk')
 	);
 
 }

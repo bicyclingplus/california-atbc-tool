@@ -7,6 +7,8 @@ import {
     OTHER_SHIFT,
 } from './constants.js';
 
+import c from '../collector.js';
+
 import { createRequire } from "module";
 const require = createRequire(import.meta.url);
 const travel_volume = require('../data/travel_volume.json');
@@ -125,6 +127,13 @@ const _calcTravelMode = (mode, selectedInfrastructure,
         }
     }
 
+    for(let estimate of ESTIMATES) {
+        c.put('travel', 'PTcmk', [
+            estimate,
+            travel.total[estimate],
+        ]);
+    }
+
     // calculate specific increases as a fraction
     // of the total travel increase
     travel.inducedTravel = _calcPartial(travel.total, INDUCED_TRAVEL[mode]);
@@ -153,6 +162,7 @@ const _calc = (selectedInfrastructure, existingTravel,
 
     let travel = {};
 
+    c.addPrepends('travel', 'PTcmk', ['bicycling']);
     travel.bike = _calcTravelMode(
         'bicycling',
         selectedInfrastructure,
@@ -160,6 +170,7 @@ const _calc = (selectedInfrastructure, existingTravel,
         project_length,
         num_intersections);
 
+    c.changePrepend('travel', 'PTcmk', 1, 'walking');
     travel.pedestrian = _calcTravelMode(
         'walking',
         selectedInfrastructure,
@@ -186,15 +197,25 @@ const _calc = (selectedInfrastructure, existingTravel,
 const calcTravel = (selectedInfrastructure, travel,
     project_length, num_intersections) => {
 
+    c.setPrepends('travel', 'PTcmk', ['travel']);
+
+    const miles = _calc(selectedInfrastructure, travel.miles,
+                        project_length, num_intersections);
+
+    c.setPrepends('travel', 'PTcmk', ['capita']);
+
+    const capita = _calc(selectedInfrastructure, travel.capita,
+                        project_length, num_intersections);
+
+    c.setPrepends('travel', 'PTcmk', ['jobs']);
+
+    const jobs = _calc(selectedInfrastructure, travel.jobs,
+                        project_length, num_intersections);
+
     return {
-        miles: _calc(selectedInfrastructure, travel.miles,
-                        project_length, num_intersections),
-
-        capita: _calc(selectedInfrastructure, travel.capita,
-                        project_length, num_intersections),
-
-        jobs: _calc(selectedInfrastructure, travel.jobs,
-                        project_length, num_intersections),
+        miles: miles,
+        capita: capita,
+        jobs: jobs,
     };
 };
 

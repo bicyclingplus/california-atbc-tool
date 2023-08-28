@@ -2,12 +2,8 @@
 // and ported to JS by me
 // JSON file required below also taken from the same repo
 // Input of 1.8, 10, 1234 should yield output of 258.42, verified
-// const config = require('../data/volume_to_miles.json');
-
 import avgProp from './avgProp.js';
 import c from '../collector.js';
-
-// import config from '../data/volume_to_miles.json' assert { type: "json" };
 
 import { createRequire } from "module";
 const require = createRequire(import.meta.url);
@@ -76,28 +72,28 @@ const _calcPedDemand = (
   projectLength) => {
 
     // Grab the averages
-    const avgIntersectionAvg = avgProp(selectedIntersections, 'ped_demand');
-    const avgIntersectionPops = avgProp(selectedIntersections, 'population');
-    const avgIntersectionJobs = avgProp(selectedIntersections, 'jobs');
+    const avgDemand = avgProp(selectedIntersections, 'ped_demand');
+    const avgPop = avgProp(selectedIntersections, 'population');
+    const avgJobs = avgProp(selectedIntersections, 'jobs');
 
     // CALCULATE PEDESTRIAN DEMAND FOR USER SELECTED INTERSECTIONS
     // each selected intersection has some prediction of pedestrian demand,
     // we add these to the total here
     for(let intersection of selectedIntersections) {
 
-      let mean = parseInt(intersection.properties.ped_demand);
-      let population = intersection.properties.population;
-      let jobs = intersection.properties.jobs;
+      const mean = parseFloat(intersection.properties.ped_demand);
+      const population = parseFloat(intersection.properties.population);
+      const jobs = parseFloat(intersection.properties.jobs);
 
       existingTravel.miles.pedestrian.mean += mean;
       existingTravel.capita.pedestrian.mean += mean / population;
       existingTravel.jobs.pedestrian.mean += mean / jobs;
 
-      c.put('demand', 'ped_intersections', [
+      c.put('travel', 'existing_walking_intersections', [
         'network',
-        mean,
-        population,
-        jobs,
+        intersection.properties.ped_demand,
+        intersection.properties.population,
+        intersection.properties.jobs,
         mean,
         mean / population,
         mean / jobs,
@@ -109,25 +105,27 @@ const _calcPedDemand = (
     // since they're all the same no need to loop through, just multiply by the
     // number of user defined intersections
 
-    const userIntDemand = avgIntersectionAvg * userIntersections.length;
-    const userIntDemandCapita = userIntDemand / avgIntersectionPops;
-    const userIntDemandJobs = userIntDemand / avgIntersectionJobs;
+    const userIntDemand = avgDemand * userIntersections.length;
+    const userIntDemandCapita = userIntDemand / avgPop;
+    const userIntDemandJobs = userIntDemand / avgJobs;
 
     existingTravel.miles.pedestrian.mean += userIntDemand;
     existingTravel.capita.pedestrian.mean += userIntDemandCapita;
     existingTravel.jobs.pedestrian.mean += userIntDemandJobs;
 
-    c.put('demand', 'ped_intersections', [
-      'user',
-      avgIntersectionAvg,
-      avgIntersectionPops,
-      avgIntersectionJobs,
-      userIntDemand,
-      userIntDemandCapita,
-      userIntDemandJobs,
-    ]);
+    if(userIntersections.length) {
+      c.put('travel', 'existing_walking_intersections', [
+        'user',
+        avgDemand,
+        avgPop,
+        avgJobs,
+        userIntDemand,
+        userIntDemandCapita,
+        userIntDemandJobs,
+      ]);
+    }
 
-    c.put('demand', 'ped', [
+    c.put('travel', 'existing_walking', [
       'total',
       existingTravel.miles.pedestrian.mean,
       existingTravel.capita.pedestrian.mean,
@@ -162,7 +160,7 @@ const _calcPedDemand = (
         config.pedestrian);
     }
 
-    c.put('demand', 'ped', [
+    c.put('travel', 'existing_walking', [
       'weighted',
       existingTravel.miles.pedestrian.mean,
       existingTravel.capita.pedestrian.mean,
@@ -217,7 +215,7 @@ const _calcBikeDemand = (
       // divide by jobs for per jobs
       current.jobs.mean = current.miles.mean / jobs;
 
-      c.put('demand', 'bike_ways', [
+      c.put('travel', 'existing_bicycling_ways', [
         'network',
         mean,
         population,
@@ -252,7 +250,7 @@ const _calcBikeDemand = (
 
       current.jobs.mean = current.miles.mean / avgWayJobs;
 
-      c.put('demand', 'bike_ways', [
+      c.put('travel', 'existing_bicycling_ways', [
         'user',
         avgWayAvg,
         avgWayPop,
@@ -275,7 +273,7 @@ const _calcBikeDemand = (
       existingTravel.jobs.bike.mean += travel.jobs.mean;
     }
 
-    c.put('demand', 'bike', [
+    c.put('travel', 'existing_bicycling', [
       'total',
       existingTravel.miles.bike.mean,
       existingTravel.capita.bike.mean,
@@ -319,7 +317,7 @@ const _calcBikeDemand = (
     existingTravel.capita.bike.mean *= 2;
     existingTravel.jobs.bike.mean *= 2;
 
-    c.put('demand', 'bike', [
+    c.put('travel', 'existing_bicycling', [
       'weighted',
       existingTravel.miles.bike.mean,
       existingTravel.capita.bike.mean,
