@@ -1,0 +1,26 @@
+{
+	"$id": "schemas/safety.schema.json",
+	"title": "Safety",
+	"type": "object",
+	"additionalProperties": false,
+	"properties": {
+		"crash": {
+			"$ref": "safetylocation.schema.json"
+		},
+		"death": {
+			"$ref": "safetylocation.schema.json"
+		},
+		"injury": {
+			"$ref": "safetylocation.schema.json"
+		},
+		"years": {
+			"$ref": "safetylocation.schema.json"
+		}
+	},
+	"required": [
+		"crash",
+		"death",
+		"injury",
+		"years"
+	]
+}

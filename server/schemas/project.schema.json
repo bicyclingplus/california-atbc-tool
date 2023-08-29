@@ -1,0 +1,95 @@
+{
+	"$id": "schemas/project.schema.json",
+	"title": "Project",
+	"type": "object",
+	"additionalProperties": false,
+	"properties": {
+		"benefits": {
+			"type": "object"
+		},
+		"details": {
+			"type": "object"
+		},
+		"elements": {
+			"type": "object",
+			"additionalProperties": false,
+			"properties": {
+				"infrastructure": {
+					"$ref": "infrastructure.schema.json"
+				},
+				"nonInfrastructure": {
+					"$ref": "noninfrastructure.schema.json"
+				}
+			},
+			"required": [
+				"infrastructure",
+				"nonInfrastructure"
+			]
+		},
+		"existingTravel": {
+			"$ref": "existingtravel.schema.json"
+		},
+		"scope": {
+			"type": "object",
+			"additionalProperties": false,
+			"properties": {
+				"bounds": {
+					"type": "array",
+					"items": {
+						"$ref": "latlng.schema.json"
+					},
+					"minItems": 2,
+					"maxItems": 2
+				},
+				"intersections": {
+					"type": "array",
+					"items": {
+						"$ref": "intersection.schema.json"
+					}
+				},
+				"segments": {
+					"type": "array",
+					"items": {
+						"$ref": "way.schema.json"
+					}
+				},
+				"totalIntersections": {
+					"type": "number",
+					"minimum": 0
+				},
+				"totalLength": {
+					"type": "number",
+					"minimum": 0
+				},
+				"userIntersections": {
+					"type": "array",
+					"items": {
+						"$ref": "userintersection.schema.json"
+					}
+				},
+				"userSegments": {
+					"type": "array",
+					"items": {
+						"$ref": "userway.schema.json"
+					}
+				}
+			},
+			"required": [
+				"bounds",
+				"intersections",
+				"segments",
+				"totalIntersections",
+				"totalLength",
+				"userIntersections",
+				"userSegments"
+			]
+		}
+	},
+	"required": [
+		"benefits",
+		"details",
+		"elements",
+		"existingTravel",
+		"scope"
+	]
+}

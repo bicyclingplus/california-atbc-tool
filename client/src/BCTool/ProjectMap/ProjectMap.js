@@ -270,7 +270,7 @@ class ProjectMap extends React.Component {
         this.clearFeatures();
         this.map.spin(true);
 
-        let url = `${process.env.PUBLIC_URL}/api/bounds`;
+        let url = `${process.env.PUBLIC_URL}/api/features`;
 
         url += `?x1=${bounds.getWest()}&x2=${bounds.getEast()}&y1=${bounds.getSouth()}&y2=${bounds.getNorth()}`;
 

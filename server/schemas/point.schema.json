@@ -1,0 +1,19 @@
+{
+	"$id": "schemas/point.schema.json",
+	"title": "Point",
+	"type": "object",
+	"additionalProperties": false,
+	"properties": {
+		"type": {
+			"type": "string",
+			"pattern": "Point"
+		},
+		"coordinates": {
+			"$ref": "latlng.schema.json"
+		}
+	},
+	"required": [
+		"type",
+		"coordinates"
+	]
+}

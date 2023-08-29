@@ -1,0 +1,8 @@
+{
+	"$id": "schemas/noninfrastructure.schema.json",
+	"title": "NonInfrastructure",
+	"type": "array",
+	"items": {
+		"type": "string"
+	}
+}

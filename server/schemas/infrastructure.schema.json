@@ -1,0 +1,10 @@
+{
+	"$id": "schemas/infrastructure.schema.json",
+	"title": "Infrastructure",
+	"type": "object",
+	"patternProperties": {
+		".*": {
+			"$ref": "element.schema.json"
+		}
+	}
+}

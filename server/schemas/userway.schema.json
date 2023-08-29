@@ -1,0 +1,40 @@
+{
+	"$id": "schemas/userway.schema.json",
+	"title": "UserWay",
+	"description": "",
+	"type": "object",
+	"additionalProperties": false,
+	"properties": {
+		"geometry": {
+			"$ref": "linestring.schema.json"
+		},
+		"type": {
+			"$ref": "feature.schema.json"
+		},
+		"properties": {
+			"type": "object",
+			"additionalProperties": false,
+			"properties": {
+				"id": {
+					"type": "string"
+				},
+				"length": {
+					"type": "number"
+				},
+				"one_way_ca": {
+					"type": "boolean"
+				}
+			},
+			"required": [
+				"id",
+				"length",
+				"one_way_ca"
+			]
+		}
+	},
+	"required": [
+		"geometry",
+		"type",
+		"properties"
+	]
+}

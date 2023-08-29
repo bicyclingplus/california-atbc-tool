@@ -1,0 +1,99 @@
+{
+	"$id": "schemas/benefits.schema.json",
+	"title": "Benefits",
+	"type": "object",
+	"additionalProperties": false,
+	"properties": {
+		"county": {
+			"type": "string"
+		},
+		"existingTravel": {
+			"$ref": "existingtravel.schema.json"
+		},
+		"hasOnlyUserMapSelections": {
+			"type": "boolean"
+		},
+		"safety": {
+			"type": "object",
+			"additionalProperties": false,
+			"properties": {
+				"bicycling": {
+					"$ref": "safety.schema.json"
+				},
+				"combined": {
+					"$ref": "safety.schema.json"
+				},
+				"walking": {
+					"$ref": "safety.schema.json"
+				}
+			},
+			"required": [
+				"bicycling",
+				"combined",
+				"walking"
+			]
+		},
+		"selectedInfrastructure": {
+			"$ref": "infrastructure.schema.json"
+		},
+		"selectedIntersections": {
+			"type": "array",
+			"items": {
+				"$ref": "intersection.schema.json"
+			}
+		},
+		"selectedNonInfrastructure": {
+			"$ref": "noninfrastructure.schema.json"
+		},
+		"selectedWays": {
+			"type": "array",
+			"items": {
+				"$ref": "way.schema.json"
+			}
+		},
+		"subtype": {
+			"type": "string",
+			"pattern": "pedestrian-only|bike-only|both"
+		},
+		"timeframe": {
+			"type": "number",
+			"minimum": 1
+		},
+		"totalIntersections": {
+			"type": "number",
+			"minimum": 0
+		},
+		"totalLength": {
+			"type": "number",
+			"minimum": 0
+		},
+		"transit": {
+			"type": "string",
+			"pattern": "hub|stops|none"
+		},
+		"type": {
+			"type": "string",
+			"pattern": "infrastructure|non-infrastructure|both"
+		},
+		"year": {
+			"type": "number"
+		}
+	},
+	"required": [
+		"county",
+		"existingTravel",
+		"hasOnlyUserMapSelections",
+		"safety",
+		"selectedInfrastructure",
+		"selectedIntersections",
+		"selectedNonInfrastructure",
+		"selectedWays",
+		"subtype",
+		"timeframe",
+		"totalIntersections",
+		"totalLength",
+		"transit",
+		"type",
+		"year"
+	]
+}

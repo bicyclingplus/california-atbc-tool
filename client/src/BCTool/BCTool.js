@@ -491,7 +491,7 @@ class BCTool extends React.Component {
       userIntersections,
     } = this.state;
 
-    let url = `${process.env.PUBLIC_URL}/api/demand`;
+    let url = `${process.env.PUBLIC_URL}/api/reach`;
 
     fetch(url, {
       method: 'POST',

@@ -7,11 +7,15 @@ import bodyParser from 'body-parser';
 import compression from 'compression';
 import dotenv from 'dotenv';
 import { MongoClient, ObjectId } from 'mongodb';
+import { BSONTypeError } from 'bson';
 import { createRequire } from "module";
+import Ajv from "ajv";
 
 import calcDemand from './benefits_helpers/calcDemand.js';
 import calcProjectLength from './benefits_helpers/calcProjectLength.js';
 import calcBenefits from './benefits_helpers/calcBenefits.js';
+
+import schemas from './schemas/schemas.js';
 
 const require = createRequire(import.meta.url);
 
@@ -23,6 +27,9 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 const PORT = process.env.PORT || 3001;
 const app = express();
 const tool = express();
+const ajv = new Ajv({
+  schemas: schemas,
+});
 
 dotenv.config();
 
@@ -57,7 +64,7 @@ tool.use(express.static(path.resolve(__dirname, '../client/build')));
 // C (x2, y2) North East corner
 // D (y2, y1) South East corner
 // A (x1, y1) Back to the SW corner to close the polygon
-tool.get("/api/bounds", async (req, res) => {
+tool.get("/api/features", async (req, res) => {
   if(!req.query.x1 || !req.query.x2 || !req.query.y1 || !req.query.y2) {
     return res.status(400).send({ "error": "All four bounding box coordinates (x1, y1, x2, and y2) are required."});
   }
@@ -157,32 +164,30 @@ tool.get('/api/projects/:projectId', async (req, res) => {
   const client = new MongoClient(process.env.MONGO_URI);
 
   try {
+    const database = client.db('bctool');
+    const collection = database.collection('projects');
 
-    // await client.connect();
+    const project = await collection.findOne({
+      '_id': new ObjectId(req.params.projectId),
+    });
 
-    try {
-      let projectId = new ObjectId(req.params.projectId);
-
-      const database = client.db('bctool');
-      const collection = database.collection('projects');
-
-      let project = await collection.findOne({
-        '_id': new ObjectId(req.params.projectId),
-      });
-
-      if(project) {
-        return res.json(project);
-      }
-
-      return res.status(404).json({
-        'message': 'Project not found',
-      });
+    if(project) {
+      return res.json(project);
     }
-    catch {
+
+    return res.status(404).json({
+      'message': 'Project not found',
+    });
+  }
+  catch (e) {
+
+    if(e instanceof BSONTypeError) {
       return res.status(400).json({
         'message': 'Invalid project id',
       });
     }
+
+    throw(e);
   }
   finally {
     await client.close();
@@ -192,11 +197,18 @@ tool.get('/api/projects/:projectId', async (req, res) => {
 
 tool.post('/api/projects', async (req, res) => {
 
+  const validate = ajv.getSchema("schemas/project.schema.json");
+  const valid = validate(req.body);
+
+  if(!valid) {
+    return res.status(400).json({
+      'error': 'Bad post data',
+    });
+  }
+
   const client = new MongoClient(process.env.MONGO_URI);
 
   try {
-
-    // await client.connect();
 
     const database = client.db('bctool');
     const collection = database.collection('projects');
@@ -214,18 +226,27 @@ tool.post('/api/projects', async (req, res) => {
 
 });
 
-tool.post('/api/demand', async(req, res) => {
+tool.post('/api/reach', async(req, res) => {
 
-  let {
+  const validate = ajv.getSchema("schemas/reach.schema.json");
+  const valid = validate(req.body);
+
+  if(!valid) {
+    return res.status(400).json({
+      'error': 'Bad post data',
+    });
+  }
+
+  const {
     selectedWays,
     selectedIntersections,
     userWays,
     userIntersections,
   } = req.body;
 
-  let projectLength = calcProjectLength(selectedWays, userWays);
+  const projectLength = calcProjectLength(selectedWays, userWays);
 
-  let existingTravel = calcDemand(
+  const existingTravel = calcDemand(
     selectedWays,
     userWays,
     selectedIntersections,
@@ -242,7 +263,26 @@ tool.post('/api/demand', async(req, res) => {
 
 tool.post('/api/benefits', async(req, res) => {
 
-  let {
+  const validate = ajv.getSchema("schemas/benefits.schema.json");
+  const valid = validate(req.body);
+
+  if(!valid) {
+    return res.status(400).json({
+      'error': 'Bad post data',
+    });
+  }
+
+  // TODO
+  // analysis of int/way props and update schemas for
+  // nullable (or other cases)
+  //
+  // checks for:
+  // county in counties
+  // selected infrastructure in infrastructure
+  // selected noninfrastructure in noninfrastructure
+  // year reasonable
+
+  const {
     type,
     subtype,
     county,
@@ -260,7 +300,7 @@ tool.post('/api/benefits', async(req, res) => {
     safety,
   } = req.body;
 
-  let benefits = calcBenefits(
+  const benefits = calcBenefits(
         type,
         subtype,
         county,
