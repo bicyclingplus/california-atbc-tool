@@ -53,63 +53,99 @@ const _calcTravelMode = (mode, selectedInfrastructure,
         for(let item of category.items) {
 
             // the element is selected
+            if(!(item.shortname in selectedInfrastructure)) {
+                continue;
+            }
+
             // the element has benefits
+            if(!(item.shortname in travel_volume)) {
+                continue;
+            }
+
             // the element has benefits for this mode
-            if(item.shortname in selectedInfrastructure &&
-                item.shortname in travel_volume &&
-                mode in travel_volume[item.shortname]) {
+            if(!(mode in travel_volume[item.shortname])) {
+                continue;
+            }
 
-                let benefit = travel_volume[item.shortname][mode];
+            const benefit = travel_volume[item.shortname][mode];
+            const {
+                shortname,
+                calc_units,
+                units,
+            } = item;
 
-                // calculate the increase for each improvement
-                // type for this element
-                for(let type in SCALING_FACTORS) {
+            // calculate the increase for each improvement
+            // type for this element
+            for(let improvement in SCALING_FACTORS) {
 
-                    let value = selectedInfrastructure[item.shortname][type];
+                const value = selectedInfrastructure[shortname][improvement];
 
-                    if(value === 0) {
-                        continue;
-                    }
-
-                    let share = 0;
-
-                    // calculate the project share for this element
-                    if(item.calc_units === 'length') {
-
-                        if(item.units === 'count') {
-                            // In this case we ask them for a count and
-                            // then apply a preset length per item
-                            // i.e. lights every 100 feet
-                            // and then apply that as a portion of the
-                            // total project length
-                            // all are assumed to be per 100 feet right now
-                            // this will probably change at some point.
-                            share = (value * 100) / project_length;
-                        }
-                        else if(item.units === 'length') {
-                            share = value / project_length;
-                        }
-                    }
-                    else if(item.calc_units === 'count') {
-                        share = value / num_intersections;
-                    }
-
-                    // calculate the increase in travel for this benefit
-                    // using the benefit percentage, the existing travel,
-                    // the project share, and the type of improvement
-                    let increase = {};
-
-                    for(let estimate of ESTIMATES) {
-                        increase[estimate] = (
-                            (benefit[estimate] / 100) *
-                            travel.existing[estimate] *
-                            share *
-                            SCALING_FACTORS[type]
-                        );
-                    }
-
-                    increases.push(increase);
+                // skip if not filled in
+                if(value === 0) {
+                    continue;
                 }
+
+                let share, Ni, L;
+
+                // calculate the project share for this element
+                if(calc_units === 'length') {
+
+                    if(units === 'count') {
+                        // In this case we ask them for a count and
+                        // then apply a preset length per item
+                        // i.e. lights every 100 feet
+                        // and then apply that as a portion of the
+                        // total project length
+                        // all are assumed to be per 100 feet right now
+                        // this will probably change at some point.
+                        share = (value * 100) / project_length;
+                        Ni = value * 100;
+                        L = project_length;
+                    }
+                    else if(units === 'length') {
+                        share = value / project_length;
+                        Ni = value;
+                        L = project_length;
+                    }
+                }
+                else if(calc_units === 'count') {
+                    share = value / num_intersections;
+                    Ni = value;
+                    L = num_intersections;
+                }
+
+                // calculate the increase in travel for this benefit
+                // using the benefit percentage, the existing travel,
+                // the project share, and the type of improvement
+                const increase = {};
+
+                for(let estimate of ESTIMATES) {
+                    increase[estimate] = (
+                        (benefit[estimate] / 100) *
+                        travel.existing[estimate] *
+                        share *
+                        SCALING_FACTORS[improvement]
+                    );
+
+                    // debug
+                    c.put('travel', 'adjustments', [
+                        item.shortname,
+                        item.calc_units,
+                        item.units,
+                        improvement,
+                        value,
+                        Ni,
+                        L,
+                        estimate,
+                        travel.existing[estimate],
+                        benefit[estimate] / 100,
+                        share,
+                        SCALING_FACTORS[improvement],
+                        increase[estimate],
+                    ]);
+                }
+
+                increases.push(increase);
             }
         }
     }
@@ -125,13 +161,6 @@ const _calcTravelMode = (mode, selectedInfrastructure,
         for(let estimate of ESTIMATES) {
             travel.total[estimate] += increase[estimate];
         }
-    }
-
-    for(let estimate of ESTIMATES) {
-        c.put('travel', 'PTcmk', [
-            estimate,
-            travel.total[estimate],
-        ]);
     }
 
     // calculate specific increases as a fraction
@@ -154,6 +183,20 @@ const _calcTravelMode = (mode, selectedInfrastructure,
         );
     }
 
+    // debug
+    for(let estimate of ESTIMATES) {
+        c.put('travel', 'projected', [
+            estimate,
+            travel.existing[estimate],
+            travel.total[estimate],
+            travel.inducedTravel[estimate],
+            travel.routeShift[estimate],
+            travel.carShift[estimate],
+            travel.otherShift[estimate],
+            travel.projected[estimate],
+        ]);
+    }
+
     return travel;
 };
 
@@ -162,7 +205,9 @@ const _calc = (selectedInfrastructure, existingTravel,
 
     let travel = {};
 
-    c.addPrepends('travel', 'PTcmk', ['bicycling']);
+    c.addPrepends('travel', 'projected', ['bicycling']);
+    c.addPrepends('travel', 'adjustments', ['bicycling']);
+
     travel.bike = _calcTravelMode(
         'bicycling',
         selectedInfrastructure,
@@ -170,7 +215,9 @@ const _calc = (selectedInfrastructure, existingTravel,
         project_length,
         num_intersections);
 
-    c.changePrepend('travel', 'PTcmk', 1, 'walking');
+    c.changePrepend('travel', 'projected', 1, 'walking');
+    c.changePrepend('travel', 'adjustments', 1, 'walking');
+
     travel.pedestrian = _calcTravelMode(
         'walking',
         selectedInfrastructure,
@@ -197,17 +244,20 @@ const _calc = (selectedInfrastructure, existingTravel,
 const calcTravel = (selectedInfrastructure, travel,
     project_length, num_intersections) => {
 
-    c.setPrepends('travel', 'PTcmk', ['travel']);
+    c.setPrepends('travel', 'projected', ['travel']);
+    c.setPrepends('travel', 'adjustments', ['travel']);
 
     const miles = _calc(selectedInfrastructure, travel.miles,
                         project_length, num_intersections);
 
-    c.setPrepends('travel', 'PTcmk', ['capita']);
+    c.setPrepends('travel', 'projected', ['capita']);
+    c.setPrepends('travel', 'adjustments', ['capita']);
 
     const capita = _calc(selectedInfrastructure, travel.capita,
                         project_length, num_intersections);
 
-    c.setPrepends('travel', 'PTcmk', ['jobs']);
+    c.setPrepends('travel', 'projected', ['jobs']);
+    c.setPrepends('travel', 'adjustments', ['jobs']);
 
     const jobs = _calc(selectedInfrastructure, travel.jobs,
                         project_length, num_intersections);

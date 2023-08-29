@@ -40,69 +40,96 @@ const travel = (project) => {
 
 	writeCSV(
 		projectId,
-		'travel_existing_bicycling_ways',
+		'travel_ways',
 		[
-			'type',
+			'source',
 			'bicyclist_demand',
 			'population',
 			'jobs',
+			'used demand',
+			'used population',
+			'used jobs',
 			'length (mi)',
 			'travel',
 			'travel per capita',
 			'travel per jobs',
 		],
-		c.get('travel', 'existing_bicycling_ways')
+		c.get('travel', 'ways')
 	);
 
 	writeCSV(
 		projectId,
-		'travel_existing_bicycling',
+		'travel_intersections',
 		[
-			'type',
-			'travel',
-			'travel per capita',
-			'travel per jobs',
-		],
-		c.get('travel', 'existing_bicycling')
-	);
-
-	writeCSV(
-		projectId,
-		'travel_existing_walking_intersections',
-		[
-			'type',
+			'source',
 			'ped_demand',
 			'population',
 			'jobs',
+			'used demand',
+			'used population',
+			'used jobs',
+			'count',
 			'travel',
 			'travel per capita',
 			'travel per jobs',
 		],
-		c.get('travel', 'existing_walking_intersections')
+		c.get('travel', 'intersections')
 	);
 
 	writeCSV(
 		projectId,
-		'travel_existing_walking',
+		'travel_existing',
 		[
-			'type',
-			'travel',
-			'travel per capita',
-			'travel per jobs',
-		],
-		c.get('travel', 'existing_walking')
-	);
-
-	writeCSV(
-		projectId,
-		'travel_PTcmk',
-		[
-			'column',
 			'mode',
-			'estimate',
-			'PTcmk',
+			'total existing travel',
+			'total existing travel per capita',
+			'total existing travel per jobs',
+			'weighted existing travel',
+			'weighted existing travel per capita',
+			'weighted existing travel per jobs',
 		],
-		c.get('travel', 'PTcmk')
+		c.get('travel', 'existing')
+	);
+
+	writeCSV(
+		projectId,
+		'travel_projected',
+		[
+			'column - c',
+			'mode - m',
+			'estimate - k',
+			'weighted existing travel - WETcm',
+			'total change in travel - deltaTTcmk',
+			'induced travel - ITcmk',
+			'route shift - RScmk',
+			'car shift - CScmk',
+			'other shift - OScmk',
+			'projected travel - PTcmk',
+		],
+		c.get('travel', 'projected')
+	);
+
+	writeCSV(
+		projectId,
+		'travel_adjustments',
+		[
+			'column - c',
+			'mode - m',
+			'element - i',
+			'element calc units',
+			'element units',
+			'improvement type - F',
+			'element value',
+			'element length or count - Ni',
+			'project length or count - L',
+			'estimate - k',
+			'weighted existing travel - WETcm',
+			'element adjustment - Eik',
+			'element share - (Ni/L)',
+			'scaling factor - If',
+			'change in travel - deltaTcmikF',
+		],
+		c.get('travel', 'adjustments')
 	);
 
 }
