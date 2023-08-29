@@ -89,6 +89,17 @@ class Collector {
 		}
 	}
 
+	append(ns1, ns2, row) {
+		const l = this.data[ns1][ns2].length;
+
+		if(l) {
+			this.data[ns1][ns2][l-1] = [
+				this.data[ns1][ns2][l-1],
+				...row,
+			]
+		}
+	}
+
 	get(ns1, ns2) {
 		if(!(ns1 in this.data) ||
 			!(ns2 in this.data[ns1])) {
