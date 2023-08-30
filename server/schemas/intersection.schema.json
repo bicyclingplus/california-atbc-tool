@@ -31,40 +31,51 @@
 					"nullable": true
 				},
 				"fatalities_per_year_per_int_bike": {
-					"type": "number"
+					"type": "number",
+					"nullable": true
 				},
 				"fatalities_per_year_per_int_ped": {
-					"type": "number"
+					"type": "number",
+					"nullable": true
 				},
 				"functional": {
-					"type": "string"
+					"type": "string",
+					"nullable": true
 				},
 				"geoid": {
-					"type": "string"
+					"type": "string",
+					"nullable": true
 				},
 				"injuries_per_year_per_int_bike": {
-					"type": "number"
+					"type": "number",
+					"nullable": true
 				},
 				"injuries_per_year_per_int_ped": {
-					"type": "number"
+					"type": "number",
+					"nullable": true
 				},
 				"jobs": {
-					"type": "number"
+					"type": "number",
+					"nullable": true
 				},
 				"node_id": {
 					"type": "number"
 				},
 				"ped_demand": {
-					"type": "number"
+					"type": "number",
+					"nullable": true
 				},
 				"pedestrian_exposure_class": {
-					"type": "string"
+					"type": "string",
+					"nullable": true
 				},
 				"pedestrian_node_exposure": {
-					"type": "number"
+					"type": "number",
+					"nullable": true
 				},
 				"population": {
-					"type": "number"
+					"type": "number",
+					"nullable": true
 				}
 			},
 			"required": [

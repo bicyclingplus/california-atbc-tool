@@ -15,64 +15,81 @@
 			"additionalProperties": false,
 			"properties": {
 				"bicycle_exposure_class": {
-					"type": "string"
+					"type": "string",
+					"nullable": true
 				},
 				"bicyclist_demand": {
-					"type": "number"
+					"type": "number",
+					"nullable": true
 				},
 				"bicyclist_link_exposure": {
-					"type": "number"
+					"type": "number",
+					"nullable": true
 				},
 				"crash_per_year_per_mile_bike": {
-					"type": "number"
+					"type": "number",
+					"nullable": true
 				},
 				"crash_per_year_per_mile_ped": {
-					"type": "number"
+					"type": "number",
+					"nullable": true
 				},
 				"edge_uid": {
 					"type": "number"
 				},
 				"fatalities_per_year_per_mile_bike": {
-					"type": "number"
+					"type": "number",
+					"nullable": true
 				},
 				"fatalities_per_year_per_mile_ped": {
-					"type": "number"
+					"type": "number",
+					"nullable": true
 				},
 				"functional": {
-					"type": "string"
+					"type": "string",
+					"nullable": true
 				},
 				"injuries_per_year_per_mile_bike": {
-					"type": "number"
+					"type": "number",
+					"nullable": true
 				},
 				"injuries_per_year_per_mile_ped": {
-					"type": "number"
+					"type": "number",
+					"nullable": true
 				},
 				"jobs": {
-					"type": "number"
+					"type": "number",
+					"nullable": true
 				},
 				"length": {
 					"type": "number"
 				},
 				"one_way": {
-					"type": "string"
+					"type": "string",
+					"nullable": true
 				},
 				"one_way_ca": {
-					"type": "string"
+					"type": "string",
+					"nullable": true
 				},
 				"pedestrian_link_exposure": {
-					"type": "number"
+					"type": "number",
+					"nullable": true
 				},
 				"pedestrian_link_exposure_class": {
-					"type": "string"
+					"type": "string",
+					"nullable": true
 				},
 				"population": {
-					"type": "number"
+					"type": "number",
+					"nullable": true
 				},
 				"source": {
 					"type": "number"
 				},
 				"target": {
-					"type": "number"
+					"type": "number",
+					"nullable": true
 				}
 			},
 			"required": [
