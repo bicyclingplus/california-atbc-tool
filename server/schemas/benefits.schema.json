@@ -5,7 +5,7 @@
 	"additionalProperties": false,
 	"properties": {
 		"county": {
-			"type": "string"
+			"$ref": "county.schema.json"
 		},
 		"existingTravel": {
 			"$ref": "existingtravel.schema.json"
@@ -14,24 +14,7 @@
 			"type": "boolean"
 		},
 		"safety": {
-			"type": "object",
-			"additionalProperties": false,
-			"properties": {
-				"bicycling": {
-					"$ref": "safety.schema.json"
-				},
-				"combined": {
-					"$ref": "safety.schema.json"
-				},
-				"walking": {
-					"$ref": "safety.schema.json"
-				}
-			},
-			"required": [
-				"bicycling",
-				"combined",
-				"walking"
-			]
+			"$ref": "safetyinputs.schema.json"
 		},
 		"selectedInfrastructure": {
 			"$ref": "infrastructure.schema.json"
@@ -52,12 +35,10 @@
 			}
 		},
 		"subtype": {
-			"type": "string",
-			"pattern": "pedestrian-only|bike-only|both"
+			"$ref": "subtype.schema.json"
 		},
 		"timeframe": {
-			"type": "number",
-			"minimum": 1
+			"$ref": "timeframe.schema.json"
 		},
 		"totalIntersections": {
 			"type": "number",
@@ -68,15 +49,13 @@
 			"minimum": 0
 		},
 		"transit": {
-			"type": "string",
-			"pattern": "hub|stops|none"
+			"$ref": "transit.schema.json"
 		},
 		"type": {
-			"type": "string",
-			"pattern": "infrastructure|non-infrastructure|both"
+			"$ref": "type.schema.json"
 		},
 		"year": {
-			"type": "number"
+			"$ref": "year.schema.json"
 		}
 	},
 	"required": [

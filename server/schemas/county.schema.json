@@ -1,0 +1,5 @@
+{
+	"$id": "schemas/county.schema.json",
+	"title": "County",
+	"type": "string"
+}

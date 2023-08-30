@@ -1,0 +1,59 @@
+{
+	"$id": "schemas/emissionscolumn.schema.json",
+	"title": "EmissionsColumn",
+	"type": "object",
+	"additionalProperties": false,
+	"properties": {
+		"equivalent": {
+			"$ref": "estimate.schema.json"
+		},
+		"reductions": {
+			"type": "object",
+			"additionalProperties": false,
+			"properties": {
+				"CH4": {
+					"$ref": "estimate.schema.json"
+				},
+				"CO": {
+					"$ref": "estimate.schema.json"
+				},
+				"CO2": {
+					"$ref": "estimate.schema.json"
+				},
+				"N2O": {
+					"$ref": "estimate.schema.json"
+				},
+				"NH3": {
+					"$ref": "estimate.schema.json"
+				},
+				"NOx": {
+					"$ref": "estimate.schema.json"
+				},
+				"PM10": {
+					"$ref": "estimate.schema.json"
+				},
+				"PM2.5": {
+					"$ref": "estimate.schema.json"
+				},
+				"SOx": {
+					"$ref": "estimate.schema.json"
+				}
+			},
+			"required": [
+				"CH4",
+				"CO",
+				"CO2",
+				"N2O",
+				"NH3",
+				"NOx",
+				"PM10",
+				"PM2.5",
+				"SOx"
+			]
+		}
+	},
+	"required": [
+		"equivalent",
+		"reductions"
+	]
+}

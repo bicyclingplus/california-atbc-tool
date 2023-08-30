@@ -1,0 +1,22 @@
+{
+	"$id": "schemas/healthcolumn.schema.json",
+	"title": "HealthColumn",
+	"type": "object",
+	"additionalProperties": false,
+	"properties": {
+		"bike": {
+			"$ref": "estimate.schema.json"
+		},
+		"pedestrian": {
+			"$ref": "estimate.schema.json"
+		},
+		"total": {
+			"$ref": "estimate.schema.json"
+		}
+	},
+	"required": [
+		"bike",
+		"pedestrian",
+		"total"
+	]
+}

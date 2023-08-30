@@ -1,0 +1,22 @@
+{
+	"$id": "schemas/emissions.schema.json",
+	"title": "Emissions",
+	"type": "object",
+	"additionalProperties": false,
+	"properties": {
+		"capita": {
+			"$ref": "emissionscolumn.schema.json"
+		},
+		"jobs": {
+			"$ref": "emissionscolumn.schema.json"
+		},
+		"miles": {
+			"$ref": "emissionscolumn.schema.json"
+		}
+	},
+	"required": [
+		"capita",
+		"jobs",
+		"miles"
+	]
+}

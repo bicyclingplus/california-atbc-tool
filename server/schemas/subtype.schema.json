@@ -1,0 +1,6 @@
+{
+	"$id": "schemas/subtype.schema.json",
+	"title": "SubType",
+	"type": "string",
+	"pattern": "pedestrian-only|bike-only|both"
+}

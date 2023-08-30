@@ -1,0 +1,22 @@
+{
+	"$id": "schemas/vmt.schema.json",
+	"title": "VMT",
+	"type": "object",
+	"additionalProperties": false,
+	"properties": {
+		"capita": {
+			"$ref": "estimate.schema.json"
+		},
+		"jobs": {
+			"$ref": "estimate.schema.json"
+		},
+		"miles": {
+			"$ref": "estimate.schema.json"
+		}
+	},
+	"required": [
+		"capita",
+		"jobs",
+		"miles"
+	]
+}

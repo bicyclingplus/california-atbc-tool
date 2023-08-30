@@ -1,0 +1,22 @@
+{
+	"$id": "schemas/quantitative.schema.json",
+	"title": "Quantitative",
+	"type": "object",
+	"additionalProperties": false,
+	"properties": {
+		"capita": {
+			"$ref": "quantitativecolumn.schema.json"
+		},
+		"jobs": {
+			"$ref": "quantitativecolumn.schema.json"
+		},
+		"safety": {
+			"$ref": "quantitativecolumn.schema.json"
+		}
+	},
+	"required": [
+		"capita",
+		"jobs",
+		"safety"
+	]
+}

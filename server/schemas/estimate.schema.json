@@ -1,0 +1,25 @@
+{
+	"$id": "schemas/estimate.schema.json",
+	"title": "Estimate",
+	"type": "object",
+	"additionalProperties": false,
+	"properties": {
+		"lower": {
+			"type": "number",
+			"nullable": true
+		},
+		"mean": {
+			"type": "number",
+			"nullable": true
+		},
+		"upper": {
+			"type": "number",
+			"nullable": true
+		}
+	},
+	"required": [
+		"lower",
+		"mean",
+		"upper"
+	]
+}

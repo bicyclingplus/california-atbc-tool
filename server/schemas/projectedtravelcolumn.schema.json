@@ -1,0 +1,22 @@
+{
+	"$id": "schemas/projectedtravelcolumn.schema.json",
+	"title": "ProjectedTravelColumn",
+	"type": "object",
+	"additionalProperties": false,
+	"properties": {
+		"bike": {
+			"$ref": "projectedtravelmode.schema.json"
+		},
+		"pedestrian": {
+			"$ref": "projectedtravelmode.schema.json"
+		},
+		"totalProjected": {
+			"$ref": "estimate.schema.json"
+		}
+	},
+	"required": [
+		"bike",
+		"pedestrian",
+		"totalProjected"
+	]
+}

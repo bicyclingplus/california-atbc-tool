@@ -1,0 +1,38 @@
+{
+	"$id": "schemas/projectedtravelmode.schema.json",
+	"title": "ProjectedTravelMode",
+	"type": "object",
+	"additionalProperties": false,
+	"properties": {
+		"carShift": {
+			"$ref": "estimate.schema.json"
+		},
+		"existing": {
+			"$ref": "estimate.schema.json"
+		},
+		"inducedTravel": {
+			"$ref": "estimate.schema.json"
+		},
+		"otherShift": {
+			"$ref": "estimate.schema.json"
+		},
+		"projected": {
+			"$ref": "estimate.schema.json"
+		},
+		"routeShift": {
+			"$ref": "estimate.schema.json"
+		},
+		"total": {
+			"$ref": "estimate.schema.json"
+		}
+	},
+	"required": [
+		"carShift",
+		"existing",
+		"inducedTravel",
+		"otherShift",
+		"projected",
+		"routeShift",
+		"total"
+	]
+}

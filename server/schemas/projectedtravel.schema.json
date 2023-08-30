@@ -1,0 +1,22 @@
+{
+	"$id": "schemas/projectedtravel.schema.json",
+	"title": "ProjectedTravel",
+	"type": "object",
+	"additionalProperties": false,
+	"properties": {
+		"capita": {
+			"$ref": "projectedtravelcolumn.schema.json"
+		},
+		"jobs": {
+			"$ref": "projectedtravelcolumn.schema.json"
+		},
+		"miles": {
+			"$ref": "projectedtravelcolumn.schema.json"
+		}
+	},
+	"required": [
+		"capita",
+		"jobs",
+		"miles"
+	]
+}

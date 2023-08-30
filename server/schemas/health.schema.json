@@ -1,0 +1,22 @@
+{
+	"$id": "schemas/health.schema.json",
+	"title": "Health",
+	"type": "object",
+	"additionalProperties": false,
+	"properties": {
+		"capita": {
+			"$ref": "healthcolumn.schema.json"
+		},
+		"jobs": {
+			"$ref": "healthcolumn.schema.json"
+		},
+		"miles": {
+			"$ref": "healthcolumn.schema.json"
+		}
+	},
+	"required": [
+		"capita",
+		"jobs",
+		"miles"
+	]
+}
