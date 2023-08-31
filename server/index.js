@@ -11,9 +11,9 @@ import { BSONTypeError } from 'bson';
 import { createRequire } from "module";
 import Ajv from "ajv";
 
-import calcDemand from './benefits_helpers/calcDemand.js';
-import calcProjectLength from './benefits_helpers/calcProjectLength.js';
-import calcBenefits from './benefits_helpers/calcBenefits.js';
+import calcDemand from './helpers/benefits/calcDemand.js';
+import calcProjectLength from './helpers/benefits/calcProjectLength.js';
+import calcBenefits from './helpers/benefits/calcBenefits.js';
 
 import schemas from './schemas/schemas.js';
 

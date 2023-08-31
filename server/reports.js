@@ -2,8 +2,8 @@ import { open } from 'node:fs/promises';
 import { MongoClient } from 'mongodb';
 import 'dotenv/config';
 
-import c from './collector.js';
-import general from './reports_helpers/general.js';
+import c from './helpers/collector.js';
+import general from './helpers/reports/general.js';
 
 const client = new MongoClient(process.env.MONGO_URI);
 

@@ -1,7 +1,7 @@
 import { createRequire } from "module";
 const require = createRequire(import.meta.url);
-const qualitative = require('../data/qualitative.json');
-const infrastructure = require('../data/infrastructure.json');
+const qualitative = require('../../data/qualitative.json');
+const infrastructure = require('../../data/infrastructure.json');
 
 const calcSafetyQualitative = (selectedInfrastructure) => {
 

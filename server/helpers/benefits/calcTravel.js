@@ -11,8 +11,8 @@ import c from '../collector.js';
 
 import { createRequire } from "module";
 const require = createRequire(import.meta.url);
-const travel_volume = require('../data/travel_volume.json');
-const infrastructure = require('../data/infrastructure.json');
+const travel_volume = require('../../data/travel_volume.json');
+const infrastructure = require('../../data/infrastructure.json');
 
 const _calcPartial = (total, percent) => {
 

@@ -1,9 +1,9 @@
 import c from '../collector.js';
 import writeCSV from './writeCSV.js';
 
-import calcProjectLength from '../benefits_helpers/calcProjectLength.js';
-import calcDemand from '../benefits_helpers/calcDemand.js';
-import calcTravel from '../benefits_helpers/calcTravel.js';
+import calcProjectLength from '../benefits/calcProjectLength.js';
+import calcDemand from '../benefits/calcDemand.js';
+import calcTravel from '../benefits/calcTravel.js';
 
 const travel = (project) => {
 

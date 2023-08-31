@@ -2,13 +2,13 @@ import {
   MODES,
   LOCATION_TYPES,
   OUTCOMES,
-} from '../benefits_helpers/constants.js';
+} from '../benefits/constants.js';
 
 import c from '../collector.js';
 import writeCSV from './writeCSV.js';
 
-import calcProjectLength from '../benefits_helpers/calcProjectLength.js';
-import calcSafetyQuantitative from '../benefits_helpers/calcSafetyQuantitative.js';
+import calcProjectLength from '../benefits/calcProjectLength.js';
+import calcSafetyQuantitative from '../benefits/calcSafetyQuantitative.js';
 
 const safety = (project) => {
 

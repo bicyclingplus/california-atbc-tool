@@ -1,13 +1,10 @@
-import dotenv from 'dotenv';
 import { MongoClient, ObjectId } from 'mongodb';
 import { BSONTypeError } from 'bson';
 
-import writeCSV from '../debug_helpers/writeCSV.js';
-import calcProjectLength from '../benefits_helpers/calcProjectLength.js';
-import calcLength from '../benefits_helpers/safety/calcLength.js';
-import avgProp from '../benefits_helpers/avgProp.js';
-
-dotenv.config({path: '../.env'});
+import writeCSV from '../debug/writeCSV.js';
+import calcProjectLength from '../benefits/calcProjectLength.js';
+import calcLength from '../benefits/safety/calcLength.js';
+import avgProp from '../benefits/avgProp.js';
 
 const general = async (ids) => {
 

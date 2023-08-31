@@ -7,7 +7,7 @@ import {
 import c from '../../collector.js';
 
 const require = createRequire(import.meta.url);
-const Amojvf = require('../../data/alpha_lookup.json');
+const Amojvf = require('../../../data/alpha_lookup.json');
 
 // CRASHES BY SYSTEM CLASS
 // INPUTS:

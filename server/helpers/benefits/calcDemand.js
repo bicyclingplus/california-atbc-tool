@@ -14,7 +14,7 @@ import c from '../collector.js';
 
 import { createRequire } from "module";
 const require = createRequire(import.meta.url);
-const config = require('../data/volume_to_miles.json');
+const config = require('../../data/volume_to_miles.json');
 
 const _weightDemand = (
   proj_distance,

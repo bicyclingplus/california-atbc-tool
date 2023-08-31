@@ -1,7 +1,3 @@
-import dotenv from 'dotenv';
-
-dotenv.config();
-
 class Collector {
 
 	constructor() {
@@ -81,28 +77,45 @@ class Collector {
 			this.data[ns1][ns2].push([
 				...this.prepends[ns1][ns2],
 				...row,
-			])
+			]);
 		}
 		else {
-
 			this.data[ns1][ns2].push(row);
 		}
 	}
 
 	append(ns1, ns2, row) {
+
+		if(!this.enabled) {
+			return;
+		}
+
+		if(!(ns1 in this.data)) {
+			return;
+		}
+
+		if(!(ns2 in this.data[ns1])) {
+			return;
+		}
+
 		const l = this.data[ns1][ns2].length;
 
-		if(l) {
-			this.data[ns1][ns2][l-1] = [
-				this.data[ns1][ns2][l-1],
-				...row,
-			]
+		if(!l) {
+			return;
 		}
+
+		this.data[ns1][ns2][l-1] = [
+			this.data[ns1][ns2][l-1],
+			...row,
+		];
 	}
 
 	get(ns1, ns2) {
-		if(!(ns1 in this.data) ||
-			!(ns2 in this.data[ns1])) {
+		if(!(ns1 in this.data)) {
+			return [];
+		}
+
+		if(!(ns2 in this.data[ns1])) {
 			return [];
 		}
 

@@ -6,7 +6,7 @@ import {
   SCALING_FACTORS,
   POWER_SAFETY_IN_NUMBERS,
   DISCOUNT_RATE,
-} from '../benefits_helpers/constants.js';
+} from '../benefits/constants.js';
 
 import writeCSV from './writeCSV.js';
 

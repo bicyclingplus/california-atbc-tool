@@ -6,7 +6,7 @@ import c from '../../collector.js';
 
 import { createRequire } from "module";
 const require = createRequire(import.meta.url);
-const infrastructure = require('../../data/infrastructure.json');
+const infrastructure = require('../../../data/infrastructure.json');
 
 const calcLength = (selectedInfrastructure, project_length) => {
 

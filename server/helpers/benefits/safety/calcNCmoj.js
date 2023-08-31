@@ -11,8 +11,8 @@ import { calcCCmojvfe } from './calcCCmojvf.js';
 import c from '../../collector.js';
 
 const require = createRequire(import.meta.url);
-const Amojvf = require('../../data/alpha_lookup.json');
-const quantitative = require('../../data/quantitative.json');
+const Amojvf = require('../../../data/alpha_lookup.json');
+const quantitative = require('../../../data/quantitative.json');
 
 // INPUTS:
 // Ljvf reach lookup

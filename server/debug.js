@@ -2,14 +2,14 @@ import { MongoClient, ObjectId } from 'mongodb';
 import dotenv from 'dotenv';
 import fs from 'fs';
 
-import c from './collector.js';
+import c from './helpers/collector.js';
 
-import lookups from './debug_helpers/lookups.js';
-import constants from './debug_helpers/constants.js';
-import inputs from './debug_helpers/inputs.js';
-import reach from './debug_helpers/reach.js';
-import travel from './debug_helpers/travel.js';
-import safety from './debug_helpers/safety.js';
+import lookups from './helpers/debug/lookups.js';
+import constants from './helpers/debug/constants.js';
+import inputs from './helpers/debug/inputs.js';
+import reach from './helpers/debug/reach.js';
+import travel from './helpers/debug/travel.js';
+import safety from './helpers/debug/safety.js';
 
 dotenv.config();
 

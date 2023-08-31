@@ -6,15 +6,15 @@ import {
 	LOCATION_TYPES,
 	VOLUMES,
 	FUNCTIONAL_CLASSES,
-} from '../benefits_helpers/constants.js';
+} from '../benefits/constants.js';
 
 import writeCSV from './writeCSV.js';
 
 const require = createRequire(import.meta.url);
-const miles = require('../data/volume_to_miles.json');
-const alpha = require('../data/alpha_lookup.json');
-const travel = require('../data/travel_volume.json');
-const safety = require('../data/quantitative.json');
+const miles = require('../../data/volume_to_miles.json');
+const alpha = require('../../data/alpha_lookup.json');
+const travel = require('../../data/travel_volume.json');
+const safety = require('../../data/quantitative.json');
 
 const lookups = () => {
 

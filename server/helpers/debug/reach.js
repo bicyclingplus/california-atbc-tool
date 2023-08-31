@@ -1,7 +1,7 @@
 import c from '../collector.js';
 import writeCSV from './writeCSV.js';
 
-import calcProjectLength from '../benefits_helpers/calcProjectLength.js';
+import calcProjectLength from '../benefits/calcProjectLength.js';
 
 const reach = (project) => {
 
