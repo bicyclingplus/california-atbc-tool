@@ -105,7 +105,7 @@ class Collector {
 		}
 
 		this.data[ns1][ns2][l-1] = [
-			this.data[ns1][ns2][l-1],
+			...this.data[ns1][ns2][l-1],
 			...row,
 		];
 	}

@@ -16,6 +16,16 @@ const writeCSV = (folder, filename, headers, data) => {
 		fs.mkdirSync(folderdir)
 	}
 
+	for(let row of data) {
+		if(row.length !== headers.length) {
+			console.log('Bad csv number of columns!');
+			console.log(filename)
+			console.log(headers)
+			console.log(row)
+			process.exit();
+		}
+	}
+
 	content += headers.join(',') + '\n';
 
 	for(let row of data) {

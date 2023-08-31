@@ -10,8 +10,6 @@ const general = async (ids) => {
 
 	console.log('Starting general report');
 
-	console.log(`Looking up ${ids.length} projects`);
-
 	const headers = [
 		'Project ID',
 		'Average bicycle exposure (ways)',
@@ -46,43 +44,52 @@ const general = async (ids) => {
 					continue;
 				}
 
+				const {
+					segments,
+					userSegments,
+					intersections,
+				} = project.scope;
+
+				const { infrastructure } = project.elements;
+
+
 				const projectLength = calcProjectLength(
-					project.scope.segments,
-					project.scope.userSegments
+					segments,
+					userSegments
 				);
 
 				const safetyLength = calcLength(
-					project.elements.infrastructure,
+					infrastructure,
 					projectLength
 				);
 
 				let avgBikeExpWay = avgProp(
-					project.scope.segments,
+					segments,
 					'bicyclist_link_exposure'
 				);
 
 				let avgBikeExpInt = avgProp(
-					project.scope.intersections,
+					intersections,
 					'bicycle_node_exposure'
 				);
 
 				let avgPedExpWay = avgProp(
-					project.scope.segments,
+					segments,
 					'pedestrian_link_exposure'
 				);
 
 				let avgPedExpInt = avgProp(
-					project.scope.intersections,
+					intersections,
 					'pedestrian_node_exposure'
 				);
 
 				let avgBikeDemand = avgProp(
-					project.scope.segments,
+					segments,
 					'bicyclist_demand'
 				);
 
 				let avgPedDemand = avgProp(
-					project.scope.intersections,
+					intersections,
 					'ped_demand'
 				);
 
@@ -97,12 +104,12 @@ const general = async (ids) => {
 
 				rows.push([
 					project._id,
-					avgBikeExpWay,
-					avgBikeExpInt,
-					avgPedExpWay,
-					avgPedExpInt,
-					project.scope.segments.length ? avgBikeDemand : 'No network ways selected',
-					project.scope.intersections.length ? avgPedDemand : 'No network intersections selected',
+					segments.length ? avgBikeExpWay : 'No network ways selected',
+					intersections.length ? avgBikeExpInt : 'No network intersections selected',
+					segments.length ? avgPedExpWay : 'No network ways selected',
+					intersections.length ? avgPedExpInt : 'No network intersections selected',
+					segments.length ? avgBikeDemand : 'No network ways selected',
+					intersections.length ? avgPedDemand : 'No network intersections selected',
 					projectLength,
 					safetyLength,
 				]);
@@ -121,7 +128,7 @@ const general = async (ids) => {
 		await client?.close();
 	}
 
-	writeCSV('reports', 'general', headers, rows);
+	writeCSV('reports', '1-general', headers, rows);
 }
 
 export default general;

@@ -4,6 +4,9 @@ import 'dotenv/config';
 
 import c from './helpers/collector.js';
 import general from './helpers/reports/general.js';
+import reach from './helpers/reports/reach.js';
+import reach2 from './helpers/reports/reach2.js';
+import infrastructure from './helpers/reports/infrastructure.js';
 
 const client = new MongoClient(process.env.MONGO_URI);
 
@@ -11,6 +14,12 @@ c.off(); // disable debugging
 
 const reports = (ids) => {
 	general(ids);
+	reach(ids);
+	reach2(ids);
+	// infrastructure(ids);
+	// ways(ids);
+	// intersections(ids);
+
 }
 
 const fileProjects = async () => {
