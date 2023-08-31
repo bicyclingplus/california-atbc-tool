@@ -7,6 +7,7 @@ import {
     OTHER_SHIFT,
 } from './constants.js';
 
+import calcShare from './calcShare.js';
 import c from '../collector.js';
 
 import { createRequire } from "module";
@@ -68,11 +69,7 @@ const _calcTravelMode = (mode, selectedInfrastructure,
             }
 
             const benefit = travel_volume[item.shortname][mode];
-            const {
-                shortname,
-                calc_units,
-                units,
-            } = item;
+            const { shortname } = item;
 
             // calculate the increase for each improvement
             // type for this element
@@ -85,34 +82,7 @@ const _calcTravelMode = (mode, selectedInfrastructure,
                     continue;
                 }
 
-                let share, Ni, L;
-
-                // calculate the project share for this element
-                if(calc_units === 'length') {
-
-                    if(units === 'count') {
-                        // In this case we ask them for a count and
-                        // then apply a preset length per item
-                        // i.e. lights every 100 feet
-                        // and then apply that as a portion of the
-                        // total project length
-                        // all are assumed to be per 100 feet right now
-                        // this will probably change at some point.
-                        share = (value * 100) / project_length;
-                        Ni = value * 100;
-                        L = project_length;
-                    }
-                    else if(units === 'length') {
-                        share = value / project_length;
-                        Ni = value;
-                        L = project_length;
-                    }
-                }
-                else if(calc_units === 'count') {
-                    share = value / num_intersections;
-                    Ni = value;
-                    L = num_intersections;
-                }
+                const share = calcShare(item, value, project_length, num_intersections);
 
                 // calculate the increase in travel for this benefit
                 // using the benefit percentage, the existing travel,
@@ -123,7 +93,7 @@ const _calcTravelMode = (mode, selectedInfrastructure,
                     increase[estimate] = (
                         (benefit[estimate] / 100) *
                         travel.existing[estimate] *
-                        share *
+                        share.share *
                         SCALING_FACTORS[improvement]
                     );
 
@@ -134,12 +104,12 @@ const _calcTravelMode = (mode, selectedInfrastructure,
                         item.units,
                         improvement,
                         value,
-                        Ni,
-                        L,
+                        share.Ni,
+                        share.L,
                         estimate,
                         travel.existing[estimate],
                         benefit[estimate] / 100,
-                        share,
+                        share.share,
                         SCALING_FACTORS[improvement],
                         increase[estimate],
                     ]);

@@ -8,6 +8,7 @@ import {
 
 import c from '../../collector.js';
 import calcLength from './calcLength.js';
+import calcShare from '../calcShare.js';
 
 import { createRequire } from "module";
 const require = createRequire(import.meta.url);
@@ -70,28 +71,7 @@ const calcPVmj = (
                                 continue;
                             }
 
-                            let share = 0;
-
-                            // calculate the project share for this element
-                            if(item.calc_units === 'length') {
-
-                                if(item.units === 'count') {
-                                    // In this case we ask them for a count and
-                                    // then apply a preset length per item
-                                    // i.e. lights every 100 feet
-                                    // and then apply that as a portion of the
-                                    // total project length
-                                    // all are assumed to be per 100 feet right now
-                                    // this will probably change at some point.
-                                    share = (value * 100) / length_to_use;
-                                }
-                                else if(item.units === 'length') {
-                                    share = value / length_to_use;
-                                }
-                            }
-                            else if(item.calc_units === 'count') {
-                                share = value / num_intersections;
-                            }
+                            const share = calcShare(item, value, length_to_use, num_intersections);
 
                             for(let column of COLUMNS) {
 
@@ -105,7 +85,7 @@ const calcPVmj = (
                                         let adjustment = (
                                             EVmj[column][mode][location_type] *
                                             (benefit[estimate] / 100) *
-                                            share *
+                                            share.share *
                                             SCALING_FACTORS[type]
                                         );
 
@@ -127,7 +107,7 @@ const calcPVmj = (
 
                                             EVmj[column][mode][location_type],
                                             benefit[estimate] / 100,
-                                            share,
+                                            share.share,
                                             SCALING_FACTORS[type],
                                             adjustment,
                                         ]);
