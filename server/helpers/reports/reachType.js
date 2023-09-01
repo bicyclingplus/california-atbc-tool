@@ -1,25 +1,19 @@
 import { MongoClient, ObjectId } from 'mongodb';
 import { BSONTypeError } from 'bson';
 
-import {
-	LOCATION_TYPES,
-	VOLUMES,
-	FUNCTIONAL_CLASSES,
-} from '../benefits/constants.js';
-
 import writeCSV from '../debug/writeCSV.js';
-import calcLjvf from '../benefits/safety/calcLjvf.js';
+import calcProjectLength from '../benefits/calcProjectLength.js';
 
-const reach2 = async (ids) => {
+const reachType = async (ids) => {
 
 	console.log('Starting reach report');
 
 	const headers = [
 		'Project ID',
-		'J location type',
-		'V volume class',
-		'F functional class',
-		'Count or length',
+		'Type',
+		'Intersections count',
+		'Segments count',
+		'Total length of segments',
 	];
 
 	const rows = [];
@@ -46,25 +40,34 @@ const reach2 = async (ids) => {
 
 				const {
 					segments,
+					userSegments,
 					intersections,
+					userIntersections,
 				} = project.scope;
 
-				const L = calcLjvf(segments, intersections);
+				rows.push([
+					project._id,
+					'network',
+					intersections.length,
+					segments.length,
+					calcProjectLength(segments, []),
+				]);
 
-				for(let j of LOCATION_TYPES) {
-					for(let v of VOLUMES) {
-						for(let f of FUNCTIONAL_CLASSES) {
-							rows.push([
-								project._id,
-								j,
-								v,
-								f,
-								L[j][v][f],
-							]);
-						}
-					}
-				}
+				rows.push([
+					project._id,
+					'user defined',
+					userIntersections.length,
+					userSegments.length,
+					calcProjectLength([], userSegments),
+				]);
 
+				rows.push([
+					project._id,
+					'project total',
+					intersections.length + userIntersections.length,
+					segments.length + userSegments.length,
+					calcProjectLength(segments, userSegments),
+				]);
 			}
 			catch (e) {
 				if(e instanceof BSONTypeError) {
@@ -80,7 +83,7 @@ const reach2 = async (ids) => {
 		await client?.close();
 	}
 
-	writeCSV('reports', '3-reach2', headers, rows);
+	writeCSV('reports', '2-reach-type', headers, rows);
 }
 
-export default reach2;
+export default reachType;

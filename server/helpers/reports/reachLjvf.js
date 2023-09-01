@@ -1,19 +1,25 @@
 import { MongoClient, ObjectId } from 'mongodb';
 import { BSONTypeError } from 'bson';
 
-import writeCSV from '../debug/writeCSV.js';
-import calcProjectLength from '../benefits/calcProjectLength.js';
+import {
+	LOCATION_TYPES,
+	VOLUMES,
+	FUNCTIONAL_CLASSES,
+} from '../benefits/constants.js';
 
-const reach = async (ids) => {
+import writeCSV from '../debug/writeCSV.js';
+import calcLjvf from '../benefits/safety/calcLjvf.js';
+
+const reachLjvf = async (ids) => {
 
 	console.log('Starting reach report');
 
 	const headers = [
 		'Project ID',
-		'Type',
-		'Intersections count',
-		'Segments count',
-		'Total length of segments',
+		'J location type',
+		'V volume class',
+		'F functional class',
+		'Count or length',
 	];
 
 	const rows = [];
@@ -40,34 +46,25 @@ const reach = async (ids) => {
 
 				const {
 					segments,
-					userSegments,
 					intersections,
-					userIntersections,
 				} = project.scope;
 
-				rows.push([
-					project._id,
-					'network',
-					intersections.length,
-					segments.length,
-					calcProjectLength(segments, []),
-				]);
+				const L = calcLjvf(segments, intersections);
 
-				rows.push([
-					project._id,
-					'user defined',
-					userIntersections.length,
-					userSegments.length,
-					calcProjectLength([], userSegments),
-				]);
+				for(let j of LOCATION_TYPES) {
+					for(let v of VOLUMES) {
+						for(let f of FUNCTIONAL_CLASSES) {
+							rows.push([
+								project._id,
+								j,
+								v,
+								f,
+								L[j][v][f],
+							]);
+						}
+					}
+				}
 
-				rows.push([
-					project._id,
-					'project total',
-					intersections.length + userIntersections.length,
-					segments.length + userSegments.length,
-					calcProjectLength(segments, userSegments),
-				]);
 			}
 			catch (e) {
 				if(e instanceof BSONTypeError) {
@@ -83,7 +80,7 @@ const reach = async (ids) => {
 		await client?.close();
 	}
 
-	writeCSV('reports', '2-reach', headers, rows);
+	writeCSV('reports', '3-reach-Ljvf', headers, rows);
 }
 
-export default reach;
+export default reachLjvf;

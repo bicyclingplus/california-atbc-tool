@@ -1,8 +1,20 @@
 import { MongoClient, ObjectId } from 'mongodb';
 import { BSONTypeError } from 'bson';
+import { createRequire } from "module";
 
+import {
+	SCALING_FACTORS,
+} from '../benefits/constants.js';
+
+import calcShare from '../benefits/calcShare.js';
+import getElement from '../benefits/getElement.js';
+import calcProjectLength from '../benefits/calcProjectLength.js';
+import calcLength from '../benefits/safety/calcLength.js';
 import writeCSV from '../debug/writeCSV.js';
 
+const require = createRequire(import.meta.url);
+const travel = require('../../data/travel_volume.json');
+const safety = require('../../data/quantitative.json');
 
 const infrastructure = async (ids) => {
 
@@ -17,7 +29,8 @@ const infrastructure = async (ids) => {
 		'Project share',
 	];
 
-	const rows = [];
+	const trows = [];
+	const srows = [];
 
 	let client;
 
@@ -40,13 +53,77 @@ const infrastructure = async (ids) => {
 				}
 
 				const {
+					segments,
+					userSegments,
+					intersections,
+					userIntersections,
 				} = project.scope;
 
-				const { infrastructure } = project.elements;
+				const projectLength = calcProjectLength(segments, userSegments);
+				const numIntersections = intersections.length + userIntersections.length;
+				const safetyLength = calcLength(project.elements.infrastructure, projectLength);
 
-				rows.push([
-					project._id,
-				]);
+				for(let selected in project.elements.infrastructure) {
+
+					const element = getElement(selected);
+
+					if(selected in travel) {
+
+						for(let scalingFactor in SCALING_FACTORS) {
+
+							const value = project.elements.infrastructure[selected][scalingFactor];
+
+							if(! (value > 0)) {
+								continue;
+							}
+
+							const share = calcShare(
+								element,
+								value,
+								projectLength,
+								numIntersections
+							);
+
+							trows.push([
+								project._id,
+								element.shortname,
+								scalingFactor,
+								element.units,
+								value,
+								share.share,
+							]);
+						}
+					}
+
+					if(selected in safety) {
+
+						for(let scalingFactor in SCALING_FACTORS) {
+
+							const value = project.elements.infrastructure[selected][scalingFactor];
+
+							if(! (value > 0)) {
+								continue;
+							}
+
+							const share = calcShare(
+								element,
+								value,
+								safetyLength,
+								numIntersections
+							);
+
+							srows.push([
+								project._id,
+								element.shortname,
+								scalingFactor,
+								element.units,
+								value,
+								share.share,
+							]);
+						}
+					}
+				}
+
 			}
 			catch (e) {
 				if(e instanceof BSONTypeError) {
@@ -62,7 +139,8 @@ const infrastructure = async (ids) => {
 		await client?.close();
 	}
 
-	writeCSV('reports', '4-infrastructure', headers, rows);
+	writeCSV('reports', '4-infrastructure-travel', headers, trows);
+	writeCSV('reports', '4-infrastructure-safety', headers, srows);
 }
 
 export default infrastructure;
