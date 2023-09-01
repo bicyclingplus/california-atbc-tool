@@ -1,10 +1,14 @@
 
-const calcShare = (item, value, totalLength, numIntersections) => {
+// TODO handle the totalLength/numIntersections being zero
+// here. this causes division by zero -> Infinity
+// maybe just set the share to zero in this case?
+
+const calcShare = (element, value, totalLength, numIntersections) => {
 
 	const {
 		calc_units,
 		units,
-	} = item;
+	} = element;
 
 	let share, Ni, L;
 
@@ -28,6 +32,10 @@ const calcShare = (item, value, totalLength, numIntersections) => {
             Ni = value;
             L = totalLength;
         }
+
+        // if(totalLength === 0) {
+        //     share = 0;
+        // }
     }
     else if(calc_units === 'count') {
         share = value / numIntersections;
