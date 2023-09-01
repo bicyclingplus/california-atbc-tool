@@ -1,10 +1,10 @@
 import { MongoClient, ObjectId } from 'mongodb';
 import { BSONTypeError } from 'bson';
 
-import writeCSV from '../debug/writeCSV.js';
-import calcProjectLength from '../benefits/calcProjectLength.js';
-import calcLength from '../benefits/safety/calcLength.js';
-import avgProp from '../benefits/avgProp.js';
+import writeCSV from '../../debug/writeCSV.js';
+import calcProjectLength from '../../benefits/calcProjectLength.js';
+import calcLength from '../../benefits/safety/calcLength.js';
+import avgProp from '../../benefits/avgProp.js';
 
 const general = async (ids) => {
 

@@ -5,10 +5,10 @@ import {
 	LOCATION_TYPES,
 	VOLUMES,
 	FUNCTIONAL_CLASSES,
-} from '../benefits/constants.js';
+} from '../../benefits/constants.js';
 
-import writeCSV from '../debug/writeCSV.js';
-import calcLjvf from '../benefits/safety/calcLjvf.js';
+import writeCSV from '../../debug/writeCSV.js';
+import calcLjvf from '../../benefits/safety/calcLjvf.js';
 
 const reachLjvf = async (ids) => {
 

@@ -4,17 +4,17 @@ import { createRequire } from "module";
 
 import {
 	SCALING_FACTORS,
-} from '../benefits/constants.js';
+} from '../../benefits/constants.js';
 
-import calcShare from '../benefits/calcShare.js';
-import getElement from '../benefits/getElement.js';
-import calcProjectLength from '../benefits/calcProjectLength.js';
-import calcLength from '../benefits/safety/calcLength.js';
-import writeCSV from '../debug/writeCSV.js';
+import calcShare from '../../benefits/calcShare.js';
+import getElement from '../../benefits/getElement.js';
+import calcProjectLength from '../../benefits/calcProjectLength.js';
+import calcLength from '../../benefits/safety/calcLength.js';
+import writeCSV from '../../debug/writeCSV.js';
 
 const require = createRequire(import.meta.url);
-const travel = require('../../data/travel_volume.json');
-const safety = require('../../data/quantitative.json');
+const travel = require('../../../data/travel_volume.json');
+const safety = require('../../../data/quantitative.json');
 
 const infrastructure = async (ids) => {
 

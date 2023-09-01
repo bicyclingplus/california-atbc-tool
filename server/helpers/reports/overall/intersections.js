@@ -1,7 +1,7 @@
 import { MongoClient, ObjectId } from 'mongodb';
 import { BSONTypeError } from 'bson';
 
-import writeCSV from '../debug/writeCSV.js';
+import writeCSV from '../../debug/writeCSV.js';
 
 const intersections = async (ids) => {
 	console.log('Starting intersections report');

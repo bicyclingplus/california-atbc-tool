@@ -3,12 +3,13 @@ import { MongoClient } from 'mongodb';
 import 'dotenv/config';
 
 import c from './helpers/collector.js';
-import general from './helpers/reports/general.js';
-import reachType from './helpers/reports/reachType.js';
-import reachLjvf from './helpers/reports/reachLjvf.js';
-import infrastructure from './helpers/reports/infrastructure.js';
-import ways from './helpers/reports/ways.js';
-import intersections from './helpers/reports/intersections.js';
+
+import general from './helpers/reports/overall/general.js';
+import reachType from './helpers/reports/overall/reachType.js';
+import reachLjvf from './helpers/reports/overall/reachLjvf.js';
+import infrastructure from './helpers/reports/overall/infrastructure.js';
+import ways from './helpers/reports/overall/ways.js';
+import intersections from './helpers/reports/overall/intersections.js';
 
 const client = new MongoClient(process.env.MONGO_URI);
 
