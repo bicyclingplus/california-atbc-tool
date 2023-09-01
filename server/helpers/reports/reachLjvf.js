@@ -12,7 +12,7 @@ import calcLjvf from '../benefits/safety/calcLjvf.js';
 
 const reachLjvf = async (ids) => {
 
-	console.log('Starting reach report');
+	console.log('Starting reach by Ljvf report');
 
 	const headers = [
 		'Project ID',
@@ -55,7 +55,7 @@ const reachLjvf = async (ids) => {
 					for(let v of VOLUMES) {
 						for(let f of FUNCTIONAL_CLASSES) {
 							rows.push([
-								project._id,
+								project._id.toString(),
 								j,
 								v,
 								f,
@@ -80,7 +80,7 @@ const reachLjvf = async (ids) => {
 		await client?.close();
 	}
 
-	writeCSV('reports', '3-reach-Ljvf', headers, rows);
+	writeCSV('reports', 'overall-3-reach-Ljvf', headers, rows);
 }
 
 export default reachLjvf;

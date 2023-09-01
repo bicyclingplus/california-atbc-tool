@@ -7,18 +7,25 @@ import general from './helpers/reports/general.js';
 import reachType from './helpers/reports/reachType.js';
 import reachLjvf from './helpers/reports/reachLjvf.js';
 import infrastructure from './helpers/reports/infrastructure.js';
+import ways from './helpers/reports/ways.js';
+import intersections from './helpers/reports/intersections.js';
 
 const client = new MongoClient(process.env.MONGO_URI);
 
 c.off(); // disable debugging
 
+// reports as specified in:
+// https://docs.google.com/document/d/1fEByERdU3FYx4nHLPD-fbzJ3HvL6ZmUaqPqVynhaNHA/edit
 const reports = (ids) => {
+	// general/overall
 	general(ids);
 	reachType(ids);
 	reachLjvf(ids);
 	infrastructure(ids);
-	// ways(ids);
-	// intersections(ids);
+	ways(ids);
+	intersections(ids);
+
+	// safety
 
 }
 
@@ -114,7 +121,8 @@ if(process.argv.length > 2) {
 		break;
 		case '-a':
 		case '--all':
-			allProjects()
+			allProjects();
+		break;
 		case '-p':
 		case '--project':
 			oneProject()

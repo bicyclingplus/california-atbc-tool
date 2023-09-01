@@ -85,7 +85,7 @@ const infrastructure = async (ids) => {
 							);
 
 							trows.push([
-								project._id,
+								project._id.toString(),
 								element.shortname,
 								scalingFactor,
 								element.units,
@@ -139,8 +139,8 @@ const infrastructure = async (ids) => {
 		await client?.close();
 	}
 
-	writeCSV('reports', '4-infrastructure-travel', headers, trows);
-	writeCSV('reports', '4-infrastructure-safety', headers, srows);
+	writeCSV('reports', 'overall-4-infrastructure-travel', headers, trows);
+	writeCSV('reports', 'overall-4-infrastructure-safety', headers, srows);
 }
 
 export default infrastructure;

@@ -6,7 +6,7 @@ import calcProjectLength from '../benefits/calcProjectLength.js';
 
 const reachType = async (ids) => {
 
-	console.log('Starting reach report');
+	console.log('Starting reach by type report');
 
 	const headers = [
 		'Project ID',
@@ -46,7 +46,7 @@ const reachType = async (ids) => {
 				} = project.scope;
 
 				rows.push([
-					project._id,
+					project._id.toString(),
 					'network',
 					intersections.length,
 					segments.length,
@@ -54,7 +54,7 @@ const reachType = async (ids) => {
 				]);
 
 				rows.push([
-					project._id,
+					project._id.toString(),
 					'user defined',
 					userIntersections.length,
 					userSegments.length,
@@ -62,7 +62,7 @@ const reachType = async (ids) => {
 				]);
 
 				rows.push([
-					project._id,
+					project._id.toString(),
 					'project total',
 					intersections.length + userIntersections.length,
 					segments.length + userSegments.length,
@@ -83,7 +83,7 @@ const reachType = async (ids) => {
 		await client?.close();
 	}
 
-	writeCSV('reports', '2-reach-type', headers, rows);
+	writeCSV('reports', 'overall-2-reach-type', headers, rows);
 }
 
 export default reachType;

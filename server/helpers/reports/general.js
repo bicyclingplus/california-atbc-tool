@@ -103,7 +103,7 @@ const general = async (ids) => {
 				avgPedDemand = avgPedDemand === null ? 'No network demand available' : avgPedDemand;
 
 				rows.push([
-					project._id,
+					project._id.toString(),
 					segments.length ? avgBikeExpWay : 'No network ways selected',
 					intersections.length ? avgBikeExpInt : 'No network intersections selected',
 					segments.length ? avgPedExpWay : 'No network ways selected',
@@ -128,7 +128,7 @@ const general = async (ids) => {
 		await client?.close();
 	}
 
-	writeCSV('reports', '1-general', headers, rows);
+	writeCSV('reports', 'overall-1-general', headers, rows);
 }
 
 export default general;
