@@ -1,6 +1,7 @@
 import { open } from 'node:fs/promises';
 import { MongoClient } from 'mongodb';
 import 'dotenv/config';
+import fs from 'fs';
 
 import c from './helpers/collector.js';
 
@@ -11,23 +12,42 @@ import infrastructure from './helpers/reports/overall/infrastructure.js';
 import ways from './helpers/reports/overall/ways.js';
 import intersections from './helpers/reports/overall/intersections.js';
 
+import travelExistingProjected from './helpers/reports/travel/travelExistingProjected.js';
+import travelChange from './helpers/reports/travel/travelChange.js';
+
 const client = new MongoClient(process.env.MONGO_URI);
 
 c.off(); // disable debugging
 
 // reports as specified in:
 // https://docs.google.com/document/d/1fEByERdU3FYx4nHLPD-fbzJ3HvL6ZmUaqPqVynhaNHA/edit
-const reports = (ids) => {
+const reports = async (ids) => {
+
+	fs.rmSync('debug_output/reports', {recursive: true, force: true });
+
 	// general/overall
-	general(ids);
-	reachType(ids);
-	reachLjvf(ids);
-	infrastructure(ids);
-	ways(ids);
-	intersections(ids);
+	await general(ids);
+	await reachType(ids);
+	await reachLjvf(ids);
+	await infrastructure(ids);
+	await ways(ids);
+	await intersections(ids);
 
 	// safety
+	// crashesExisting(ids);
+	// crashesNew(ids);
+	// crashesChange(ids);
 
+	// crashesExistingProjectedModel(ids);
+	// crashesExistingProjectedAll(ids);
+	// crashesExistingProjectedVolume(ids);
+
+	// volumeExistingProjected(ids);
+	// volumeChange(ids);
+
+	// travel
+	await travelExistingProjected(ids);
+	await travelChange(ids);
 }
 
 const fileProjects = async () => {
@@ -56,7 +76,7 @@ const fileProjects = async () => {
 			return;
 		}
 
-		reports(lines.slice(1));
+		await reports(lines.slice(1));
 	}
 	catch (e) {
 		if(e.code === 'ENOENT') {
@@ -90,20 +110,20 @@ const allProjects = async () => {
 			ids.push(project._id.toString());
 		}
 
-		reports(ids);
+		await reports(ids);
 	}
 	finally {
 		await client.close();
 	}
 }
 
-const oneProject = () => {
+const oneProject = async () => {
 	if(process.argv.length !== 4) {
 		usage();
 		return;
 	}
 
-	reports([process.argv[3]]);
+	await reports([process.argv[3]]);
 }
 
 const usage = () => {
