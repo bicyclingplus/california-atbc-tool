@@ -12,6 +12,7 @@ import infrastructure from './helpers/reports/overall/infrastructure.js';
 import ways from './helpers/reports/overall/ways.js';
 import intersections from './helpers/reports/overall/intersections.js';
 
+import crashesModel from './helpers/reports/safety/crashesModel.js';
 import crashesVolume from './helpers/reports/safety/crashesVolume.js';
 import volumeExistingProjected from './helpers/reports/safety/volumeExistingProjected.js';
 import volumeAdjustment from './helpers/reports/safety/volumeAdjustment.js';
@@ -30,24 +31,24 @@ const reports = async (ids) => {
 	fs.rmSync('debug_output/reports', {recursive: true, force: true });
 
 	// general/overall
-	await general(ids);
-	await reachType(ids);
-	await reachLjvf(ids);
-	await infrastructure(ids);
-	await ways(ids);
-	await intersections(ids);
+	// await general(ids);
+	// await reachType(ids);
+	// await reachLjvf(ids);
+	// await infrastructure(ids);
+	// await ways(ids);
+	// await intersections(ids);
 
 	// safety
-	// await crashesExistingProjectedModel(ids);
+	await crashesModel(ids);
 	// await crashesExistingProjectedAll(ids);
-	await crashesVolume(ids);
+	// await crashesVolume(ids);
 
-	await volumeExistingProjected(ids);
-	await volumeAdjustment(ids);
+	// await volumeExistingProjected(ids);
+	// await volumeAdjustment(ids);
 
 	// travel
-	await travelExistingProjected(ids);
-	await travelChange(ids);
+	// await travelExistingProjected(ids);
+	// await travelChange(ids);
 }
 
 const fileProjects = async () => {
