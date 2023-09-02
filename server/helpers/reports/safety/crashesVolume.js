@@ -7,16 +7,18 @@ import writeCSV from '../../debug/writeCSV.js';
 import calcProjectLength from '../../benefits/calcProjectLength.js';
 import calcSafetyQuantitative from '../../benefits/calcSafetyQuantitative.js';
 
-const volumeExistingProjected = async (ids) => {
-	console.log('Starting safety volume existing/projected report');
+const volumeAdjustment = async (ids) => {
+	console.log('Starting safety crashes by volume report');
 
 	const headers = [
 		'Project ID',
 		'M Mode',
-		'J Location type',
-		'Existing Volume Vmj',
+		'O Outcome',
+		'Before crashes per 1000 volume',
 		'K Estimate',
-		'Projected Volume PVmjk',
+		'After crashes per 1000 volume',
+		'Change in crashes',
+		'Change in crashes over project time frame',
 	];
 
 	const rows = [];
@@ -75,42 +77,37 @@ const volumeExistingProjected = async (ids) => {
 				);
 
 				// gen rows
-				const existing = c.get('safety', 'vmj_existing').filter(r => r[0] === 'safety');
-				const projected = c.get('safety', 'vmj_projected').filter(r => r[0] === 'safety');
-
-				const existingVolumeIdx = 3;
-
-				const projectedModeIdx = 1;
-				const projectedLocationIdx = 2;
-				const projectedEstimateIdx = 3;
-				const projectedVolumeIdx = 4;
+				const before = c.get('safety', 'before').filter(r => r[0] === 'safety');
+				const after = c.get('safety', 'after').filter(r => r[0] === 'safety');
+				const change = c.get('safety', 'change').filter(r => r[0] === 'safety');
+				const projected = c.get('safety', 'projected').filter(r => r[0] === 'safety');
 
 				const numModes = 3;
-				const numLocations = 2;
+				const numOutcomes = 3;
 				const numEstimates = 3;
 
 				for(let m = 0; m < numModes; m++) {
+					for(let o = 0; o < numOutcomes; o++) {
 
-					for(let j = 0; j < numLocations; j++) {
-
-						const existingRow = m*numLocations+j;
+						const beforeIdx = m*numOutcomes+o;
 
 						for(let k = 0; k < numEstimates; k++) {
 
-							const projectedRow = m*numLocations*numEstimates+j*numEstimates+k;
+							const afterIdx = m*numOutcomes*numEstimates+o*numEstimates+k;
 
 							rows.push([
 								project._id.toString(),
-								projected[projectedRow][projectedModeIdx],
-								projected[projectedRow][projectedLocationIdx],
-								existing[existingRow][existingVolumeIdx],
-								projected[projectedRow][projectedEstimateIdx],
-								projected[projectedRow][projectedVolumeIdx],
+								after[afterIdx][1],
+								after[afterIdx][2],
+								before[beforeIdx][7],
+								after[afterIdx][3],
+								after[afterIdx][8],
+								change[afterIdx][8],
+								projected[afterIdx][4],
 							]);
 						}
 					}
 				}
-
 			}
 			catch (e) {
 				if(e instanceof BSONTypeError) {
@@ -128,7 +125,7 @@ const volumeExistingProjected = async (ids) => {
 		await client?.close();
 	}
 
-	writeCSV('reports', 'safety-5-volume-d-combined', headers, rows);
+	writeCSV('reports', 'safety-4-combined-c-crashes-volume', headers, rows);
 }
 
-export default volumeExistingProjected;
+export default volumeAdjustment;

@@ -12,6 +12,7 @@ import infrastructure from './helpers/reports/overall/infrastructure.js';
 import ways from './helpers/reports/overall/ways.js';
 import intersections from './helpers/reports/overall/intersections.js';
 
+import crashesVolume from './helpers/reports/safety/crashesVolume.js';
 import volumeExistingProjected from './helpers/reports/safety/volumeExistingProjected.js';
 import volumeAdjustment from './helpers/reports/safety/volumeAdjustment.js';
 
@@ -39,7 +40,7 @@ const reports = async (ids) => {
 	// safety
 	// await crashesExistingProjectedModel(ids);
 	// await crashesExistingProjectedAll(ids);
-	// await crashesExistingProjectedVolume(ids);
+	await crashesVolume(ids);
 
 	await volumeExistingProjected(ids);
 	await volumeAdjustment(ids);
