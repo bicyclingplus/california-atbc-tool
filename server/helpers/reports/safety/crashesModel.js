@@ -4,6 +4,15 @@ import { BSONTypeError } from 'bson';
 import c from '../../collector.js';
 import writeCSV from '../../debug/writeCSV.js';
 
+import {
+	MODES,
+	OUTCOMES,
+	LOCATION_TYPES,
+	VOLUMES,
+	FUNCTIONAL_CLASSES,
+	ESTIMATES,
+} from '../../benefits/constants.js';
+
 import calcProjectLength from '../../benefits/calcProjectLength.js';
 import calcSafetyQuantitative from '../../benefits/calcSafetyQuantitative.js';
 
@@ -82,57 +91,78 @@ const crashesModel = async (ids) => {
 				const existing = c.get('safety', 'CCmojvf').filter(r => r[0] === 'safety');
 				const projected = c.get('safety', 'CCmojvfe').filter(r => r[0] === 'safety');
 
-				// console.log(projected);
-				// console.log(existing.length);
-				// console.log(projected.length);
-				// process.exit();
+				// existing and projected are calculated
+				// in a different order
+				// we'll use projected for the report and build
+				// a lookup for the correct existing value
+				const existingLookup = {};
 
-				const numModes = 3;
-				const numOutcomes = 3;
-				const numLocations = 2;
-				const numVolumes = 3;
-				const numFunctionals = 3;
-				const numEstimates = 3;
+				for(let r of existing) {
+					const m = r[1]
+					const o = r[2];
+					const j = r[3];
+					const v = r[4];
+					const f = r[5];
+					const EC = r[9];
 
+					if(!(m in existingLookup)) {
+						existingLookup[m] = {};
+					}
 
-				for(let m = 0; m < numModes; m++) {
-					for(let o = 0; o < numOutcomes; o++) {
-						for(let j = 0; j < numLocations; j++) {
-							for(let v = 0; v < numVolumes; v++) {
-								for(let f = 0; f < numFunctionals; f++) {
+					if(!(o in existingLookup[m])) {
+						existingLookup[m][o] = {};
+					}
 
-									const existingIdx =
-									m*numOutcomes*numLocations*numVolumes*numFunctionals+
-									o*numLocations*numVolumes*numFunctionals+
-									j*numVolumes*numFunctionals+
-									v*numFunctionals+
-									f;
+					if(!(j in existingLookup[m][o])) {
+						existingLookup[m][o][j] = {};
+					}
 
-									// console.log(`e-${existingIdx}`)
+					if(!(v in existingLookup[m][o][j])) {
+						existingLookup[m][o][j][v] = {};
+					}
 
-									for(let k = 0; k < numEstimates; k++) {
+					existingLookup[m][o][j][v][f] = EC;
+				}
 
-										const projectedIdx =
-										m*numOutcomes*numLocations*numVolumes*numFunctionals*numEstimates+
-										o*numLocations*numVolumes*numFunctionals*numEstimates+
-										j*numVolumes*numFunctionals*numEstimates+
-										v*numFunctionals*numEstimates+
-										f*numEstimates+
-										k;
+				const fRowCnt = ESTIMATES.length;
+				const vRowCnt = fRowCnt * FUNCTIONAL_CLASSES.length;
+				const jRowCnt = vRowCnt * VOLUMES.length;
+				const oRowCnt = jRowCnt * LOCATION_TYPES.length;
+				const mRowCnt = oRowCnt * OUTCOMES.length;
 
-										// console.log(`p-${projectedIdx}`)
+				for(let m = 0; m < MODES.length; m++) {
+					for(let o = 0; o < OUTCOMES.length; o++) {
+						for(let j = 0; j < LOCATION_TYPES.length; j++) {
+							for(let v = 0; v < VOLUMES.length; v++) {
+								for(let f = 0; f < FUNCTIONAL_CLASSES.length; f++) {
+									for(let k = 0; k < ESTIMATES.length; k++) {
+
+										const pIdx =
+											m*mRowCnt+
+											o*oRowCnt+
+											j*jRowCnt+
+											v*vRowCnt+
+											f*fRowCnt+
+											k;
+
+										const mode = projected[pIdx][1];
+										const outcome = projected[pIdx][2];
+										const location = projected[pIdx][3];
+										const volume = projected[pIdx][4];
+										const functional = projected[pIdx][5];
+
 
 										rows.push([
 											project._id.toString(),
-											projected[projectedIdx][1],
-											projected[projectedIdx][2],
-											projected[projectedIdx][3],
-											projected[projectedIdx][4],
-											projected[projectedIdx][5],
-											projected[projectedIdx][7],
-											existing[existingIdx][9],
-											projected[projectedIdx][6],
-											projected[projectedIdx][10],
+											mode,
+											outcome,
+											location,
+											volume,
+											functional,
+											projected[pIdx][7],
+											existingLookup[mode][outcome][location][volume][functional],
+											projected[pIdx][6],
+											projected[pIdx][10],
 										]);
 									}
 								}
@@ -141,18 +171,6 @@ const crashesModel = async (ids) => {
 					}
 				}
 
-				// process.exit();
-
-				// 'Project ID',
-				// 'M Mode',
-				// 'O Outcome',
-				// 'J Location',
-				// 'V Volume Class',
-				// 'F Functional Class',
-				// 'Alpha constant',
-				// 'ECCmojvf',
-				// 'K Estimate',
-				// 'NCCmojvf',
 			}
 			catch (e) {
 				if(e instanceof BSONTypeError) {
