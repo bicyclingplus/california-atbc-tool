@@ -111,9 +111,11 @@ const calcECmoj_debug = (UI, Ljvf, Vmj, m, o, j) => {
   }
 
   // we only want to observe one stream of CCmojvf
-  // we'll the one from the model only calc
+  // we'll take the one from the model only calc
+  // so we turn off the collector to ignore the
+  // CCmojvf calls from calcECmoj_split
   c.off();
-  const split = calcECmoj_split(UI, Ljvf, Vmj, m, o, j)
+  const split = UIy && UIy > 0 ? calcECmoj_split(UI, Ljvf, Vmj, m, o, j) : null;
   c.on();
 
   return {
