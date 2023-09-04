@@ -5,7 +5,7 @@ import c from '../../collector.js';
 import calcProjectLength from '../../benefits/calcProjectLength.js';
 import calcDemand from '../../benefits/calcDemand.js';
 import calcTravel from '../../benefits/calcTravel.js';
-import writeCSV from '../../debug/writeCSV.js';
+import { writeCSV } from '../../writeCSV.js';
 
 const travelExistingProjected = async (ids) => {
 	console.log('Starting travel existing/projected report');

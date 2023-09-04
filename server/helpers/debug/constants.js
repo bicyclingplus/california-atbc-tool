@@ -8,7 +8,7 @@ import {
   DISCOUNT_RATE,
 } from '../benefits/constants.js';
 
-import writeCSV from './writeCSV.js';
+import { writeCSV } from '../writeCSV.js';
 
 
 const constants = () => {

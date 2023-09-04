@@ -1,4 +1,4 @@
-import writeCSV from './writeCSV.js';
+import writeCSV from '../writeCSV.js';
 
 const inputs = (project) => {
 

@@ -1,7 +1,7 @@
 import { MongoClient, ObjectId } from 'mongodb';
 import { BSONTypeError } from 'bson';
 
-import writeCSV from '../../debug/writeCSV.js';
+import { writeCSV } from '../../writeCSV.js';
 
 const ways = async (ids) => {
 	console.log('Starting ways report');

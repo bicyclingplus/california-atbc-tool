@@ -5,7 +5,7 @@ import {
 } from '../benefits/constants.js';
 
 import c from '../collector.js';
-import writeCSV from './writeCSV.js';
+import writeCSV from '../writeCSV.js';
 
 import calcProjectLength from '../benefits/calcProjectLength.js';
 import calcSafetyQuantitative from '../benefits/calcSafetyQuantitative.js';

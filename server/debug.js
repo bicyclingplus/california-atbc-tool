@@ -1,8 +1,8 @@
 import { MongoClient, ObjectId } from 'mongodb';
 import dotenv from 'dotenv';
-import fs from 'fs';
 
 import c from './helpers/collector.js';
+import { clean } from './helpers/writeCSV.js';
 
 import lookups from './helpers/debug/lookups.js';
 import constants from './helpers/debug/constants.js';
@@ -13,6 +13,9 @@ import safety from './helpers/debug/safety.js';
 
 dotenv.config();
 
+clean('debug');
+clean('lookups');
+
 const client = new MongoClient(process.env.MONGO_URI);
 
 const debug = (project) => {
@@ -22,8 +25,6 @@ const debug = (project) => {
 	travel(project);
 	safety(project);
 };
-
-fs.rmSync('debug_output', {recursive: true, force: true });
 
 lookups();
 constants();

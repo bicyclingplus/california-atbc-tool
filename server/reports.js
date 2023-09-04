@@ -1,9 +1,9 @@
 import { open } from 'node:fs/promises';
 import { MongoClient } from 'mongodb';
 import 'dotenv/config';
-import fs from 'fs';
 
 import c from './helpers/collector.js';
+import { clean } from './helpers/writeCSV.js';
 
 import general from './helpers/reports/overall/general.js';
 import reachType from './helpers/reports/overall/reachType.js';
@@ -23,13 +23,13 @@ import travelChange from './helpers/reports/travel/travelChange.js';
 
 const client = new MongoClient(process.env.MONGO_URI);
 
+clean('reports');
+
 c.off(); // disable debugging
 
 // reports as specified in:
 // https://docs.google.com/document/d/1fEByERdU3FYx4nHLPD-fbzJ3HvL6ZmUaqPqVynhaNHA/edit
 const reports = async (ids) => {
-
-	fs.rmSync('debug_output/reports', {recursive: true, force: true });
 
 	// general/overall
 	await general(ids);

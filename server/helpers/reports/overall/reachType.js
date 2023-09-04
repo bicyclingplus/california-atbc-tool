@@ -1,7 +1,7 @@
 import { MongoClient, ObjectId } from 'mongodb';
 import { BSONTypeError } from 'bson';
 
-import writeCSV from '../../debug/writeCSV.js';
+import { writeCSV } from '../../writeCSV.js';
 import calcProjectLength from '../../benefits/calcProjectLength.js';
 
 const reachType = async (ids) => {

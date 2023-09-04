@@ -2,7 +2,7 @@ import { MongoClient, ObjectId } from 'mongodb';
 import { BSONTypeError } from 'bson';
 
 import c from '../../collector.js';
-import writeCSV from '../../debug/writeCSV.js';
+import { writeCSV } from '../../writeCSV.js';
 
 import {
 	MODES,

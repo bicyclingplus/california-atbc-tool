@@ -10,7 +10,7 @@ import calcShare from '../../benefits/calcShare.js';
 import getElement from '../../benefits/getElement.js';
 import calcProjectLength from '../../benefits/calcProjectLength.js';
 import calcLength from '../../benefits/safety/calcLength.js';
-import writeCSV from '../../debug/writeCSV.js';
+import { writeCSV } from '../../writeCSV.js';
 
 const require = createRequire(import.meta.url);
 const travel = require('../../../data/travel_volume.json');

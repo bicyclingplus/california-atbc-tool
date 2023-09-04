@@ -7,7 +7,7 @@ import {
 	FUNCTIONAL_CLASSES,
 } from '../../benefits/constants.js';
 
-import writeCSV from '../../debug/writeCSV.js';
+import { writeCSV } from '../../writeCSV.js';
 import calcLjvf from '../../benefits/safety/calcLjvf.js';
 
 const reachLjvf = async (ids) => {

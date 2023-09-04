@@ -1,5 +1,5 @@
 import c from '../collector.js';
-import writeCSV from './writeCSV.js';
+import writeCSV from '../writeCSV.js';
 
 import calcProjectLength from '../benefits/calcProjectLength.js';
 import calcDemand from '../benefits/calcDemand.js';

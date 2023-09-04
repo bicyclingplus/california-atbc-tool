@@ -10,7 +10,7 @@ import calcProjectLength from '../../benefits/calcProjectLength.js';
 import calcDemand from '../../benefits/calcDemand.js';
 import calcTravel from '../../benefits/calcTravel.js';
 
-import writeCSV from '../../debug/writeCSV.js';
+import { writeCSV } from '../../writeCSV.js';
 
 const travelChange = async (ids) => {
 	console.log('Starting travel change report');

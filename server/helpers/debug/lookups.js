@@ -8,7 +8,7 @@ import {
 	FUNCTIONAL_CLASSES,
 } from '../benefits/constants.js';
 
-import writeCSV from './writeCSV.js';
+import { writeCSV } from '../writeCSV.js';
 
 const require = createRequire(import.meta.url);
 const miles = require('../../data/volume_to_miles.json');
