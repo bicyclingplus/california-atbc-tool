@@ -211,14 +211,14 @@ class BCTool extends React.Component {
       }
     }
 
-    let hasMapSelections = (
+    let hasMapSelections = Boolean(
       this.state.selectedIntersections.length ||
       this.state.selectedWays.length ||
       this.state.userWays.length ||
       this.state.userIntersections.length
     );
 
-    let hasOnlyUserMapSelections = (
+    let hasOnlyUserMapSelections = Boolean(
       !this.state.selectedIntersections.length &&
       !this.state.selectedWays.length &&
       (this.state.userWays.length ||
