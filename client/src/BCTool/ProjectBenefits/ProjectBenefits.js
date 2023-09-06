@@ -53,7 +53,7 @@ class ProjectBenefits extends React.Component {
         : null }
 
         { benefits.safetyQuantitative && !hasOnlyUserMapSelections ?
-        <SafetyQuantitative benefits={benefits.safetyQuantitative} />
+        <SafetyQuantitative benefits={benefits.safetyQuantitative} timeframe={timeframe} />
         : null }
 
         { benefits.emissions && !hasOnlyUserMapSelections ?
@@ -61,7 +61,7 @@ class ProjectBenefits extends React.Component {
         : null }
 
         { benefits.health && !hasOnlyUserMapSelections ?
-        <Health benefits={benefits.health} subtype={subtype} />
+        <Health benefits={benefits.health} subtype={subtype} timeframe={timeframe} />
         : null }
 
         { benefits.projectQualitative ?

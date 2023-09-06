@@ -6,8 +6,11 @@ class HealthBenefits extends React.Component {
 
   render() {
 
-    let benefits = this.props.benefits;
-    let subtype = this.props.subtype;
+    const {
+      benefits,
+      subtype,
+      timeframe,
+    } = this.props;
 
     return (
       <>
@@ -17,9 +20,9 @@ class HealthBenefits extends React.Component {
         <thead>
           <tr>
             <th><br /></th>
-            <th className="text-center">Marginal Metabolic Equivalent of Task (MMET) Increase</th>
-            <th className="text-center">MMET Increase / Capita</th>
-            <th className="text-center">MMET Increase / Jobs</th>
+            <th className="text-center">{timeframe} Year Marginal Metabolic Equivalent of Task (MMET) Increase</th>
+            <th className="text-center">{timeframe} Year MMET Increase / Capita</th>
+            <th className="text-center">{timeframe} Year MMET Increase / Jobs</th>
           </tr>
         </thead>
         <tbody>
