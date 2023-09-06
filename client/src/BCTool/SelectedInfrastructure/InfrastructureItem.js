@@ -128,27 +128,27 @@ class infrastructureItem extends React.Component {
                 { this.state.new ?
                     <>
                     { units === 'length' ?
-                    <LengthInput shortname={shortname} value={newValue} onChange={this.onNewValueChange} required/>
+                    <LengthInput shortname={`${shortname}-new`} value={newValue} onChange={this.onNewValueChange} required/>
                     :
-                    <CountInput shortname={shortname} value={newValue} onChange={this.onNewValueChange} required />
+                    <CountInput shortname={`${shortname}-new`} value={newValue} onChange={this.onNewValueChange} required />
                     }
                     </>
                 : <div className="row-empty-height"><br /></div> }
                 { this.state.upgrade ?
                     <>
                     { units === 'length' ?
-                    <LengthInput shortname={shortname} value={upgradeValue} onChange={this.onUpgradeValueChange} required/>
+                    <LengthInput shortname={`${shortname}-upgrade`} value={upgradeValue} onChange={this.onUpgradeValueChange} required/>
                     :
-                    <CountInput shortname={shortname} value={upgradeValue} onChange={this.onUpgradeValueChange} required />
+                    <CountInput shortname={`${shortname}-upgrade`} value={upgradeValue} onChange={this.onUpgradeValueChange} required />
                     }
                     </>
                 : <div className="row-empty-height"><br /></div> }
                 { this.state.retrofit ?
                     <>
                     { units === 'length' ?
-                    <LengthInput shortname={shortname} value={retrofitValue} onChange={this.onRetrofitValueChange} required/>
+                    <LengthInput shortname={`${shortname}-retrofit`} value={retrofitValue} onChange={this.onRetrofitValueChange} required/>
                     :
-                    <CountInput shortname={shortname} value={retrofitValue} onChange={this.onRetrofitValueChange} required />
+                    <CountInput shortname={`${shortname}-retrofit`} value={retrofitValue} onChange={this.onRetrofitValueChange} required />
                     }
                     </>
                 : <div className="row-empty-height"><br /></div> }
