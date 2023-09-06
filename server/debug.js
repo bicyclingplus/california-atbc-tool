@@ -1,6 +1,6 @@
 import { open } from 'node:fs/promises';
 import { MongoClient, ObjectId } from 'mongodb';
-import dotenv from 'dotenv';
+import 'dotenv/config';
 
 import c from './helpers/collector.js';
 import { clean } from './helpers/writeCSV.js';
@@ -11,8 +11,6 @@ import inputs from './helpers/debug/inputs.js';
 import reach from './helpers/debug/reach.js';
 import travel from './helpers/debug/travel.js';
 import safety from './helpers/debug/safety.js';
-
-dotenv.config();
 
 const client = new MongoClient(process.env.MONGO_URI);
 
