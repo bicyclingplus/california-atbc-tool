@@ -5,7 +5,7 @@ const avgProp = (items, property) => {
 
   for(let item of items) {
 
-    if(item.properties[property]) {
+    if(item.properties[property] !== null) {
       total += item.properties[property];
       count++;
     }
