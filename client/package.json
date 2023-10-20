@@ -4,21 +4,24 @@
   "private": true,
   "dependencies": {
     "@popperjs/core": "^2.9.2",
-    "@testing-library/jest-dom": "^5.14.1",
-    "@testing-library/react": "^12.1.2",
-    "@testing-library/user-event": "^13.5.0",
+    "@testing-library/jest-dom": "^6.1.4",
+    "@testing-library/react": "^14.0.0",
+    "@testing-library/user-event": "^14.5.1",
     "bootstrap": "^5.3.0-alpha3",
     "bootstrap-icons": "^1.8.0",
     "jspdf": "^2.5.1",
     "jspdf-autotable": "^3.5.23",
     "leaflet": "^1.7.1",
     "leaflet-spin": "^1.1.2",
-    "react": "^17.0.2",
-    "react-dom": "^17.0.2",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
     "react-router-dom": "^6.3.0",
+    "uuid": "^9.0.1",
+    "web-vitals": "^3.5.0"
+  },
+  "devDependencies": {
     "react-scripts": "5.0.1",
-    "uuid": "^8.3.2",
-    "web-vitals": "^2.1.2"
+    "@babel/plugin-proposal-private-property-in-object": "^7.21.11"
   },
   "scripts": {
     "start": "react-scripts start",
