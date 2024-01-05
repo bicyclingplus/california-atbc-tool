@@ -1,10 +1,19 @@
 import os
 import csv
 import json
+import math
 
 infilename = 'systemic_risk_clean.csv'
 
 output = {}
+
+SAFETY_IN_NUMBERS = 0.5
+
+def calc_alpha(risk, volume):
+    return math.log(
+        risk /
+        pow(volume, SAFETY_IN_NUMBERS)
+    )
 
 with open(os.path.join('input', infilename)) as infile:
 
@@ -18,13 +27,18 @@ with open(os.path.join('input', infilename)) as infile:
 
         mode = r[1].lower()
         location_type = r[0].lower()
-        volume = r[2].lower()
+        exposure_class = r[2].lower()
         functional_class = r[3].lower()
 
+        volume = float(r[5])
+        crash_risk = float(r[6])
+        injury_risk = float(r[7])
+        death_risk  = float(r[8])
+
         current_outcomes = {
-            'crash': float(r[9]),
-            'injury': float(r[10]),
-            'death': float(r[11]),
+            'crash': calc_alpha(crash_risk, volume),
+            'injury': calc_alpha(injury_risk, volume),
+            'death': calc_alpha(death_risk, volume),
         }
 
         if mode not in output:
@@ -38,11 +52,11 @@ with open(os.path.join('input', infilename)) as infile:
                 output[mode][o][location_type] = {}
 
         for o in current_outcomes:
-            if volume not in output[mode][o][location_type]:
-                output[mode][o][location_type][volume] = {}
+            if exposure_class not in output[mode][o][location_type]:
+                output[mode][o][location_type][exposure_class] = {}
 
         for o in current_outcomes:
-            output[mode][o][location_type][volume][functional_class] = current_outcomes[o]
+            output[mode][o][location_type][exposure_class][functional_class] = current_outcomes[o]
 
 
 output['bicycling'] = output['bike']
