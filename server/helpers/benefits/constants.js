@@ -110,8 +110,8 @@ const TRANSIT_WALK_FRACTION = {
   none: 0.0,
 };
 
-// p power representing the safety in numbers effect (0.5)
-const POWER_SAFETY_IN_NUMBERS = 0.5;
+// p power representing the safety in numbers effect
+const POWER_SAFETY_IN_NUMBERS = 0.4;
 const FUNCTIONAL_CLASSES = ['major_road', 'minor_road', 'local'];
 const COLUMNS = ['safety', 'capita', 'jobs'];
 const MODES = ['bicycling', 'walking', 'combined'];

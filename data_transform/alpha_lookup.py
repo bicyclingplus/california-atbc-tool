@@ -7,7 +7,7 @@ infilename = 'systemic_risk_clean.csv'
 
 output = {}
 
-SAFETY_IN_NUMBERS = 0.5
+SAFETY_IN_NUMBERS = 0.4
 
 def calc_alpha(risk, volume):
     return math.log(
