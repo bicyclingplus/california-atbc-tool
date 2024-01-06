@@ -25,8 +25,7 @@ const calcECmoj_split = (UI, Ljvf, Vmj, m, o, j) => {
 
       const CC = calcCCmojvf(Ljvf, Vmj, m, o, j, v, f);
 
-      total += ((UImoj / UIy) * (UIy / 5)) +
-        ((1 - (UIy / 5)) * CC);
+      total += (UImoj + ((5 - UIy) * CC));
     }
   }
 

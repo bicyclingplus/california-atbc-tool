@@ -49,4 +49,5 @@ const calcCC = (A, L, V) => {
 export {
   calcCCmojvf,
   calcCCmojvfe,
+  calcCC,
 };
