@@ -122,7 +122,11 @@ with open(os.path.join('input', infilename)) as infile:
 		if units == "Factor":
 
 			for e in effects:
-				effects[e] *= 100
+				temp = 1 / effects[e]
+				temp = 1 - temp
+				temp = temp * 100
+
+				effects[e] = temp
 
 			units = "percent"
 
