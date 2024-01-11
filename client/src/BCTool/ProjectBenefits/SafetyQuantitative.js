@@ -461,11 +461,11 @@ class SafetyQuantitative extends React.Component {
 			<table className="table table-bordered table-striped" id="safety-simple-change">
 				<thead>
 					<tr>
-						<th className="text-center">{timeframe} Year Mode</th>
-						<th className="text-center">{timeframe} Year Outcome</th>
+						<th className="text-center">Mode</th>
+						<th className="text-center">Outcome</th>
 						<th className="text-center">{timeframe} Year Benefit</th>
-						<th className="text-center">Benefit / Capita</th>
-						<th className="text-center">Benefit / Jobs</th>
+						<th className="text-center">{timeframe} Year Benefit / Capita</th>
+						<th className="text-center">{timeframe} Year Benefit / Jobs</th>
 					</tr>
 				</thead>
 				<tbody>
