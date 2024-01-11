@@ -3,11 +3,11 @@
     [
         {
             "location_type": "roadway",
-            "lower": 200.0,
-            "mean": 500.0,
+            "lower": 50,
+            "mean": 80,
             "mode": "combined",
             "outcome": "crash",
-            "upper": 800.0
+            "upper": 87.5
         }
     ],
     "conventional-bike-lane":
