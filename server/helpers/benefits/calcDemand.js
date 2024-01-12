@@ -48,7 +48,6 @@ const _weightDemand = (
 
   // adjust based on percentage of adjacent intersections/ways selected
   const in_project = proj_units / (proj_units + proj_unselected_units);
-  console.log(in_project);
   distribution_den = (distribution_den * in_project) + (1 - in_project);
 
   const people = proj_volume/distribution_den;
@@ -83,7 +82,11 @@ const _calcPedDemand = (
     // CALCULATE PEDESTRIAN DEMAND FOR USER SELECTED INTERSECTIONS
     // each selected intersection has some prediction of pedestrian demand,
     // we add these to the total here
-    for(let intersection of [...selectedIntersections, ...adjacentUnselectedIntersections]) {
+    const allIntersections = [
+      ...selectedIntersections,
+      ...adjacentUnselectedIntersections
+    ];
+    for(let intersection of allIntersections) {
 
       const ped_demand = parseInt(intersection.properties.ped_demand)
 
@@ -207,7 +210,11 @@ const _calcBikeDemand = (
     const avgJobs = avgProp(selectedWays, 'jobs');
 
     // CALCULATE BIKE DEMAND PER USER SELECTED WAY
-    for(let way of [...selectedWays, ...adjacentUnselectedWays]) {
+    const allWays = [
+      ...selectedWays,
+      ...adjacentUnselectedWays
+    ];
+    for(let way of allWays) {
 
       const bicyclist_demand = parseInt(way.properties.bicyclist_demand);
 
