@@ -21,65 +21,58 @@ const config = require('../../data/volume_to_miles.json');
 const _weightDemand = (
   proj_distance,
   proj_units,
+  proj_unselected_units,
   proj_volume,
   miles_distribution) => {
 
 	// Calculating the average distance per intersection for the project
-	let proj_distance_per_unit = proj_distance/proj_units;
-
-  // console.log(`proj_distance_per_unit: ${proj_distance_per_unit}`)
+	const proj_distance_per_unit = proj_distance/proj_units;
 
 	// Convert miles into intersections
-    let unit_distribution = {};
-    let distribution_den = 0;
+  const unit_distribution = {};
+  let distribution_den = 0;
 
-    for(let dist in miles_distribution) {
+  for(let dist in miles_distribution) {
 
-      // unit_distribution[dist] = parseFloat(dist)/proj_distance_per_unit;
-      unit_distribution[dist] = Math.floor(parseFloat(dist)/proj_distance_per_unit);
+    unit_distribution[dist] = parseFloat(dist)/proj_distance_per_unit;
 
-    	// If on average people walk more than the number of intersections in the project,
-    	// then consider they have walked through all of the project intersections
-    	if(unit_distribution[dist] > proj_units) {
-    		unit_distribution[dist] = proj_units;
-    	}
+  	// If on average people walk more than the number of intersections in the project,
+  	// then consider they have walked through all of the project intersections
+  	if(unit_distribution[dist] > proj_units) {
+  		unit_distribution[dist] = proj_units;
+  	}
 
-    	// Distribution of people walking through intersections
-    	distribution_den += unit_distribution[dist]*miles_distribution[dist];
-    }
+  	// Distribution of people walking through intersections
+  	distribution_den += unit_distribution[dist]*miles_distribution[dist];
+  }
 
-    // console.log('unit_distribution')
-    // console.log(unit_distribution);
-    // console.log(`distribution_den: ${distribution_den}`);
+  // adjust based on percentage of adjacent intersections/ways selected
+  const in_project = proj_units / (proj_units + proj_unselected_units);
+  console.log(in_project);
+  distribution_den = (distribution_den * in_project) + (1 - in_project);
 
-    // let people = proj_volume/distribution_den;
-    let people = Math.floor(proj_volume/distribution_den);
+  const people = proj_volume/distribution_den;
 
-    // console.log(`people: ${people}`);
+  // Calculating the distance walked in the project
+  let distance = 0;
 
-    // Calculating the distance walked in the project
-    let distance = 0;
+  for(let dist in miles_distribution) {
+  	if(parseFloat(dist)>proj_distance) {
+  		distance += proj_distance*miles_distribution[dist]*people;
+  	}
+  	else {
+  		distance += parseFloat(dist)*miles_distribution[dist]*people;
+  	}
+  }
 
-    for(let dist in miles_distribution) {
-    	if(parseFloat(dist)>proj_distance) {
-    		distance += proj_distance*miles_distribution[dist]*people;
-    	}
-    	else {
-    		distance += parseFloat(dist)*miles_distribution[dist]*people;
-    	}
-    }
-
-    // console.log(`distance: ${distance}`);
-
-    // return Math.round((distance + Number.EPSILON) * 100) / 100;
-    // Changed the original rounding to match bike demand
-    return Math.round(distance + Number.EPSILON);
+  return distance;
 };
 
 const _calcPedDemand = (
   existingTravel,
   selectedIntersections,
   userIntersections,
+  adjacentUnselectedIntersections,
   projectLength) => {
 
     // Grab the averages
@@ -90,7 +83,7 @@ const _calcPedDemand = (
     // CALCULATE PEDESTRIAN DEMAND FOR USER SELECTED INTERSECTIONS
     // each selected intersection has some prediction of pedestrian demand,
     // we add these to the total here
-    for(let intersection of selectedIntersections) {
+    for(let intersection of [...selectedIntersections, ...adjacentUnselectedIntersections]) {
 
       const ped_demand = parseInt(intersection.properties.ped_demand)
 
@@ -168,6 +161,7 @@ const _calcPedDemand = (
       existingTravel.miles.pedestrian.mean = _weightDemand(
         projectLengthMiles,
         numIntersections,
+        adjacentUnselectedIntersections.length,
         existingTravel.miles.pedestrian.mean,
         config.pedestrian
       );
@@ -175,6 +169,7 @@ const _calcPedDemand = (
       existingTravel.capita.pedestrian.mean = _weightDemand(
         projectLengthMiles,
         numIntersections,
+        adjacentUnselectedIntersections.length,
         existingTravel.capita.pedestrian.mean,
         config.pedestrian
       );
@@ -182,6 +177,7 @@ const _calcPedDemand = (
       existingTravel.jobs.pedestrian.mean = _weightDemand(
         projectLengthMiles,
         numIntersections,
+        adjacentUnselectedIntersections.length,
         existingTravel.jobs.pedestrian.mean,
         config.pedestrian);
     }
@@ -199,6 +195,7 @@ const _calcBikeDemand = (
   existingTravel,
   selectedWays,
   userWays,
+  adjacentUnselectedWays,
   projectLength) => {
 
     // AVERAGE NEEDED PROPERTIES FOR USER SELECTED WAYS
@@ -210,7 +207,7 @@ const _calcBikeDemand = (
     const avgJobs = avgProp(selectedWays, 'jobs');
 
     // CALCULATE BIKE DEMAND PER USER SELECTED WAY
-    for(let way of selectedWays) {
+    for(let way of [...selectedWays, ...adjacentUnselectedWays]) {
 
       const bicyclist_demand = parseInt(way.properties.bicyclist_demand);
 
@@ -286,40 +283,34 @@ const _calcBikeDemand = (
 
     // then the bike demand is weighted by the project length and
     // number of ways
-    // let projectLengthMiles = projectLength / 5280;
-    // let numWays = selectedWays.length + userWays.length;
+    let projectLengthMiles = projectLength / 5280;
+    let numWays = selectedWays.length + userWays.length;
 
-    // if(numWays > 0) {
+    if(numWays > 0) {
 
-    //   existingTravel.miles.bike.mean = _weightDemand(
-    //     projectLengthMiles,
-    //     numWays,
-    //     existingTravel.miles.bike.mean,
-    //     config.bike
-    //   );
+      existingTravel.miles.bike.mean = _weightDemand(
+        projectLengthMiles,
+        numWays,
+        adjacentUnselectedWays.length,
+        existingTravel.miles.bike.mean,
+        config.bike
+      );
 
-    //   existingTravel.capita.bike.mean = _weightDemand(
-    //     projectLengthMiles,
-    //     numWays,
-    //     existingTravel.capita.bike.mean,
-    //     config.bike
-    //   );
+      existingTravel.capita.bike.mean = _weightDemand(
+        projectLengthMiles,
+        numWays,
+        adjacentUnselectedWays.length,
+        existingTravel.capita.bike.mean,
+        config.bike
+      );
 
-    //   existingTravel.jobs.bike.mean = _weightDemand(
-    //     projectLengthMiles,
-    //     numWays,
-    //     existingTravel.jobs.bike.mean,
-    //     config.bike);
-    // }
-
-    // per Dillon email 2022-08-03
-    // this is a total hack, but let's just revert to the volume*length
-    // and double it for bike miles. I think we can leave the walk
-    // calculation as is for now. I'll want to change both of these
-    // once I get more brain power to think about them.
-    existingTravel.miles.bike.mean *= 2;
-    existingTravel.capita.bike.mean *= 2;
-    existingTravel.jobs.bike.mean *= 2;
+      existingTravel.jobs.bike.mean = _weightDemand(
+        projectLengthMiles,
+        numWays,
+        adjacentUnselectedWays.length,
+        existingTravel.jobs.bike.mean,
+        config.bike);
+    }
 
     c.append('travel', 'existing', [
       existingTravel.miles.bike.mean,
@@ -378,8 +369,8 @@ const calcDemand = async (
     // or the fraction of ways selected out of ways adjacent to
     // selected intersections
     const client = new MongoClient(process.env.MONGO_URI);
-    let adjacentWays = [];
-    let adjacentIntersections = [];
+    let adjacentUnselectedIntersections;
+    let adjacentUnselectedWays;
 
     try {
 
@@ -387,103 +378,84 @@ const calcDemand = async (
 
       let collection;
       let query;
+      let node_ids;
 
       // lookup adjacent intersections and add to array
       collection = database.collection('intersections');
+      node_ids = [];
       for(let way of selectedWays) {
-        const node_ids = [];
-
         if(way.properties.source) {
-          node_ids.push(way.properties.source)
+          node_ids.push(way.properties.source);
         }
-
         if(way.properties.target) {
-          node_ids.push(way.properties.target)
+          node_ids.push(way.properties.target);
         }
-
-        query = {
-          "properties.node_id": {
-            "$in": node_ids,
-          }
-        }
-
-        const intersections = await collection.find(query).toArray();
-
-        adjacentIntersections = [
-          ...adjacentIntersections,
-          ...intersections
-        ];
       }
 
-      // dedupe
-      adjacentIntersections = adjacentIntersections.reduce((acc, curr) => {
+      query = {
+        "$and": [
+          {
+            "properties.node_id": {
+              "$in": [...new Set(node_ids)],
+            },
+          },
+          {
+            "properties.node_id": {
+              "$nin": selectedIntersections.map(el => el.properties.node_id),
+            },
+          },
+        ],
+      };
 
-        if(!acc.map(el => el.properties.node_id).includes(curr.properties.node_id)) {
-          acc.push(curr);
-        }
-
-        return acc;
-      }, []);
+      adjacentUnselectedIntersections = await collection.find(query).toArray();
 
       // lookup adjacent ways and add to array
       collection = database.collection('ways');
-      for(let intersection of selectedIntersections) {
-        query = {
-          "$or": [
-            {
-              "properties.source": intersection.properties.node_id,
-            },
-            {
-              "properties.target": intersection.properties.node_id,
-            },
-          ]
-        };
-        const ways = await collection.find(query).toArray();
-        adjacentWays = [
-          ...adjacentWays,
-          ...ways,
-        ];
 
-        // dedupe
-        adjacentWays = adjacentWays.reduce((acc, curr) => {
-          if(!acc.map(el => el.properties.edge_uid).includes(curr.properties.edge_uid)) {
-            acc.push(curr);
-          }
+      node_ids = selectedIntersections.map(el => el.properties.node_id);
 
-          return acc;
-        }, []);
-      }
+      query = {
+        "$and": [
+          {
+            "properties.edge_uid": {
+              "$nin": selectedWays.map(el => el.properties.edge_uid),
+            },
+          },
+          {
+            "$or": [
+              {
+                "properties.source": {
+                  "$in": node_ids,
+                },
+              },
+              {
+                "properties.target": {
+                  "$in": node_ids,
+                },
+              },
+            ],
+          },
+        ],
+      };
+
+      adjacentUnselectedWays = await collection.find(query).toArray();
     }
     finally {
       await client.close();
     }
 
-    const selectedWayIds = selectedWays.map(el => el.properties.edge_uid);
-    const selectedAdjacentWays = adjacentWays.reduce((acc, curr) => {
-      return selectedWayIds.includes(curr.properties.edge_uid) ? acc+1 : acc;
-    }, 0)
-
-    const selectedIntersectionIds = selectedIntersections.map(el => el.properties.node_id);
-    const selectedAdjacentIntersections = adjacentIntersections.reduce((acc, curr) => {
-      return selectedIntersectionIds.includes(curr.properties.node_id) ? acc+1 : acc;
-    }, 0)
-
-    console.log(adjacentWays.length);
-    console.log(selectedAdjacentWays);
-
-    console.log(adjacentIntersections.length);
-    console.log(selectedAdjacentIntersections);
-
     _calcBikeDemand(
       existingTravel,
       selectedWays,
       userWays,
+      adjacentUnselectedWays,
       projectLength);
 
     _calcPedDemand(
       existingTravel,
       selectedIntersections,
       userIntersections,
+      adjacentUnselectedIntersections,
       projectLength);
 
     return existingTravel;

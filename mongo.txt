@@ -16,6 +16,10 @@ db.ways.createIndex({"geometry": "2dsphere"});
 # index for intersections attached to ways
 db.intersections.createIndex({'properties.node_id': 1}, {unique: true})
 
+# index for ways attached to intersection
+db.intersections.createIndex({'properties.source': 1})
+db.intersections.createIndex({'properties.target': 1})
+
 docker compose exec -T db sh -c 'mongodump --archive --db=bctool --collection=projects --authenticationDatabase=admin --username=bctool --password=phev' > /home/matthew/2023_05_08_bctool_projects.dump
 
 docker compose exec -T db sh -c 'mongorestore --archive --db=bctool --collection=projects --authenticationDatabase=admin --username bctool --password phev' < /home/matthew/2023_05_08_bctool_projects.dump
