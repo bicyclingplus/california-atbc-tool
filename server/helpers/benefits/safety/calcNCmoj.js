@@ -92,7 +92,6 @@ const calcNCmojk = (
         // reduced by 7.2, ie 12.8
         //
         // so we just do 20 * (1 - (36 / 100)) = 12.8
-        // CRFmojk *= benefit[k] / 100;
         CRFmojk *= (1 - (benefit[k] / 100));
 
         c.put('safety', 'reductions', [
@@ -106,8 +105,6 @@ const calcNCmojk = (
       }
     }
   }
-
-  // CRFmojk = (1 - CRFmojk) > 0 ? (1 - CRFmojk) : 1;
 
   c.put('safety', 'CRFmoje', [
     m,
@@ -151,9 +148,7 @@ const calcNCmojk = (
         // for this mode
         // for this estimate, k
         // percentage
-        // positive is an increase (eg. 77% -> 1.77)
-        // negative is a decrease (eg. -20% -> 0.80)
-        const E_sub_ik = (1 + (travel_volume[i][mode][k] / 100));
+        const E_sub_ik = travel_volume[i][mode][k] / 100;
 
         // each type of improvment scales the effect
         // by a different factor
@@ -182,7 +177,7 @@ const calcNCmojk = (
     }
   }
 
-  const NCmojk = ECmoj * total * CRFmojk;
+  const NCmojk = ECmoj * (1 + Math.pow(total, POWER_SAFETY_IN_NUMBERS)) * CRFmojk;
 
   return NCmojk;
 }
