@@ -14,12 +14,12 @@ import safety from './helpers/debug/safety.js';
 
 const client = new MongoClient(process.env.MONGO_URI);
 
-const debug = (project) => {
+const debug = async (project) => {
 	console.log(`Debugging ${project._id.toString()}`);
 	c.reset();
 	inputs(project);
 	reach(project);
-	travel(project);
+	await travel(project);
 	safety(project);
 };
 
@@ -37,7 +37,7 @@ const allProjects = async () => {
 		const cursor = await projects.find({});
 
 		for await (const project of cursor) {
-			debug(project);
+			await debug(project);
 		}
 
 		lookups();

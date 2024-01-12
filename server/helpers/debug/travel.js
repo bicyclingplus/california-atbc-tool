@@ -5,7 +5,7 @@ import calcProjectLength from '../benefits/calcProjectLength.js';
 import calcDemand from '../benefits/calcDemand.js';
 import calcTravel from '../benefits/calcTravel.js';
 
-const travel = (project) => {
+const travel = async (project) => {
 
 	const projectId = project._id.toString();
 
@@ -23,7 +23,7 @@ const travel = (project) => {
 	const project_length = calcProjectLength(segments, userSegments);
 	const num_intersections = intersections.length + userIntersections.length;
 
-	const weighted_existing_travel = calcDemand(
+	const weighted_existing_travel = await calcDemand(
 		segments,
 		userSegments,
 		intersections,

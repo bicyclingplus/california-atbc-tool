@@ -11,6 +11,8 @@
 
 import avgProp from './avgProp.js';
 import c from '../collector.js';
+import { MongoClient, ObjectId } from 'mongodb';
+import util from 'util';
 
 import { createRequire } from "module";
 const require = createRequire(import.meta.url);
@@ -329,7 +331,7 @@ const _calcBikeDemand = (
 
 }
 
-const calcDemand = (
+const calcDemand = async (
   selectedWays,
   userWays,
   selectedIntersections,
@@ -362,6 +364,115 @@ const calcDemand = (
         }
       },
     };
+
+    // need to get ways adjacent to selected intersections
+    // and intersections adjacent to selected ways
+
+    // demand calc functions then need to be refactored to
+    // use selected AND adjacent ways/intersections
+
+    // then the weighting function will need to use the fraction
+    // of intersections selected out of intersections adjacent to
+    // selected ways
+
+    // or the fraction of ways selected out of ways adjacent to
+    // selected intersections
+    const client = new MongoClient(process.env.MONGO_URI);
+    let adjacentWays = [];
+    let adjacentIntersections = [];
+
+    try {
+
+      const database = client.db('bctool');
+
+      let collection;
+      let query;
+
+      // lookup adjacent intersections and add to array
+      collection = database.collection('intersections');
+      for(let way of selectedWays) {
+        const node_ids = [];
+
+        if(way.properties.source) {
+          node_ids.push(way.properties.source)
+        }
+
+        if(way.properties.target) {
+          node_ids.push(way.properties.target)
+        }
+
+        query = {
+          "properties.node_id": {
+            "$in": node_ids,
+          }
+        }
+
+        const intersections = await collection.find(query).toArray();
+
+        adjacentIntersections = [
+          ...adjacentIntersections,
+          ...intersections
+        ];
+      }
+
+      // dedupe
+      adjacentIntersections = adjacentIntersections.reduce((acc, curr) => {
+
+        if(!acc.map(el => el.properties.node_id).includes(curr.properties.node_id)) {
+          acc.push(curr);
+        }
+
+        return acc;
+      }, []);
+
+      // lookup adjacent ways and add to array
+      collection = database.collection('ways');
+      for(let intersection of selectedIntersections) {
+        query = {
+          "$or": [
+            {
+              "properties.source": intersection.properties.node_id,
+            },
+            {
+              "properties.target": intersection.properties.node_id,
+            },
+          ]
+        };
+        const ways = await collection.find(query).toArray();
+        adjacentWays = [
+          ...adjacentWays,
+          ...ways,
+        ];
+
+        // dedupe
+        adjacentWays = adjacentWays.reduce((acc, curr) => {
+          if(!acc.map(el => el.properties.edge_uid).includes(curr.properties.edge_uid)) {
+            acc.push(curr);
+          }
+
+          return acc;
+        }, []);
+      }
+    }
+    finally {
+      await client.close();
+    }
+
+    const selectedWayIds = selectedWays.map(el => el.properties.edge_uid);
+    const selectedAdjacentWays = adjacentWays.reduce((acc, curr) => {
+      return selectedWayIds.includes(curr.properties.edge_uid) ? acc+1 : acc;
+    }, 0)
+
+    const selectedIntersectionIds = selectedIntersections.map(el => el.properties.node_id);
+    const selectedAdjacentIntersections = adjacentIntersections.reduce((acc, curr) => {
+      return selectedIntersectionIds.includes(curr.properties.node_id) ? acc+1 : acc;
+    }, 0)
+
+    console.log(adjacentWays.length);
+    console.log(selectedAdjacentWays);
+
+    console.log(adjacentIntersections.length);
+    console.log(selectedAdjacentIntersections);
 
     _calcBikeDemand(
       existingTravel,

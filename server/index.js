@@ -246,7 +246,7 @@ tool.post('/api/reach', async(req, res) => {
 
   const projectLength = calcProjectLength(selectedWays, userWays);
 
-  const existingTravel = calcDemand(
+  const existingTravel = await calcDemand(
     selectedWays,
     userWays,
     selectedIntersections,
