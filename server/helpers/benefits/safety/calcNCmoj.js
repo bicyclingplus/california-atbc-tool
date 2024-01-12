@@ -4,75 +4,27 @@ import {
 	FUNCTIONAL_CLASSES,
 	VOLUMES,
 	POWER_SAFETY_IN_NUMBERS,
-
+  SCALING_FACTORS,
 } from '../constants.js';
 
-import { calcCCmojvfe } from './calcCCmojvf.js';
+import calcLength from './calcLength.js';
+import calcShare from '../calcShare.js';
 import c from '../../collector.js';
+import getElement from '../getElement.js';
 
 const require = createRequire(import.meta.url);
-const Amojvf = require('../../../data/alpha_lookup.json');
 const quantitative = require('../../../data/quantitative.json');
+const travel_volume = require('../../../data/travel_volume.json');
 
-// INPUTS:
-// Ljvf reach lookup
-// Vmj volume lookup
-// m mode index (bicycling/walking)
-// o outcome index (crash/injury/death)
-// j location type index (intersection/roadway)
-// e estimate (lower/mean/upper)
-// selectedInfrastructure
-const calcNCmoj = (Ljvf, Vmj, m, o, j, e, selectedInfrastructure) => {
-
-	let total = 0;
-
-    for(let f of FUNCTIONAL_CLASSES) {
-      for(let v of VOLUMES) {
-
-        const A = Amojvf[m][o][j][v][f];
-        const L = Ljvf[j][v][f];
-        const V = Vmj[m][j][e];
-
-        // crash reduction factor default to 1 (no reduction)
-        let CRFmoji = 1;
-
-        // loop over elements that have safety benefits
-        for(let element in quantitative) {
-
-          // only consider selected elements
-          if(element in selectedInfrastructure) {
-
-            // go through the safety benefits for this element
-            for(let benefit of quantitative[element]) {
-
-
-              // only apply benefits meant for this m/o/j
-              if((benefit.mode === m || m === 'combined') &&
-                benefit.outcome === o &&
-                benefit.location_type === j) {
-
-                const reduction = (benefit[e]) / 100;
-                const factor = 1 - reduction;
-
-                CRFmoji *= factor;
-              }
-            }
-          }
-        }
-
-        total += (
-          Math.exp(A) *
-          L *
-          Math.pow(V, POWER_SAFETY_IN_NUMBERS) *
-          CRFmoji
-        );
-      }
-    }
-
-    return total;
-}
-
-const calcNCmoj2 = (Ljvf, Vmj, m, o, j, e, selectedInfrastructure) => {
+const calcNCmojk = (
+  ECmoj,
+  m,
+  o,
+  j,
+  k,
+  selectedInfrastructure,
+  project_length,
+  num_intersections) => {
 
   // we used to sum all the reductions for each element
   // now we calculate a combined crash reduction factor
@@ -94,15 +46,15 @@ const calcNCmoj2 = (Ljvf, Vmj, m, o, j, e, selectedInfrastructure) => {
   // a reason
 
   // crash reduction factor default to 1 (no reduction)
-  let CRFmoje = 1;
+  let CRFmojk = 1;
 
   // selected elements
-  for(let el in selectedInfrastructure) {
+  for(let i in selectedInfrastructure) {
 
     // does this element have safety benefits
-    if(el in quantitative) {
+    if(i in quantitative) {
 
-      for(let benefit of quantitative[el]) {
+      for(let benefit of quantitative[i]) {
 
         // does this benefit apply to this mode?
         // combined mode receives all benefits
@@ -140,39 +92,99 @@ const calcNCmoj2 = (Ljvf, Vmj, m, o, j, e, selectedInfrastructure) => {
         // reduced by 7.2, ie 12.8
         //
         // so we just do 20 * (1 - (36 / 100)) = 12.8
-        CRFmoje *= benefit[e] / 100;
+        // CRFmojk *= benefit[k] / 100;
+        CRFmojk *= (1 - (benefit[k] / 100));
 
         c.put('safety', 'reductions', [
           m,
           o,
           j,
-          e,
-          el,
-          benefit[e],
+          k,
+          i,
+          benefit[k],
         ]);
       }
     }
   }
 
-  CRFmoje = (1 - CRFmoje) > 0 ? (1 - CRFmoje) : 1;
+  // CRFmojk = (1 - CRFmojk) > 0 ? (1 - CRFmojk) : 1;
 
   c.put('safety', 'CRFmoje', [
     m,
     o,
     j,
-    e,
-    CRFmoje,
+    k,
+    CRFmojk,
   ]);
+
+  // calc total adjustments
+  // crash reduction factor CRFmojk is based on elements
+  // that have safety benefits
+  // here we need to calculate the total adjustment
+  // based on travel benefits
+  // loop over selected infrastructure elements
+  // similar logic to CRFmojk above,
+  // but summation rather than product
+  // loop over improvement types
+  // similar to PVmjk calculation
+  // TODO fix PVmjk combined mode to be similar to CRFmojk
+  const L = calcLength(selectedInfrastructure, project_length);
 
   let total = 0;
 
-  for(let f of FUNCTIONAL_CLASSES) {
-    for(let v of VOLUMES) {
-      total += calcCCmojvfe(Ljvf, Vmj, m, o, j, v, f, e);
+  // selected elements
+  for(let i in selectedInfrastructure) {
+
+    // does this element have safety benefits
+    if(i in travel_volume) {
+
+      for(let mode in travel_volume[i]) {
+
+        // does this benefit apply to this mode?
+        // combined mode receives all benefits
+        if(m !== 'combined' && m !== mode) {
+          continue;
+        }
+
+        // benefit amount
+        // for this infrastructure element, i
+        // for this mode
+        // for this estimate, k
+        // percentage
+        // positive is an increase (eg. 77% -> 1.77)
+        // negative is a decrease (eg. -20% -> 0.80)
+        const E_sub_ik = (1 + (travel_volume[i][mode][k] / 100));
+
+        // each type of improvment scales the effect
+        // by a different factor
+        for(let F in SCALING_FACTORS) {
+
+          // the amount of this type of improvement (length or count)
+          const N_sub_i = selectedInfrastructure[i][F];
+
+          // no improvement of this type
+          if(N_sub_i === 0) {
+            continue;
+          }
+
+          // the factor to scale the effect by
+          const I_sub_F = SCALING_FACTORS[F];
+
+          // the share of this infrastructure element of
+          // the entire project (length or count)
+          const { share: N_sub_i_over_L } = calcShare(
+            getElement(i), N_sub_i, L, num_intersections);
+
+          // accumulate the total change due to infrastructure elements
+          total += E_sub_ik * N_sub_i_over_L * I_sub_F;
+        }
+      }
     }
   }
 
-  return total * CRFmoje;
+  const NCmojk = ECmoj * total * CRFmojk;
+
+  return NCmojk;
 }
 
-export default calcNCmoj2;
+export default calcNCmojk;

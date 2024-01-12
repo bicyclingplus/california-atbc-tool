@@ -4,7 +4,7 @@ import calcVMTReductions from './calcVMTReductions.js';
 import calcEmissions from './calcEmissions.js';
 import calcHealth from './calcHealth.js';
 import calcSafetyQualitative from './calcSafetyQualitative.js';
-import calcSafetyQuantitative from './calcSafetyQuantitative2.js';
+import calcSafetyQuantitative from './calcSafetyQuantitative.js';
 
 const calcBenefits = (
 	project_type,
