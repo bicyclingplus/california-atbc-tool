@@ -20,8 +20,8 @@ db.intersections.createIndex({'properties.node_id': 1}, {unique: true})
 db.intersections.createIndex({'properties.source': 1})
 db.intersections.createIndex({'properties.target': 1})
 
-docker compose exec -T db sh -c 'mongodump --archive --db=bctool --collection=projects --authenticationDatabase=admin --username=bctool --password=phev' > /home/matthew/2023_05_08_bctool_projects.dump
+docker compose exec -T db sh -c 'mongodump --archive --db=bctool --collection=projects --authenticationDatabase=admin --username=bctool --password=phev' > /home/matthew/2024_01_12_bctool_projects.dump
 
 docker compose exec -T db sh -c 'mongorestore --archive --db=bctool --collection=projects --authenticationDatabase=admin --username bctool --password phev' < /home/matthew/2023_05_08_bctool_projects.dump
 
-docker compose exec -T db sh -c 'mongorestore --archive --db=bctool --collection=projects --authenticationDatabase=admin --username bctool --password phev' < 2023_09_04_bctool_projects.dump
+docker compose exec -T db sh -c 'mongorestore --archive --db=bctool --collection=projects --authenticationDatabase=admin --username bctool --password phev' < 2024_01_12_bctool_projects.dump
