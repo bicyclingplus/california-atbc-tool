@@ -35,7 +35,7 @@ const writeCSV = (folder, filename, headers, data) => {
 	content += headers.join(',') + '\n';
 
 	for(let row of data) {
-		content += row.join(',') + '\n';
+		content += row.map(el => `"${el}"`).join(',') + '\n';
 	}
 
 	fs.writeFileSync(outfilename, content);
