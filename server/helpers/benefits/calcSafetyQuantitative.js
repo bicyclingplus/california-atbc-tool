@@ -201,8 +201,8 @@ const _calc = (
       before[m][o] = 0;
       after[m][o] = {};
 
-      for(let e of ESTIMATES) {
-        after[m][o][e] = 0;
+      for(let k of ESTIMATES) {
+        after[m][o][k] = 0;
       }
 
       for(let j of LOCATION_TYPES) {
@@ -210,16 +210,18 @@ const _calc = (
         // existing travel lookup for Vmj
         if(EVmj[m][j] !== 0) {
           before[m][o] += (
-            ECmoj[m][o][j] / EVmj[m][j]);
+            ECmoj[m][o][j] /
+            EVmj[m][j]
+          );
         }
 
-        for(let e of ESTIMATES) {
+        for(let k of ESTIMATES) {
 
           // projected travel lookup for Vmj
-          if(PVmj[m][j][e] !== 0) {
-            after[m][o][e] += (
-              NCmoj[m][o][j][e] /
-              PVmj[m][j][e]
+          if(PVmj[m][j][k] !== 0) {
+            after[m][o][k] += (
+              NCmoj[m][o][j][k] /
+              PVmj[m][j][k]
             );
           }
         }
@@ -231,8 +233,8 @@ const _calc = (
     for(let o of OUTCOMES) {
       before[m][o] *= 1000;
 
-      for(let e of ESTIMATES) {
-        after[m][o][e] *= 1000;
+      for(let k of ESTIMATES) {
+        after[m][o][k] *= 1000;
       }
     }
   }
@@ -251,17 +253,17 @@ const _calc = (
           before[m][o],
         ]);
 
-        for(let e of ESTIMATES) {
+        for(let k of ESTIMATES) {
 
           c.put('safety', 'after', [
             m,
             o,
-            e,
-            NCmoj[m][o].roadway[e],
-            PVmj[m].roadway[e],
-            NCmoj[m][o].intersection[e],
-            PVmj[m].intersection[e],
-            after[m][o][e],
+            k,
+            NCmoj[m][o].roadway[k],
+            PVmj[m].roadway[k],
+            NCmoj[m][o].intersection[k],
+            PVmj[m].intersection[k],
+            after[m][o][k],
           ]);
         }
       }
