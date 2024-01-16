@@ -1,8 +1,8 @@
 import {
 	SCALING_FACTORS,
 } from '../constants.js';
-
 import c from '../../collector.js';
+import getElement from '../getElement.js';
 
 import { createRequire } from "module";
 const require = createRequire(import.meta.url);
@@ -15,23 +15,23 @@ const calcLength = (selectedInfrastructure, project_length) => {
 	// if any of the selected infrastructure elements have a length
 	// greater than the project length, use that greater length
 	// to weight element length against rather than the project length
-	for(let category of infrastructure.categories) {
+	for(let i in selectedInfrastructure) {
+		const {
+			shortname,
+			calc_units,
+		} = getElement(i);
 
-		for(let item of category.items) {
+		if(calc_units !== 'length') {
+			continue;
+		}
 
-			if(item.shortname in selectedInfrastructure &&
-				item.calc_units === 'length') {
+		for(let T in SCALING_FACTORS) {
+			const value = selectedInfrastructure[i][T];
 
-				for(let type in SCALING_FACTORS) {
+			max_length = value > max_length ? value : max_length;
 
-					let value = selectedInfrastructure[item.shortname][type];
-
-					max_length = value > max_length ? value : max_length;
-
-					// debug
-					c.put('safety', 'length', ['item', item.shortname, type, value]);
-				}
-			}
+			// debug
+			c.put('safety', 'length', ['item', shortname, T, value]);
 		}
 	}
 
