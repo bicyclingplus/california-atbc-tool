@@ -30,50 +30,70 @@ import columizeSafetyInputs from './safety/columizeSafetyInputs.js';
 const require = createRequire(import.meta.url);
 const Amojvf = require('../../data/alpha_lookup.json');
 
+// per column safety benefits calculation
+// columns are safety, capita, and jobs
+// calculate existing crashes by mode, outcome, and location type
+// calculate new crashes by mode, outcome, location type, and estimate
+// calculate crash change by mode and outcome
+// ECCmoj, existing crashes from model per m/o/j
+// EVmj, existing volume from network per m/j
+// PVmjk, projected volume per m/j/k
+// (existing volume plus benefits due to selected
+// infrastructure elements)
+// UI, user provided safety inputs
+// (split by m/o/j, with years split by m/j)
+// infrastructure, selected infrastructure elements
+// project_time_frame, number of years to project benefits over
+// project_length, total length of segments contained in project
+// num_intersections, number of intersections contained in project
 const _calc = (
   ECCmoj,
   EVmj,
-  PVmj,
-  infrastructure,
+  PVmjk,
   UI,
+  infrastructure,
   project_time_frame,
   project_length,
   num_intersections) => {
 
-  // calculate crash change by mode and outcome
-  // calculate new crashes by mode, outcome, and location type
-  // calculate existing crashes by mode, outcome, and location type
-  const ECmoj = {};
-  const NCmoj = {};
-  const change = {};
-  const projected = {};
-
   // init objects
   // existing crashes split by m, o, j
-  // new crashes split by m, o, j, e
-  // change split by m, o, e (rolls up j)
-  // discount split by m, o, e (discounted version of change)
+  // new crashes split by m, o, j, k
+  // change split by m, o, k (rolls up j)
+  // discount split by m, o, k (discounted version of change)
   // start each change at zero as they are running totals
+  const ECmoj = {};
+  const NCmojk = {};
+  const change = {};
+  const projected = {};
+  const before = {};
+  const after = {};
+
   for(let m of MODES) {
 
     ECmoj[m] = {};
-    NCmoj[m] = {};
+    NCmojk[m] = {};
     change[m] = {};
     projected[m] = {};
+    before[m] = {};
+    after[m] = {};
 
     for(let o of OUTCOMES) {
 
       ECmoj[m][o] = {};
-      NCmoj[m][o] = {};
+      NCmojk[m][o] = {};
       change[m][o] = {};
       projected[m][o] = {};
+      before[m][o] = 0;
+      after[m][o] = {};
 
       for(let j of LOCATION_TYPES) {
-        NCmoj[m][o][j] = {};
+        NCmojk[m][o][j] = {};
       }
 
-      for(let e of ESTIMATES) {
-        change[m][o][e] = 0;
+      for(let k of ESTIMATES) {
+        change[m][o][k] = 0;
+        after[m][o][k] = 0;
       }
     }
   }
@@ -136,13 +156,13 @@ const _calc = (
             num_intersections
           );
 
-          NCmoj[m][o][j][k] = NC;
+          NCmojk[m][o][j][k] = NC;
 
           c.put('safety', 'NCmoj', [m, o, j, k, NC]);
 
           // running total of the changes for each split
           change[m][o][k] += (
-            NCmoj[m][o][j][k] - ECmoj[m][o][j]);
+            NCmojk[m][o][j][k] - ECmoj[m][o][j]);
         }
       }
     }
@@ -151,16 +171,16 @@ const _calc = (
   if(c.enabled) {
     for(let m of MODES) {
       for(let o of OUTCOMES) {
-        for(let e of ESTIMATES) {
+        for(let k of ESTIMATES) {
           c.put('safety', 'change', [
             m,
             o,
-            e,
-            NCmoj[m][o].roadway[e],
+            k,
+            NCmojk[m][o].roadway[k],
             ECmoj[m][o].roadway,
-            NCmoj[m][o].intersection[e],
+            NCmojk[m][o].intersection[k],
             ECmoj[m][o].intersection,
-            change[m][o][e]]);
+            change[m][o][k]]);
         }
       }
     }
@@ -188,23 +208,8 @@ const _calc = (
 
   // calc before crash outcomes per 1000 volume by mode and outcome
   // calc after crash outcomes per 1000 volume by mode and outcome
-  let before = {};
-  let after = {};
-
   for(let m of MODES) {
-
-    before[m] = {};
-    after[m] = {};
-
     for(let o of OUTCOMES) {
-
-      before[m][o] = 0;
-      after[m][o] = {};
-
-      for(let k of ESTIMATES) {
-        after[m][o][k] = 0;
-      }
-
       for(let j of LOCATION_TYPES) {
 
         // existing travel lookup for Vmj
@@ -218,10 +223,10 @@ const _calc = (
         for(let k of ESTIMATES) {
 
           // projected travel lookup for Vmj
-          if(PVmj[m][j][k] !== 0) {
+          if(PVmjk[m][j][k] !== 0) {
             after[m][o][k] += (
-              NCmoj[m][o][j][k] /
-              PVmj[m][j][k]
+              NCmojk[m][o][j][k] /
+              PVmjk[m][j][k]
             );
           }
         }
@@ -259,10 +264,10 @@ const _calc = (
             m,
             o,
             k,
-            NCmoj[m][o].roadway[k],
-            PVmj[m].roadway[k],
-            NCmoj[m][o].intersection[k],
-            PVmj[m].intersection[k],
+            NCmojk[m][o].roadway[k],
+            PVmjk[m].roadway[k],
+            NCmojk[m][o].intersection[k],
+            PVmjk[m].intersection[k],
             after[m][o][k],
           ]);
         }
@@ -448,8 +453,6 @@ const calcSafetyQuantitative = (
     }
   }
 
-  // const ECCmoj = calcECCmoj(ways, intersections);
-
   // need a lookup for existing volume by mode and location type
   const EVmj = calcEVmj(ways, intersections);
 
@@ -484,8 +487,8 @@ const calcSafetyQuantitative = (
       ECmoj_NEW[column],
       EVmj[column],
       PVmj[column],
-      infrastructure,
       UI[column],
+      infrastructure,
       project_time_frame,
       project_length,
       num_intersections
