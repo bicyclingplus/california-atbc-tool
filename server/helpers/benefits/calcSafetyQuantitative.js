@@ -26,6 +26,7 @@ import { calcCC } from './safety/calcCCmojvf.js';
 import avgProp from './avgProp.js';
 import { createRequire } from "module";
 import util from 'util';
+import columizeSafetyInputs from './safety/columizeSafetyInputs.js';
 const require = createRequire(import.meta.url);
 const Amojvf = require('../../data/alpha_lookup.json');
 
@@ -453,6 +454,10 @@ const calcSafetyQuantitative = (
     project_length,
     num_intersections);
 
+  // user input does not have per capita and per jobs values so we
+  // calculate them from project averages
+  const UI = columizeSafetyInputs(safety_inputs, ways, intersections);
+
   // generate output for each set of columns in the safety benefits table
   const benefits = {};
 
@@ -474,7 +479,7 @@ const calcSafetyQuantitative = (
       EVmj[column],
       PVmj[column],
       infrastructure,
-      safety_inputs,
+      UI[column],
       project_time_frame,
       project_length,
       num_intersections
