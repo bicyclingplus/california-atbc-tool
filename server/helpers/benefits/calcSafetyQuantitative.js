@@ -14,7 +14,7 @@ import calcDiscount from './calcDiscount.js';
 
 // safety helpers
 import calcEVmj from './safety/calcEVmj.js';
-import calcPVmj from './safety/calcPVmj.js';
+import calcPVcmjk from './safety/calcPVcmjk.js';
 import calcNCmojk from './safety/calcNCmoj.js';
 import {
   calcECmoj,
@@ -457,7 +457,7 @@ const calcSafetyQuantitative = (
   const EVmj = calcEVmj(ways, intersections);
 
   // need a lookup for projected volume by mode and location type
-  const PVmj = calcPVmj(
+  const PVmj = calcPVcmjk(
     EVmj,
     infrastructure,
     project_length,
