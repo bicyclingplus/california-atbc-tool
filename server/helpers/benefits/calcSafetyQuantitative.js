@@ -208,16 +208,20 @@ const _calc = (
       for(let j of LOCATION_TYPES) {
 
         // existing travel lookup for Vmj
-        before[m][o] += (
-          ECmoj[m][o][j] / EVmj[m][j]);
+        if(EVmj[m][j]) {
+          before[m][o] += (
+            ECmoj[m][o][j] / EVmj[m][j]);
+        }
 
         for(let e of ESTIMATES) {
 
           // projected travel lookup for Vmj
-          after[m][o][e] += (
-            NCmoj[m][o][j][e] /
-            PVmj[m][j][e]
-          );
+          if(PVmj[m][j][e] > 0) {
+            after[m][o][e] += (
+              NCmoj[m][o][j][e] /
+              PVmj[m][j][e]
+            );
+          }
         }
       }
     }
