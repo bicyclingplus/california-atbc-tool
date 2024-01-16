@@ -10,10 +10,13 @@ const calcShare = (element, value, totalLength, numIntersections) => {
 		units,
 	} = element;
 
-	let share, Ni, L;
+	let Ni = value;
+    let L;
 
 	// calculate the project share for this element
     if(calc_units === 'length') {
+
+        L = totalLength;
 
         if(units === 'count') {
             // In this case we ask them for a count and
@@ -23,25 +26,17 @@ const calcShare = (element, value, totalLength, numIntersections) => {
             // total project length
             // all are assumed to be per 100 feet right now
             // this will probably change at some point.
-            share = (value * 100) / totalLength;
             Ni = value * 100;
-            L = totalLength;
         }
-        else if(units === 'length') {
-            share = value / totalLength;
-            Ni = value;
-            L = totalLength;
-        }
-
-        // if(totalLength === 0) {
-        //     share = 0;
-        // }
     }
     else if(calc_units === 'count') {
-        share = value / numIntersections;
-        Ni = value;
         L = numIntersections;
     }
+
+    // calculate the share Ni/L
+    // set share to zero in the event
+    // of zero L (prevent division by zero)
+    const share = L === 0 ? 0 : Ni / L;
 
     return {
     	share: share,
