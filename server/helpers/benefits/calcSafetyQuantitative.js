@@ -457,7 +457,7 @@ const calcSafetyQuantitative = (
   const EVmj = calcEVmj(ways, intersections);
 
   // need a lookup for projected volume by mode and location type
-  const PVmj = calcPVcmjk(
+  const PVcmjk = calcPVcmjk(
     EVmj,
     infrastructure,
     project_length,
@@ -486,7 +486,7 @@ const calcSafetyQuantitative = (
     benefits[column] = _calc(
       ECmoj_NEW[column],
       EVmj[column],
-      PVmj[column],
+      PVcmjk[column],
       UI[column],
       infrastructure,
       project_time_frame,
