@@ -16,9 +16,15 @@ const calcLength = (selectedInfrastructure, project_length) => {
 	// greater than the project length, use that greater length
 	// to weight element length against rather than the project length
 	for(let i in selectedInfrastructure) {
-		const {
-			calc_units,
-		} = getElement(i);
+
+		const element = getElement(i);
+
+		// unknown (probably removed) element
+		if(element === null) {
+			continue;
+		}
+
+		const { calc_units } = element;
 
 		if(calc_units !== 'length') {
 			continue;

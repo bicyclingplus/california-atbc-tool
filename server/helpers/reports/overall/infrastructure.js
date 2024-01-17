@@ -67,6 +67,11 @@ const infrastructure = async (ids) => {
 
 					const element = getElement(selected);
 
+					// unknown (probably removed) element
+					if(element === null) {
+						continue;
+					}
+
 					if(selected in travel) {
 
 						for(let scalingFactor in SCALING_FACTORS) {

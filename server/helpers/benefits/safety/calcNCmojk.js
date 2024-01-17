@@ -133,6 +133,13 @@ const calcNCmojk = (
   // selected elements
   for(let i in selectedInfrastructure) {
 
+    const element = getElement(i);
+
+    // unknown (probably removed) element
+    if(element === null) {
+        continue;
+    }
+
     // skip, no travel benefits
     if(! (i in travel_volume)) {
       continue;
@@ -168,7 +175,7 @@ const calcNCmojk = (
         // the share of this infrastructure element of
         // the entire project (length or count)
         const { share } = calcShare(
-          getElement(i), value, length_to_use, num_intersections);
+          element, value, length_to_use, num_intersections);
 
         // accumulate the total change due to infrastructure elements
         total += benefit * share * SCALING_FACTORS[T];

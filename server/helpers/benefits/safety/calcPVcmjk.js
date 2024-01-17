@@ -48,6 +48,13 @@ const calcPVcmjk = (
     // for selected elements go through travel volume benefits and apply
     for(let i in selectedInfrastructure) {
 
+        const element = getElement(i);
+
+        // unknown (probably removed) element
+        if(element === null) {
+            continue;
+        }
+
         // skip, no benefits for this element
         if(!(i in travel_volume)) {
             continue;
@@ -71,7 +78,6 @@ const calcPVcmjk = (
                     continue;
                 }
 
-                const element = getElement(i);
                 const { share } = calcShare(
                     element, value, length_to_use, num_intersections);
 

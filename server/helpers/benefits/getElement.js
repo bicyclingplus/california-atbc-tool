@@ -12,6 +12,8 @@ const getElement = (shortname) => {
 			}
 		}
 	}
+
+	return null;
 }
 
 export default getElement;
