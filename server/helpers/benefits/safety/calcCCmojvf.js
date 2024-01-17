@@ -9,6 +9,7 @@ import c from '../../collector.js';
 const require = createRequire(import.meta.url);
 const Amojvf = require('../../../data/alpha_lookup.json');
 
+// unused now
 // CRASHES BY SYSTEM CLASS
 // INPUTS:
 // Ljvf reach lookup
@@ -30,6 +31,7 @@ const calcCCmojvf = (Ljvf, Vmj, m, o, j, v, f) => {
   return CC;
 }
 
+// unused now
 const calcCCmojvfe = (Ljvf, Vmj, m, o, j, v, f, e) => {
 
   const A = Amojvf[m][o][j][v][f];
@@ -47,7 +49,5 @@ const calcCC = (A, L, V) => {
 }
 
 export {
-  calcCCmojvf,
-  calcCCmojvfe,
   calcCC,
 };
