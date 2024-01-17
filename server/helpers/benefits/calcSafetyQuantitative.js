@@ -13,7 +13,7 @@ import c from '../collector.js';
 import calcDiscount from './calcDiscount.js';
 
 // safety helpers
-import calcEVmj from './safety/calcEVmj.js';
+import calcEVcmj from './safety/calcEVcmj.js';
 import calcPVcmjk from './safety/calcPVcmjk.js';
 import calcNCmojk from './safety/calcNCmoj.js';
 import {
@@ -454,11 +454,11 @@ const calcSafetyQuantitative = (
   }
 
   // need a lookup for existing volume by mode and location type
-  const EVmj = calcEVmj(ways, intersections);
+  const EVcmj = calcEVcmj(ways, intersections);
 
   // need a lookup for projected volume by mode and location type
   const PVcmjk = calcPVcmjk(
-    EVmj,
+    EVcmj,
     infrastructure,
     project_length,
     num_intersections);
@@ -485,7 +485,7 @@ const calcSafetyQuantitative = (
 
     benefits[column] = _calc(
       ECmoj_NEW[column],
-      EVmj[column],
+      EVcmj[column],
       PVcmjk[column],
       UI[column],
       infrastructure,
