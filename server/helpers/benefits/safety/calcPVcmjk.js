@@ -72,14 +72,8 @@ const calcPVcmjk = (
                 }
 
                 const element = getElement(i);
-                const {
-                    share: N_sub_i_over_L,
-                } = calcShare(
-                    element,
-                    value,
-                    length_to_use,
-                    num_intersections
-                );
+                const { share } = calcShare(
+                    element, value, length_to_use, num_intersections);
 
                 for(let c of COLUMNS) {
                     for(let j of LOCATION_TYPES) {
@@ -91,7 +85,7 @@ const calcPVcmjk = (
                             const adjustment = (
                                 EVcmj[c][m][j] *
                                 (benefit[k] / 100) *
-                                N_sub_i_over_L *
+                                share *
                                 SCALING_FACTORS[T]
                             );
 
@@ -118,7 +112,7 @@ const calcPVcmjk = (
 
                                 EVcmj[c][m][j],
                                 benefit[k] / 100,
-                                N_sub_i_over_L,
+                                share,
                                 SCALING_FACTORS[T],
                                 adjustment,
                             ]);
