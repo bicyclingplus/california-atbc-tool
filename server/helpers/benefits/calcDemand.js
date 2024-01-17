@@ -108,7 +108,7 @@ const _calcPedDemand = (
         existingTravel.miles.pedestrian.mean += d;
 
         // no div by zero
-        if(p !== null  && p !== 0) {
+        if(p !== null && p !== 0) {
           existingTravel.capita.pedestrian.mean += d / p;
         }
 
@@ -237,28 +237,36 @@ const _calcBikeDemand = (
       ...selectedWays,
       ...adjacentUnselectedWays
     ];
+
     for(let way of allWays) {
 
-      const bicyclist_demand = parseInt(way.properties.bicyclist_demand);
-
       const {
-        // bicyclist_demand,
+        bicyclist_demand,
         population,
         jobs,
         length,
       } = way.properties;
 
-      const d = bicyclist_demand ? bicyclist_demand : avgDemand;
-      const p = population ? population : avgPop;
-      // const j = jobs ? jobs : avgJobs;
-      const j = false ? jobs : avgJobs;
+      const d = bicyclist_demand !== null ? bicyclist_demand : avgDemand;
+      const p = population !== null ? population : avgPop;
+      const j = jobs !== null ? jobs : avgJobs;
 
       // demand calcs all based on miles so convert feet -> miles here
       const travel = d * (length / 5280);
 
-      existingTravel.miles.bike.mean += travel;
-      existingTravel.capita.bike.mean += travel / p;
-      existingTravel.jobs.bike.mean += travel / j;
+      if(d !== null) {
+
+        existingTravel.miles.bike.mean += travel;
+
+        // no div by zero
+        if(p !== null && p !== 0) {
+          existingTravel.capita.bike.mean += travel / p;
+        }
+
+        if(j !== null && j !== 0) {
+          existingTravel.jobs.bike.mean += travel / j;
+        }
+      }
 
       c.put('travel', 'ways', [
         'network',
@@ -269,9 +277,9 @@ const _calcBikeDemand = (
         p,
         j,
         length / 5280,
-        travel,
-        travel / p,
-        travel / j,
+        d !== null ? travel : null,
+        d !== null && p !== null && p !== 0 ? travel / p : null,
+        d !== null && j !== null && j !== 0 ? travel / j : null,
       ]);
     }
 
@@ -285,9 +293,19 @@ const _calcBikeDemand = (
 
       // use averages for everything here because user defined ways
       // won't have any of these properties
-      existingTravel.miles.bike.mean = travel;
-      existingTravel.capita.bike.mean = travel / avgPop;
-      existingTravel.jobs.bike.mean = travel / avgJobs;
+      if(avgDemand !== null) {
+
+        existingTravel.miles.bike.mean = travel;
+
+        // no div by zero
+        if(avgPop !== null && avgPop !== 0) {
+          existingTravel.capita.bike.mean = travel / avgPop;
+        }
+
+        if(avgJobs !== null && avgJobs !== 0) {
+          existingTravel.jobs.bike.mean = travel / avgJobs;
+        }
+      }
 
       c.put('travel', 'ways', [
         'user',
@@ -298,9 +316,9 @@ const _calcBikeDemand = (
         avgPop,
         avgJobs,
         length / 5280,
-        travel,
-        travel / avgPop,
-        travel / avgJobs,
+        avgDemand !== null ? travel : null,
+        avgDemand !== null && avgPop !== null && avgPop !== 0 ? travel / avgPop : null,
+        avgDemand !== null && avgJobs !== null && avgJobs !== 0 ? travel / avgJobs : null,
       ])
     }
 
