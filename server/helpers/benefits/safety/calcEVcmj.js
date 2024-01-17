@@ -5,7 +5,7 @@ import {
 } from '../constants.js';
 
 import avgProp from '../avgProp.js';
-import c from '../../collector.js';
+import z from '../../collector.js';
 
 const calcEVcmj = (selectedWays, selectedIntersections) => {
 
@@ -29,7 +29,7 @@ const calcEVcmj = (selectedWays, selectedIntersections) => {
 	const avgWayJobs = avgProp(selectedWays, 'jobs');
 
 	// debug
-	c.put('safety', 'exp_avg', [
+	z.put('safety', 'exp_avg', [
 		'way',
 		avgWayBikeExp,
 		avgWayPedExp,
@@ -59,7 +59,7 @@ const calcEVcmj = (selectedWays, selectedIntersections) => {
 		}
 
 		// debug
-		c.put('safety', 'exp_ways', [
+		z.put('safety', 'exp_ways', [
 			way.properties.bicyclist_link_exposure,
 			way.properties.pedestrian_link_exposure,
 			way.properties.population,
@@ -76,7 +76,7 @@ const calcEVcmj = (selectedWays, selectedIntersections) => {
 	const avgIntJobs = avgProp(selectedIntersections, 'jobs');
 
 	// debug
-	c.put('safety', 'exp_avg', [
+	z.put('safety', 'exp_avg', [
 		'intersection',
 		avgIntBikeExp,
 		avgIntPedExp,
@@ -104,7 +104,7 @@ const calcEVcmj = (selectedWays, selectedIntersections) => {
 		}
 
 		// debug
-		c.put('safety', 'exp_intersections', [
+		z.put('safety', 'exp_intersections', [
 			intersection.properties.bicycle_node_exposure,
 			intersection.properties.pedestrian_node_exposure,
 			intersection.properties.population,
@@ -122,14 +122,14 @@ const calcEVcmj = (selectedWays, selectedIntersections) => {
 	}
 
 	// debug
-	for(let column of COLUMNS) {
+	for(let c of COLUMNS) {
 		for(let m of MODES) {
 			for(let j of LOCATION_TYPES) {
-				c.put('safety', 'vmj_existing', [
-					column,
+				z.put('safety', 'vmj_existing', [
+					c,
 					m,
 					j,
-					EVcmj[column][m][j],
+					EVcmj[c][m][j],
 				]);
 			}
 		}
