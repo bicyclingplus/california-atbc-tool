@@ -17,7 +17,6 @@ const calcLength = (selectedInfrastructure, project_length) => {
 	// to weight element length against rather than the project length
 	for(let i in selectedInfrastructure) {
 		const {
-			shortname,
 			calc_units,
 		} = getElement(i);
 
@@ -31,7 +30,7 @@ const calcLength = (selectedInfrastructure, project_length) => {
 			max_length = value > max_length ? value : max_length;
 
 			// debug
-			c.put('safety', 'length', ['item', shortname, T, value]);
+			c.put('safety', 'length', ['item', i, T, value]);
 		}
 	}
 
