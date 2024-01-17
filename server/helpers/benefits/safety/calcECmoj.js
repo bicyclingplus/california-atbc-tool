@@ -3,7 +3,6 @@ import {
   VOLUMES,
 } from '../constants.js';
 
-import { calcCCmojvf } from './calcCCmojvf.js';
 import c from '../../collector.js';
 
 // EXISTING CRASHES SPLIT
@@ -30,7 +29,7 @@ const calcECmoj_model = (ECCmoj, m, o, j) => {
   return ECCmoj[m][o][j];
 };
 
-// EXISTING CRASHES MODEL ONLY
+// EXISTING CRASHES USER ONLY
 // UI user inputs for safety
 // m mode index (bicycling/walking)
 // o outcome index (crash/injury/death)
