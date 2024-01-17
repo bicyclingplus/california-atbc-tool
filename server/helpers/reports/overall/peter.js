@@ -129,10 +129,7 @@ const peter = async (ids) => {
 					safety
 				);
 
-				// console.log(util.inspect(benefits.travel, false, null, true))
-				// process.exit();
-
-				if(hasOnlyUserMapSelections) {
+				if(hasOnlyUserMapSelections || type === 'non-infrastructure') {
 					rows.push([
 						name,
 						'N/A',
