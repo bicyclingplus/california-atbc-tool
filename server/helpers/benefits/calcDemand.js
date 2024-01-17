@@ -75,6 +75,7 @@ const _calcPedDemand = (
   projectLength) => {
 
     // Grab the averages
+    // null if all were null
     const avgDemand = avgProp(selectedIntersections, 'ped_demand');
     const avgPop = avgProp(selectedIntersections, 'population');
     const avgJobs = avgProp(selectedIntersections, 'jobs');
@@ -86,23 +87,35 @@ const _calcPedDemand = (
       ...selectedIntersections,
       ...adjacentUnselectedIntersections
     ];
+
     for(let intersection of allIntersections) {
 
-      const ped_demand = parseInt(intersection.properties.ped_demand)
-
+      // each could be null or number
+      // number could be zero
       const {
-        // ped_demand,
+        ped_demand,
         population,
         jobs,
       } = intersection.properties;
 
-      const d = ped_demand ? ped_demand : avgDemand;
-      const p = population ? population : avgPop;
-      const j = jobs ? jobs : avgJobs;
+      // fall back to averages if null
+      const d = ped_demand !== null ? ped_demand : avgDemand;
+      const p = population !== null ? population : avgPop;
+      const j = jobs !== null ? jobs : avgJobs;
 
-      existingTravel.miles.pedestrian.mean += d;
-      existingTravel.capita.pedestrian.mean += d / p;
-      existingTravel.jobs.pedestrian.mean += d / j;
+      // could still be null if avg was null
+      if(d !== null) {
+        existingTravel.miles.pedestrian.mean += d;
+
+        // no div by zero
+        if(p !== null  && p !== 0) {
+          existingTravel.capita.pedestrian.mean += d / p;
+        }
+
+        if(j !== null && j !== 0) {
+          existingTravel.jobs.pedestrian.mean += d / j;
+        }
+      }
 
       c.put('travel', 'intersections', [
         'network',
@@ -114,8 +127,8 @@ const _calcPedDemand = (
         j,
         1,
         d,
-        d / p,
-        d / j,
+        d !== null && p !== null && p !== 0 ? d / p : null,
+        d !== null && j !== null && j !== 0 ? d / j : null,
       ]);
     }
 
@@ -124,13 +137,23 @@ const _calcPedDemand = (
     // since they're all the same no need to loop through, just multiply by the
     // number of user defined intersections
     if(userIntersections.length) {
+
       const userIntDemand = avgDemand * userIntersections.length;
       const userIntDemandCapita = userIntDemand / avgPop;
       const userIntDemandJobs = userIntDemand / avgJobs;
 
-      existingTravel.miles.pedestrian.mean += userIntDemand;
-      existingTravel.capita.pedestrian.mean += userIntDemandCapita;
-      existingTravel.jobs.pedestrian.mean += userIntDemandJobs;
+      if(avgDemand !== null) {
+
+        existingTravel.miles.pedestrian.mean += userIntDemand;
+
+        if(avgPop !== null && avgPop !== 0) {
+          existingTravel.capita.pedestrian.mean += userIntDemandCapita;
+        }
+
+        if(avgJobs !== null && avgJobs !== 0) {
+          existingTravel.capita.pedestrian.mean += userIntDemandJobs;
+        }
+      }
 
       c.put('travel', 'intersections', [
         'user',
@@ -141,9 +164,9 @@ const _calcPedDemand = (
         avgPop,
         avgJobs,
         userIntersections.length,
-        userIntDemand,
-        userIntDemandCapita,
-        userIntDemandJobs,
+        avgDemand !== null ? userIntDemand : null,
+        avgDemand !== null && avgPop !== null && avgPop !== 0 ? userIntDemandCapita : null,
+        avgDemand !== null && avgJobs !== null && avgJobs !== 0 ? userIntDemandJobs : null,
       ]);
     }
 
