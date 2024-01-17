@@ -15,7 +15,7 @@ import calcDiscount from './calcDiscount.js';
 // safety helpers
 import calcEVcmj from './safety/calcEVcmj.js';
 import calcPVcmjk from './safety/calcPVcmjk.js';
-import calcNCmojk from './safety/calcNCmoj.js';
+import calcNCmojk from './safety/calcNCmojk.js';
 import {
   calcECmoj,
   calcECmoj_debug
@@ -108,7 +108,7 @@ const _calc = (
         // don't collect anything on this call
         // we'll use the separate debug call below
         c.off();
-        const EC = calcECmoj(
+        ECmoj[m][o][j] = calcECmoj(
           UI,
           ECCmoj,
           m,
@@ -116,8 +116,6 @@ const _calc = (
           j
         );
         c.on();
-
-        ECmoj[m][o][j] = EC;
 
         // do separate debugging for ECmoj / CCmojvf
         // to return numbers for all possibilities
