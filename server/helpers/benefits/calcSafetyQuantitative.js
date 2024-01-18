@@ -280,6 +280,51 @@ const _calc = (
   };
 };
 
+const ECC_partial = (
+  ECC,
+  m,
+  j,
+  v,
+  f,
+  L,
+  exposure,
+  population,
+  jobs,
+) => {
+
+  // console.log(`m: ${m}`);
+  // console.log(`j: ${j}`);
+  // console.log(`v: ${v}`);
+  // console.log(`f: ${f}`);
+  // console.log(`L: ${L}`);
+  // console.log(`exposure: ${exposure}`);
+  // console.log(`population: ${population}`);
+  // console.log(`jobs: ${jobs}`);
+
+  if(exposure === null) {
+    return;
+  }
+
+  for(let o of OUTCOMES) {
+    const A = Amojvf[m][o][j][v][f];
+    const V = exposure;
+
+    ECC.safety[m][o][j] += calcCC(A, L, V);
+
+    // no div by zero
+    if(population !== null && population !== 0) {
+      const V_pop = exposure / population;
+      ECC.capita[m][o][j] += calcCC(A, L, V_pop);
+    }
+
+    // no div by zero
+    if(jobs !== null && jobs !== 0) {
+      const V_jobs = exposure / jobs;
+      ECC.jobs[m][o][j] += calcCC(A, L, V_jobs);
+    }
+  }
+};
+
 const calcSafetyQuantitative = (
   ways,
   intersections,
@@ -320,24 +365,26 @@ const calcSafetyQuantitative = (
   // split between this new lookup and user inputs for split, 0 < y < 5
   // unused for EC user, y >= 5
 
-  const ECmoj_NEW = {};
+  // init object with zeroes
+  const ECCmoj = {};
 
   for(let c of COLUMNS) {
-    ECmoj_NEW[c] = {};
+    ECCmoj[c] = {};
 
     for(let m of MODES) {
-      ECmoj_NEW[c][m] = {};
+      ECCmoj[c][m] = {};
 
       for(let o of OUTCOMES) {
-        ECmoj_NEW[c][m][o] = {};
+        ECCmoj[c][m][o] = {};
 
         for(let j of LOCATION_TYPES) {
-          ECmoj_NEW[c][m][o][j] = 0;
+          ECCmoj[c][m][o][j] = 0;
         }
       }
     }
   }
 
+  // avg props for fallback
   const avgWayBikeExp = avgProp(ways, 'bicyclist_link_exposure');
   const avgWayPedExp = avgProp(ways, 'pedestrian_link_exposure');
   const avgWayPop = avgProp(ways, 'population');
@@ -345,50 +392,51 @@ const calcSafetyQuantitative = (
 
   for(let way of ways) {
 
-    let m;
-    const j = 'roadway';
+    const {
+      length,
+      bicycle_exposure_class,
+      bicyclist_link_exposure,
+      pedestrian_link_exposure_class,
+      pedestrian_link_exposure,
+      functional,
+      population,
+      jobs,
+    } = way.properties;
 
-    const L = way.properties.length / 5280;
-    const v = way.properties.bicycle_exposure_class.toLowerCase();
-    const f = way.properties.functional.toLowerCase();
-    const bikeExp = way.properties.bicyclist_link_exposure || avgWayBikeExp;
-    const pedExp = way.properties.pedestrian_link_exposure || avgWayPedExp;
-    const population = way.properties.population || avgWayPop;
-    const jobs = way.properties.jobs || avgWayJobs;
+    // use avg if null
+    const e_b = bicyclist_link_exposure !== null ? bicyclist_link_exposure : avgWayBikeExp;
+    const e_p = pedestrian_link_exposure !== null ? pedestrian_link_exposure : avgWayPedExp;
+    const p = population !== null ? population : avgWayPop;
+    const j = jobs !== null ? jobs : avgWayJobs;
 
-    if(bikeExp) {
-      m = 'bicycling';
-      const V = bikeExp;
-      const V_pop = bikeExp / population;
-      const V_jobs = bikeExp / jobs;
+    // bike
+    ECC_partial(
+      ECCmoj,
+      'bicycling',
+      'roadway',
+      bicycle_exposure_class.toLowerCase(),
+      functional.toLowerCase(),
+      length / 5280,
+      e_b,
+      p,
+      j,
+    );
 
-      for(let o of OUTCOMES) {
-
-        const A = Amojvf[m][o][j][v][f];
-
-        ECmoj_NEW.safety[m][o][j] += calcCC(A, L, V);
-        ECmoj_NEW.capita[m][o][j] += calcCC(A, L, V_pop);
-        ECmoj_NEW.jobs[m][o][j] += calcCC(A, L, V_jobs);
-      }
-    }
-
-    if(pedExp) {
-      m = 'walking';
-      const V = pedExp;
-      const V_pop = pedExp / population;
-      const V_jobs = pedExp / jobs;
-
-      for(let o of OUTCOMES) {
-
-        const A = Amojvf[m][o][j][v][f];
-
-        ECmoj_NEW.safety[m][o][j] += calcCC(A, L, V);
-        ECmoj_NEW.capita[m][o][j] += calcCC(A, L, V_pop);
-        ECmoj_NEW.jobs[m][o][j] += calcCC(A, L, V_jobs);
-      }
-    }
+    // ped
+    ECC_partial(
+      ECCmoj,
+      'walking',
+      'roadway',
+      pedestrian_link_exposure_class.toLowerCase(),
+      functional.toLowerCase(),
+      length / 5280,
+      e_p,
+      p,
+      j,
+    );
   }
 
+  // avg props for fallback
   const avgIntBikeExp = avgProp(intersections, 'bicycle_node_exposure');
   const avgIntPedExp = avgProp(intersections, 'pedestrian_node_exposure');
   const avgIntPop = avgProp(intersections, 'population');
@@ -396,56 +444,56 @@ const calcSafetyQuantitative = (
 
   for(let intersection of intersections) {
 
-    let m;
-    const j = 'intersection';
+    const {
+      bicycle_exposure_class,
+      bicycle_node_exposure,
+      pedestrian_exposure_class,
+      pedestrian_node_exposure,
+      functional,
+      population,
+      jobs,
+    } = intersection.properties;
 
-    const L = 1;
-    const v = intersection.properties.bicycle_exposure_class.toLowerCase();
-    const f = intersection.properties.functional.toLowerCase();
-    const bikeExp = intersection.properties.bicycle_node_exposure || avgIntBikeExp;
-    const pedExp = intersection.properties.pedestrian_node_exposure || avgIntPedExp;
-    const population = intersection.properties.population || avgIntPop;
-    const jobs = intersection.properties.jobs || avgIntJobs;
+    // use avg if null
+    const e_b = bicycle_node_exposure !== null ? bicycle_node_exposure : avgIntBikeExp;
+    const e_p = pedestrian_node_exposure !== null ? pedestrian_node_exposure : avgIntPedExp;
+    const p = population !== null ? population : avgIntPop;
+    const j = jobs !== null ? jobs : avgIntJobs;
 
-    if(bikeExp) {
-      m = 'bicycling';
-      const V = bikeExp;
-      const V_pop = bikeExp / population;
-      const V_jobs = bikeExp / jobs;
+    // bike
+    ECC_partial(
+      ECCmoj,
+      'bicycling',
+      'intersection',
+      bicycle_exposure_class.toLowerCase(),
+      functional.toLowerCase(),
+      1,
+      e_b,
+      p,
+      j,
+    );
 
-      for(let o of OUTCOMES) {
-
-        const A = Amojvf[m][o][j][v][f];
-
-        ECmoj_NEW.safety[m][o][j] += calcCC(A, L, V);
-        ECmoj_NEW.capita[m][o][j] += calcCC(A, L, V_pop);
-        ECmoj_NEW.jobs[m][o][j] += calcCC(A, L, V_jobs);
-      }
-    }
-
-    if(pedExp) {
-      m = 'walking';
-      const V = pedExp;
-      const V_pop = pedExp / population;
-      const V_jobs = pedExp / jobs;
-
-      for(let o of OUTCOMES) {
-
-        const A = Amojvf[m][o][j][v][f];
-
-        ECmoj_NEW.safety[m][o][j] += calcCC(A, L, V);
-        ECmoj_NEW.capita[m][o][j] += calcCC(A, L, V_pop);
-        ECmoj_NEW.jobs[m][o][j] += calcCC(A, L, V_jobs);
-      }
-    }
+    // ped
+    ECC_partial(
+      ECCmoj,
+      'walking',
+      'intersection',
+      pedestrian_exposure_class.toLowerCase(),
+      functional.toLowerCase(),
+      1,
+      e_p,
+      p,
+      j,
+    );
   }
 
+  // calc combined mode
   for(let c of COLUMNS) {
     for(let o of OUTCOMES) {
       for(let j of LOCATION_TYPES) {
-        ECmoj_NEW[c].combined[o][j] = (
-          ECmoj_NEW[c].bicycling[o][j] +
-          ECmoj_NEW[c].walking[o][j]
+        ECCmoj[c].combined[o][j] = (
+          ECCmoj[c].bicycling[o][j] +
+          ECCmoj[c].walking[o][j]
         );
       }
     }
@@ -482,7 +530,7 @@ const calcSafetyQuantitative = (
     c.setPrepends('safety', 'after', [column]);
 
     benefits[column] = _calc(
-      ECmoj_NEW[column],
+      ECCmoj[column],
       EVcmj[column],
       PVcmjk[column],
       UI[column],
