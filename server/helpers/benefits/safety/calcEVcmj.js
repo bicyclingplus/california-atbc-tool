@@ -3,7 +3,6 @@ import {
 	MODES,
 	LOCATION_TYPES,
 } from '../constants.js';
-
 import avgProp from '../avgProp.js';
 import z from '../../collector.js';
 

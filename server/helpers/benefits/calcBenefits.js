@@ -9,31 +9,21 @@ import calcSafetyQuantitative from './calcSafetyQuantitative.js';
 const calcBenefits = (
 	project_type,
 	project_subtype,
-
 	project_county,
 	project_year,
-
 	project_time_frame,
-
 	project_transit,
-
 	project_length,
 	num_intersections,
-
 	existingTravel,
-
 	selectedInfrastructure,
 	selectedNonInfrastructure,
-
 	hasOnlyUserMapSelections,
-
 	selectedWays,
 	selectedIntersections,
+	safety) => {
 
-	safety
-	) => {
-
-	let benefits = {};
+	const benefits = {};
 
 	benefits.projectQualitative = calcProjectQualitative(
 		selectedInfrastructure, selectedNonInfrastructure);

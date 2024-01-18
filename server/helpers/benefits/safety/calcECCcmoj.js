@@ -1,4 +1,5 @@
 import { createRequire } from "module";
+
 import {
   COLUMNS,
   MODES,
@@ -11,7 +12,7 @@ import avgProp from '../avgProp.js';
 const require = createRequire(import.meta.url);
 const Amojvf = require('../../../data/alpha_lookup.json');
 
-const ECC_partial = (
+const _ECC_partial = (
   ECC,
   m,
   j,
@@ -98,7 +99,7 @@ const calcECCcmoj = (ways, intersections) => {
 
 	  // bike
 	  if(bicycle_exposure_class !== null) {
-		  ECC_partial(
+		  _ECC_partial(
 		    ECCcmoj,
 		    'bicycling',
 		    'roadway',
@@ -113,7 +114,7 @@ const calcECCcmoj = (ways, intersections) => {
 
 	  // ped
 		if(pedestrian_link_exposure_class !== null) {
-		  ECC_partial(
+		  _ECC_partial(
 		    ECCcmoj,
 		    'walking',
 		    'roadway',
@@ -157,7 +158,7 @@ const calcECCcmoj = (ways, intersections) => {
 
 	  // bike
 	  if(bicycle_exposure_class !== null) {
-		  ECC_partial(
+		  _ECC_partial(
 		    ECCcmoj,
 		    'bicycling',
 		    'intersection',
@@ -172,7 +173,7 @@ const calcECCcmoj = (ways, intersections) => {
 
 	  // ped
 	  if(pedestrian_exposure_class !== null) {
-		  ECC_partial(
+		  _ECC_partial(
 		    ECCcmoj,
 		    'walking',
 		    'intersection',

@@ -1,10 +1,11 @@
+import { createRequire } from "module";
+
 import {
 	SCALING_FACTORS,
 } from '../constants.js';
 import c from '../../collector.js';
 import getElement from '../getElement.js';
 
-import { createRequire } from "module";
 const require = createRequire(import.meta.url);
 const infrastructure = require('../../../data/infrastructure.json');
 

@@ -6,7 +6,6 @@ import {
 	POWER_SAFETY_IN_NUMBERS,
   SCALING_FACTORS,
 } from '../constants.js';
-
 import calcLength from './calcLength.js';
 import calcShare from '../calcShare.js';
 import c from '../../collector.js';

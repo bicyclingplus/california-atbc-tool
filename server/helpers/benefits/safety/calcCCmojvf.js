@@ -3,7 +3,6 @@ import { createRequire } from "module";
 import {
   POWER_SAFETY_IN_NUMBERS
 } from '../constants.js';
-
 import c from '../../collector.js';
 
 const require = createRequire(import.meta.url);

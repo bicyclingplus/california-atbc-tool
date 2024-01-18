@@ -2,10 +2,9 @@ import {
 	MODES,
 	OUTCOMES,
 } from '../constants.js';
-
 import avgProp from '../avgProp.js';
 
-const divideOrNull = (n, d) => {
+const _divideOrNull = (n, d) => {
 	return d !== 0 ? n / d : null;
 };
 
@@ -25,11 +24,11 @@ const columizeSafetyInputs = (inputs, ways, intersections) => {
 	// direct user inputs used for safety column
 	for(let m of MODES) {
 		for(let o of OUTCOMES) {
-			capita[m][o].roadway = divideOrNull(capita[m][o].roadway, avgWayPop);
-			capita[m][o].intersection = divideOrNull(capita[m][o].intersection, avgIntPop);
+			capita[m][o].roadway = _divideOrNull(capita[m][o].roadway, avgWayPop);
+			capita[m][o].intersection = _divideOrNull(capita[m][o].intersection, avgIntPop);
 
-			jobs[m][o].roadway = divideOrNull(jobs[m][o].roadway, avgWayJobs);
-			jobs[m][o].intersection = divideOrNull(jobs[m][o].intersection, avgIntJobs);
+			jobs[m][o].roadway = _divideOrNull(jobs[m][o].roadway, avgWayJobs);
+			jobs[m][o].intersection = _divideOrNull(jobs[m][o].intersection, avgIntJobs);
 		}
 	}
 

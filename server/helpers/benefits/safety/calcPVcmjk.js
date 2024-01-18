@@ -1,3 +1,5 @@
+import { createRequire } from "module";
+
 import {
     COLUMNS,
     MODES,
@@ -5,13 +7,11 @@ import {
     ESTIMATES,
     SCALING_FACTORS,
 } from '../constants.js';
-
 import z from '../../collector.js';
 import calcLength from './calcLength.js';
 import calcShare from '../calcShare.js';
 import getElement from '../getElement.js';
 
-import { createRequire } from "module";
 const require = createRequire(import.meta.url);
 const travel_volume = require('../../../data/travel_volume.json');
 const infrastructure = require('../../../data/infrastructure.json');

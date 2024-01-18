@@ -6,6 +6,7 @@ import {
 
 import c from '../../collector.js';
 
+// unused now
 const calcLjvf = (selectedWays, selectedIntersections) => {
 
 	const Ljvf = {};

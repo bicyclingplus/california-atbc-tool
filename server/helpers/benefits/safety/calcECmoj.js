@@ -2,7 +2,6 @@ import {
   FUNCTIONAL_CLASSES,
   VOLUMES,
 } from '../constants.js';
-
 import c from '../../collector.js';
 
 // EXISTING CRASHES SPLIT
@@ -12,7 +11,7 @@ import c from '../../collector.js';
 // m mode index (bicycling/walking)
 // o outcome index (crash/injury/death)
 // j location type index (intersection/roadway)
-const calcECmoj_split = (UI, ECCmoj, m, o, j) => {
+const _calcECmoj_split = (UI, ECCmoj, m, o, j) => {
   const UImoj = UI[m][o][j] !== null ? UI[m][o][j] : 0;
   const UIy = UI[m].years[j];
   const CC = ECCmoj[m][o][j];
@@ -25,7 +24,7 @@ const calcECmoj_split = (UI, ECCmoj, m, o, j) => {
 // m mode index (bicycling/walking)
 // o outcome index (crash/injury/death)
 // j location type index (intersection/roadway)
-const calcECmoj_model = (ECCmoj, m, o, j) => {
+const _calcECmoj_model = (ECCmoj, m, o, j) => {
   return ECCmoj[m][o][j];
 };
 
@@ -34,7 +33,7 @@ const calcECmoj_model = (ECCmoj, m, o, j) => {
 // m mode index (bicycling/walking)
 // o outcome index (crash/injury/death)
 // j location type index (intersection/roadway)
-const calcECmoj_user = (UI, m, o, j) => {
+const _calcECmoj_user = (UI, m, o, j) => {
   const UImoj = UI[m][o][j] !== null ? UI[m][o][j] : 0;
   const UIy = UI[m].years[j];
 
@@ -57,17 +56,17 @@ const calcECmoj = (UI, ECCmoj, m, o, j) => {
 
     // 5 or more years, use user input directly
     if(UIy >= 5) {
-      return calcECmoj_user(UI, m, o, j);
+      return _calcECmoj_user(UI, m, o, j);
     }
     // more than 0 but less than 5, split between
     // model and user input
     else {
-      return calcECmoj_split(UI, ECCmoj, m, o, j);
+      return _calcECmoj_split(UI, ECCmoj, m, o, j);
     }
   }
   // 0 or null, use model only
   else {
-    return calcECmoj_model(ECCmoj, m, o, j);
+    return _calcECmoj_model(ECCmoj, m, o, j);
   }
 };
 
@@ -92,13 +91,13 @@ const calcECmoj_debug = (UI, ECCmoj, m, o, j) => {
   // so we turn off the collector to ignore the
   // CCmojvf calls from calcECmoj_split
   c.off();
-  const split = UIy && UIy > 0 ? calcECmoj_split(UI, ECCmoj, m, o, j) : null;
+  const split = UIy && UIy > 0 ? _calcECmoj_split(UI, ECCmoj, m, o, j) : null;
   c.on();
 
   return {
-    user: UIy && UIy > 0 ? calcECmoj_user(UI, m, o, j) : null,
+    user: UIy && UIy > 0 ? _calcECmoj_user(UI, m, o, j) : null,
     split: split,
-    model: calcECmoj_model(ECCmoj, m, o, j),
+    model: _calcECmoj_model(ECCmoj, m, o, j),
     used: used,
   }
 }
