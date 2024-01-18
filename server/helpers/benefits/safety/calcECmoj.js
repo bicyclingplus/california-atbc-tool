@@ -13,7 +13,7 @@ import c from '../../collector.js';
 // o outcome index (crash/injury/death)
 // j location type index (intersection/roadway)
 const calcECmoj_split = (UI, ECCmoj, m, o, j) => {
-  const UImoj = UI[m][o][j];
+  const UImoj = UI[m][o][j] !== null ? UI[m][o][j] : 0;
   const UIy = UI[m].years[j];
   const CC = ECCmoj[m][o][j];
 
@@ -35,7 +35,7 @@ const calcECmoj_model = (ECCmoj, m, o, j) => {
 // o outcome index (crash/injury/death)
 // j location type index (intersection/roadway)
 const calcECmoj_user = (UI, m, o, j) => {
-  const UImoj = UI[m][o][j];
+  const UImoj = UI[m][o][j] !== null ? UI[m][o][j] : 0;
   const UIy = UI[m].years[j];
 
   return UImoj / UIy;
