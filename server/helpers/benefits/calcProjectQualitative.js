@@ -2,7 +2,9 @@ import { createRequire } from "module";
 const require = createRequire(import.meta.url);
 const projectQualitative = require('../../data/project_qualitative.json');
 
-const calcProjectQualitative = (selectedInfrastructure, selectedNonInfrastructure) => {
+const calcProjectQualitative = (
+	selectedInfrastructure,
+	selectedNonInfrastructure) => {
 
 	let combinedElements = [
 		...Object.keys(selectedInfrastructure),
