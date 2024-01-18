@@ -8,6 +8,7 @@ import {
 } from './constants.js';
 
 import calcShare from './calcShare.js';
+import getElement from './getElement.js';
 import c from '../collector.js';
 
 import { createRequire } from "module";
@@ -17,11 +18,11 @@ const infrastructure = require('../../data/infrastructure.json');
 
 const _calcPartial = (total, percent) => {
 
-    let increase = {};
+    const increase = {};
 
-    for(let estimate of ESTIMATES) {
-        increase[estimate] = (
-            total[estimate] *
+    for(let k of ESTIMATES) {
+        increase[k] = (
+            total[k] *
             (percent / 100)
         );
     }
@@ -29,10 +30,14 @@ const _calcPartial = (total, percent) => {
     return increase;
 };
 
-const _calcTravelMode = (mode, selectedInfrastructure,
-    existingTravel, project_length, num_intersections) => {
+const _calcTravelMode = (
+    m,
+    selectedInfrastructure,
+    existingTravel,
+    project_length,
+    num_intersections) => {
 
-    let travel = {};
+    const travel = {};
 
     // the travel model was supposed to provide
     // lower, mean, and upper estimates, but it
@@ -40,105 +45,99 @@ const _calcTravelMode = (mode, selectedInfrastructure,
     // the starting point for all three for now
     travel.existing = {};
 
-    for(let estimate of ESTIMATES) {
-        travel.existing[estimate] = existingTravel.mean;
+    for(let k of ESTIMATES) {
+        travel.existing[k] = existingTravel.mean;
     }
 
     // build a list of all increases for the selected
     // elements in the project
-    let increases = [];
+    const increases = [];
 
-    // go through each category and its elements
-    for(let category of infrastructure.categories) {
+    for(let i in selectedInfrastructure) {
 
-        for(let item of category.items) {
+        // does element have travel benefits
+        if(!(i in travel_volume)) {
+            continue;
+        }
 
-            // the element is selected
-            if(!(item.shortname in selectedInfrastructure)) {
+        // does element have travel benefits for this mode
+        if(!(m in travel_volume[i])) {
+            continue;
+        }
+
+        const benefit = travel_volume[i][m];
+        const element = getElement(i);
+        const { calc_units, units } = element;
+
+        // calculate the increase for each improvement
+        // type for this element
+        for(let T in SCALING_FACTORS) {
+
+            const value = selectedInfrastructure[i][T];
+
+            // skip if not filled in
+            if(value === 0) {
                 continue;
             }
 
-            // the element has benefits
-            if(!(item.shortname in travel_volume)) {
-                continue;
+            const share = calcShare(
+                element, value, project_length, num_intersections);
+
+            // calculate the increase in travel for this benefit
+            // using the benefit percentage, the existing travel,
+            // the project share, and the type of improvement
+            const increase = {};
+
+            for(let k of ESTIMATES) {
+                increase[k] = (
+                    (benefit[k] / 100) *
+                    travel.existing[k] *
+                    share.share *
+                    SCALING_FACTORS[T]
+                );
+
+                // debug
+                // todo add mode?
+                c.put('travel', 'adjustments', [
+                    i,
+                    calc_units,
+                    units,
+                    T,
+                    value,
+                    share.Ni,
+                    share.L,
+                    k,
+                    travel.existing[k],
+                    benefit[k] / 100,
+                    share.share,
+                    SCALING_FACTORS[T],
+                    increase[k],
+                ]);
             }
 
-            // the element has benefits for this mode
-            if(!(mode in travel_volume[item.shortname])) {
-                continue;
-            }
-
-            const benefit = travel_volume[item.shortname][mode];
-            const { shortname } = item;
-
-            // calculate the increase for each improvement
-            // type for this element
-            for(let improvement in SCALING_FACTORS) {
-
-                const value = selectedInfrastructure[shortname][improvement];
-
-                // skip if not filled in
-                if(value === 0) {
-                    continue;
-                }
-
-                const share = calcShare(item, value, project_length, num_intersections);
-
-                // calculate the increase in travel for this benefit
-                // using the benefit percentage, the existing travel,
-                // the project share, and the type of improvement
-                const increase = {};
-
-                for(let estimate of ESTIMATES) {
-                    increase[estimate] = (
-                        (benefit[estimate] / 100) *
-                        travel.existing[estimate] *
-                        share.share *
-                        SCALING_FACTORS[improvement]
-                    );
-
-                    // debug
-                    c.put('travel', 'adjustments', [
-                        item.shortname,
-                        item.calc_units,
-                        item.units,
-                        improvement,
-                        value,
-                        share.Ni,
-                        share.L,
-                        estimate,
-                        travel.existing[estimate],
-                        benefit[estimate] / 100,
-                        share.share,
-                        SCALING_FACTORS[improvement],
-                        increase[estimate],
-                    ]);
-                }
-
-                increases.push(increase);
-            }
+            increases.push(increase);
         }
     }
 
     // total up the increases in travel
     travel.total = {};
 
-    for(let estimate of ESTIMATES) {
-        travel.total[estimate] = 0;
+    for(let k of ESTIMATES) {
+        travel.total[k] = 0;
     }
 
     for(let increase of increases) {
-        for(let estimate of ESTIMATES) {
-            travel.total[estimate] += increase[estimate];
+        for(let k of ESTIMATES) {
+            travel.total[k] += increase[k];
         }
     }
 
     // calculate specific increases as a fraction
     // of the total travel increase
-    travel.inducedTravel = _calcPartial(travel.total, INDUCED_TRAVEL[mode]);
-    travel.routeShift = _calcPartial(travel.total, ROUTE_SHIFT[mode]);
-    travel.carShift = _calcPartial(travel.total, CAR_SHIFT[mode]);
-    travel.otherShift = _calcPartial(travel.total, OTHER_SHIFT[mode]);
+    travel.inducedTravel = _calcPartial(travel.total, INDUCED_TRAVEL[m]);
+    travel.routeShift = _calcPartial(travel.total, ROUTE_SHIFT[m]);
+    travel.carShift = _calcPartial(travel.total, CAR_SHIFT[m]);
+    travel.otherShift = _calcPartial(travel.total, OTHER_SHIFT[m]);
 
     // calculate the total projected travel for the project
     // with the selected benefits as the sum of the
@@ -146,32 +145,35 @@ const _calcTravelMode = (mode, selectedInfrastructure,
     // total increase in travel for the benefits
     travel.projected = {};
 
-    for(let estimate of ESTIMATES) {
-        travel.projected[estimate] = (
-            travel.existing[estimate] +
-            travel.total[estimate]
+    for(let k of ESTIMATES) {
+        travel.projected[k] = (
+            travel.existing[k] +
+            travel.total[k]
         );
     }
 
     // debug
-    for(let estimate of ESTIMATES) {
+    for(let k of ESTIMATES) {
         c.put('travel', 'projected', [
-            estimate,
-            travel.existing[estimate],
-            travel.total[estimate],
-            travel.inducedTravel[estimate],
-            travel.routeShift[estimate],
-            travel.carShift[estimate],
-            travel.otherShift[estimate],
-            travel.projected[estimate],
+            k,
+            travel.existing[k],
+            travel.total[k],
+            travel.inducedTravel[k],
+            travel.routeShift[k],
+            travel.carShift[k],
+            travel.otherShift[k],
+            travel.projected[k],
         ]);
     }
 
     return travel;
 };
 
-const _calc = (selectedInfrastructure, existingTravel,
-    project_length, num_intersections) => {
+const _calc = (
+    selectedInfrastructure,
+    existingTravel,
+    project_length,
+    num_intersections) => {
 
     let travel = {};
 
@@ -201,18 +203,21 @@ const _calc = (selectedInfrastructure, existingTravel,
     // safety benefits calculations
     travel.totalProjected = {};
 
-    for(let estimate of ESTIMATES) {
-        travel.totalProjected[estimate] = (
-            travel.bike.projected[estimate] +
-            travel.pedestrian.projected[estimate]
+    for(let k of ESTIMATES) {
+        travel.totalProjected[k] = (
+            travel.bike.projected[k] +
+            travel.pedestrian.projected[k]
         );
     }
 
     return travel;
 };
 
-const calcTravel = (selectedInfrastructure, travel,
-    project_length, num_intersections) => {
+const calcTravel = (
+    selectedInfrastructure,
+    travel,
+    project_length,
+    num_intersections) => {
 
     c.setPrepends('travel', 'projected', ['travel']);
     c.setPrepends('travel', 'adjustments', ['travel']);
