@@ -28,18 +28,18 @@ const _calcPed = (travel, transit) => {
 
 const _calc = (travel, time_frame, transit) => {
 
-  let benefits = {};
+  const benefits = {};
 
-  for(let estimate of ESTIMATES) {
+  for(let k of ESTIMATES) {
 
     // daily bike and ped vmt benefits
-    let combined = (
-      _calcBike(travel.bike.carShift[estimate]) +
-      _calcPed(travel.pedestrian.carShift[estimate], transit)
+    const combined = (
+      _calcBike(travel.bike.carShift[k]) +
+      _calcPed(travel.pedestrian.carShift[k], transit)
     );
 
     // annualize and calc benefits over project time frame
-    benefits[estimate] = calcDiscount(combined * 365, time_frame);
+    benefits[k] = calcDiscount(combined * 365, time_frame);
   }
 
   return benefits;
