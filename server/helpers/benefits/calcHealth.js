@@ -30,28 +30,28 @@ const _calc = (travel, time_frame) => {
 
   benefits.pedestrian = {};
 
-  for(let estimate of ESTIMATES) {
-    benefits.pedestrian[estimate] = calcDiscount(
-      _calcMMET(travel.pedestrian, estimate, WALK_SPEED, WALK_MMET),
+  for(let k of ESTIMATES) {
+    benefits.pedestrian[k] = calcDiscount(
+      _calcMMET(travel.pedestrian, k, WALK_SPEED, WALK_MMET),
       time_frame
     );
   }
 
   benefits.bike = {};
 
-  for(let estimate of ESTIMATES) {
-    benefits.bike[estimate] = calcDiscount(
-      _calcMMET(travel.bike, estimate, BIKE_SPEED, BIKE_MMET),
+  for(let k of ESTIMATES) {
+    benefits.bike[k] = calcDiscount(
+      _calcMMET(travel.bike, k, BIKE_SPEED, BIKE_MMET),
       time_frame
     );
   }
 
   benefits.total = {};
 
-  for(let estimate of ESTIMATES) {
-    benefits.total[estimate] = (
-      benefits.bike[estimate] +
-      benefits.pedestrian[estimate]
+  for(let k of ESTIMATES) {
+    benefits.total[k] = (
+      benefits.bike[k] +
+      benefits.pedestrian[k]
     );
   }
 
