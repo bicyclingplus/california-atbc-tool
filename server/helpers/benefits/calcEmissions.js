@@ -1,3 +1,4 @@
+import { createRequire } from "module";
 import {
   GWPS,
   VEHICLE_TYPES,
@@ -5,7 +6,6 @@ import {
   ESTIMATES
 } from './constants.js';
 
-import { createRequire } from "module";
 const require = createRequire(import.meta.url);
 const fleet_makeup = require('../../data/fleet_makeup.json');
 const emission_rates = require('../../data/emission_rates.json');
@@ -28,21 +28,21 @@ const _calc = (county, year, vmtReductions) => {
     return null;
   }
 
-  let benefits = {};
+  const benefits = {};
 
   // calculate the share of vmt reductions per vehicle type
   // taking into account the fraction of that vehicle
   // type of the total vehicles in the county
-  let vehVMTReductions = {};
+  const vehVMTReductions = {};
 
   for(let vehType of VEHICLE_TYPES) {
 
     vehVMTReductions[vehType] = {};
 
-    for(let estimate of ESTIMATES) {
-      vehVMTReductions[vehType][estimate] = (
+    for(let k of ESTIMATES) {
+      vehVMTReductions[vehType][k] = (
         (fleet_makeup[county][vehType] / fleet_makeup[county].Total) *
-        vmtReductions[estimate]);
+        vmtReductions[k]);
     }
   }
 
@@ -58,15 +58,15 @@ const _calc = (county, year, vmtReductions) => {
 
     benefits.reductions[emissionType] = {};
 
-    for(let estimate of ESTIMATES) {
-      benefits.reductions[emissionType][estimate] = 0;
+    for(let k of ESTIMATES) {
+      benefits.reductions[emissionType][k] = 0;
     }
 
     for(let vehType of VEHICLE_TYPES) {
 
-      for(let estimate of ESTIMATES) {
-        benefits.reductions[emissionType][estimate] += (
-          vehVMTReductions[vehType][estimate] *
+      for(let k of ESTIMATES) {
+        benefits.reductions[emissionType][k] += (
+          vehVMTReductions[vehType][k] *
           emission_rates[county][year][vehType][emissionType]
         );
       }
@@ -76,15 +76,15 @@ const _calc = (county, year, vmtReductions) => {
   // calculate the CO2 equivalent for CO2, CH4, and N2O combined
   benefits.equivalent = {};
 
-  for(let estimate of ESTIMATES) {
-    benefits.equivalent[estimate] = 0;
+  for(let k of ESTIMATES) {
+    benefits.equivalent[k] = 0;
   }
 
   for(let equivalent in GWPS) {
 
-    for(let estimate of ESTIMATES) {
-      benefits.equivalent[estimate] += (
-        benefits.reductions[equivalent][estimate] * GWPS[equivalent]
+    for(let k of ESTIMATES) {
+      benefits.equivalent[k] += (
+        benefits.reductions[equivalent][k] * GWPS[equivalent]
       );
     }
   }
