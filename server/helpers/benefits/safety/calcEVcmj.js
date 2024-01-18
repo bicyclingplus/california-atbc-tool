@@ -41,32 +41,58 @@ const calcEVcmj = (selectedWays, selectedIntersections) => {
 	// add appropriate properties to corresponding Vmj_existing
 	for(let way of selectedWays) {
 
-		const bikeExp = way.properties.bicyclist_link_exposure || avgWayBikeExp;
-		const pedExp = way.properties.pedestrian_link_exposure || avgWayPedExp;
-		const population = way.properties.population || avgWayPop;
-		const jobs = way.properties.jobs || avgWayJobs;
+		const {
+			bicyclist_link_exposure: bikeExp,
+			pedestrian_link_exposure: pedExp,
+			population,
+			jobs,
+			functional,
+			bicycle_exposure_class,
+			length,
+		} = way.properties;
 
-		if(bikeExp) {
-			EVcmj.safety.bicycling.roadway += bikeExp;
-			EVcmj.capita.bicycling.roadway += bikeExp / population;
-			EVcmj.jobs.bicycling.roadway += bikeExp / jobs;
+		const e_b = bikeExp !== null ? bikeExp : avgWayBikeExp;
+		const e_p = pedExp !== null ? pedExp : avgWayPedExp;
+		const p = population !== null ? population : avgWayPop;
+		const j = jobs !== null ? jobs : avgWayJobs;
+
+		if(e_b !== null) {
+			EVcmj.safety.bicycling.roadway += e_b;
+
+			// handle potential div by zero
+			if(p !== null && p !== 0) {
+				EVcmj.capita.bicycling.roadway += e_b / p;
+			}
+
+			// handle potential div by zero
+			if(j !== null && j !== 0) {
+				EVcmj.jobs.bicycling.roadway += e_b / j;
+			}
 		}
 
-		if(pedExp) {
-			EVcmj.safety.walking.roadway += pedExp;
-			EVcmj.capita.walking.roadway += pedExp / population;
-			EVcmj.jobs.walking.roadway += pedExp / jobs;
+		if(e_p !== null) {
+			EVcmj.safety.walking.roadway += e_p;
+
+			// handle potential div by zero
+			if(p !== null && p !== 0) {
+				EVcmj.capita.walking.roadway += e_p / p;
+			}
+
+			// handle potential div by zero
+			if(j !== null && j !== 0) {
+				EVcmj.jobs.walking.roadway += e_p / j;
+			}
 		}
 
 		// debug
 		z.put('safety', 'exp_ways', [
-			way.properties.bicyclist_link_exposure,
-			way.properties.pedestrian_link_exposure,
-			way.properties.population,
-			way.properties.jobs,
-			way.properties.functional,
-			way.properties.bicycle_exposure_class,
-			way.properties.length,
+			bikeExp,
+			pedExp,
+			population,
+			jobs,
+			functional,
+			bicycle_exposure_class,
+			length,
 		]);
 	}
 
