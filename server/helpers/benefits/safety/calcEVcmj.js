@@ -112,31 +112,56 @@ const calcEVcmj = (selectedWays, selectedIntersections) => {
 
 	for(let intersection of selectedIntersections) {
 
-		const bikeExp = intersection.properties.bicycle_node_exposure || avgIntBikeExp;
-		const pedExp = intersection.properties.pedestrian_node_exposure || avgIntPedExp;
-		const population = intersection.properties.population || avgIntPop;
-		const jobs = intersection.properties.jobs || avgIntJobs;
+		const {
+			bicycle_node_exposure: bikeExp,
+			pedestrian_node_exposure: pedExp,
+			population,
+			jobs,
+			functional,
+			pedestrian_exposure_class,
+		} = intersection.properties;
 
-		if(bikeExp) {
-			EVcmj.safety.bicycling.intersection += bikeExp;
-			EVcmj.capita.bicycling.intersection += bikeExp / population;
-			EVcmj.jobs.bicycling.intersection += bikeExp / jobs;
+		const e_b = bikeExp !== null ? bikeExp : avgIntBikeExp;
+		const e_p = pedExp !== null ? pedExp : avgIntPedExp;
+		const p = population !== null ? population : avgIntPop;
+		const j = jobs !== null ? jobs : avgIntJobs;
+
+		if(e_b !== null) {
+			EVcmj.safety.bicycling.intersection += e_b;
+
+			// handle potential div by zero
+			if(p !== null && p !== 0) {
+				EVcmj.capita.bicycling.intersection += e_b / p;
+			}
+
+			// handle potential div by zero
+			if(j !== null && j !== 0) {
+				EVcmj.jobs.bicycling.intersection += e_b / j;
+			}
 		}
 
-		if(pedExp) {
-			EVcmj.safety.walking.intersection += pedExp;
-			EVcmj.capita.walking.intersection += pedExp / population;
-			EVcmj.jobs.walking.intersection += pedExp / jobs;
+		if(e_p !== null) {
+			EVcmj.safety.walking.intersection += e_p;
+
+			// handle potential div by zero
+			if(p !== null && p !== 0) {
+				EVcmj.capita.walking.intersection += e_p / p;
+			}
+
+			// handle potential div by zero
+			if(j !== null && j !== 0) {
+				EVcmj.jobs.walking.intersection += e_p / j;
+			}
 		}
 
 		// debug
 		z.put('safety', 'exp_intersections', [
-			intersection.properties.bicycle_node_exposure,
-			intersection.properties.pedestrian_node_exposure,
-			intersection.properties.population,
-			intersection.properties.jobs,
-			intersection.properties.functional,
-			intersection.properties.pedestrian_exposure_class,
+			bikeExp,
+			pedExp,
+			population,
+			jobs,
+			functional,
+			pedestrian_exposure_class,
 		]);
 	}
 
