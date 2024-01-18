@@ -1,46 +1,37 @@
 import { createRequire } from "module";
+import getElement from './getElement.js';
+
 const require = createRequire(import.meta.url);
 const qualitative = require('../../data/qualitative.json');
-const infrastructure = require('../../data/infrastructure.json');
 
 const calcSafetyQualitative = (selectedInfrastructure) => {
 
-  let benefits = [];
+  const benefits = [];
 
-  // Go through each infrastructure category
-  for(let category of infrastructure.categories) {
+  for(let i in selectedInfrastructure) {
 
-      // Go through each infrastructure element in this category
-      for(const item of category.items) {
+    // lighting could now be either lighting-block-face or lighting-intersection
+    // but there is only one qualitative benefit entry for lighting, so
+    // we take that if either are selected
+    const shortname = i.startsWith('lighting') ? 'lighting' : i;
 
-          // Check if this element is selected
-          if(item.shortname in selectedInfrastructure) {
+    // does this element have qualitative benefits
+    if(!(shortname in qualitative)) {
+      continue;
+    }
 
-            let shortname = item.shortname;
+    const { label } = getElement(i);
 
-            // lighting could now be either lighting-block-face or lighting-intersection
-            // but there is only one qualitative benefit entry for lighting, so
-            // we take that if either are selected
-            if(item.shortname.startsWith('lighting')) {
-              shortname = 'lighting';
-            }
-
-            if(shortname in qualitative) {
-
-              benefits.push({
-                element: item.label,
-                benefits: qualitative[shortname].map((benefit, idx) => (
-                  {
-                    key: `${shortname}-${idx}`,
-                    description: benefit.description,
-                    sources: benefit.sources,
-                  }
-                )),
-              });
-            }
-
-          }
-      }
+    benefits.push({
+      element: label,
+      benefits: qualitative[shortname].map((benefit, idx) => (
+        {
+          key: `${shortname}-${idx}`,
+          description: benefit.description,
+          sources: benefit.sources,
+        }
+      )),
+    });
   }
 
   return benefits;
