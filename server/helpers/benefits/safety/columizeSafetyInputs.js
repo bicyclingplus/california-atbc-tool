@@ -6,7 +6,7 @@ import {
 import avgProp from '../avgProp.js';
 
 const divideOrNull = (n, d) => {
-	return d > 0 ? n / d : null;
+	return d !== 0 ? n / d : null;
 };
 
 const columizeSafetyInputs = (inputs, ways, intersections) => {
