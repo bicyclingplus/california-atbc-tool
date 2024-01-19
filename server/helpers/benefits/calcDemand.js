@@ -1,23 +1,17 @@
+import { createRequire } from "module";
+import { MongoClient, ObjectId } from 'mongodb';
+
+import avgProp from './avgProp.js';
+import c from '../collector.js';
+
+const require = createRequire(import.meta.url);
+const config = require('../../data/volume_to_miles.json');
+
 // Code below taken from https://github.com/gautama-bharadwaj/volume_to_miles/blob/master/miles.py#L4
 // and ported to JS by me
 // JSON file required below also taken from the same repo
 // Input of 1.8, 10, 1234 should yield output of 258.42, verified
-
-// Fixes to uncomment (left to compare with old numbers)
-// remove floors in gautama's function
-// remove parseint in way/int props
-// mispelled prop Jobs -> jobs in bike selected ways
-// change bike weighting to not just double?
-
-import avgProp from './avgProp.js';
-import c from '../collector.js';
-import { MongoClient, ObjectId } from 'mongodb';
-import util from 'util';
-
-import { createRequire } from "module";
-const require = createRequire(import.meta.url);
-const config = require('../../data/volume_to_miles.json');
-
+// Note: No longer yields same output as original code after removing the two calls to floor function
 const _weightDemand = (
   proj_distance,
   proj_units,
@@ -406,16 +400,6 @@ const calcDemand = async (
 
     // need to get ways adjacent to selected intersections
     // and intersections adjacent to selected ways
-
-    // demand calc functions then need to be refactored to
-    // use selected AND adjacent ways/intersections
-
-    // then the weighting function will need to use the fraction
-    // of intersections selected out of intersections adjacent to
-    // selected ways
-
-    // or the fraction of ways selected out of ways adjacent to
-    // selected intersections
     const client = new MongoClient(process.env.MONGO_URI);
     let adjacentUnselectedIntersections;
     let adjacentUnselectedWays;
@@ -509,4 +493,7 @@ const calcDemand = async (
     return existingTravel;
 }
 
-export default calcDemand;
+export {
+  calcDemand as default,
+  _weightDemand,
+};
