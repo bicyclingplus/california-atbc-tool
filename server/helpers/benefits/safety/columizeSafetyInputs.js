@@ -1,11 +1,12 @@
 import {
 	MODES,
 	OUTCOMES,
+	LOCATION_TYPES,
 } from '../constants.js';
 import avgProp from '../avgProp.js';
 
 const _divideOrNull = (n, d) => {
-	return d !== 0 ? n / d : null;
+	return d !== null && d !== 0 ? n / d : null;
 };
 
 const columizeSafetyInputs = (inputs, ways, intersections) => {
@@ -16,19 +17,26 @@ const columizeSafetyInputs = (inputs, ways, intersections) => {
 	const avgIntPop = avgProp(intersections, 'population');
 	const avgIntJobs = avgProp(intersections, 'jobs');
 
-	// for capita and jobs properties, start with direct user inputs
-	// and divide by relevant project average
-	const capita = { ...inputs };
-	const jobs = { ...inputs };
+	const capita = {};
+	const jobs = {};
 
-	// direct user inputs used for safety column
 	for(let m of MODES) {
-		for(let o of OUTCOMES) {
-			capita[m][o].roadway = _divideOrNull(capita[m][o].roadway, avgWayPop);
-			capita[m][o].intersection = _divideOrNull(capita[m][o].intersection, avgIntPop);
 
-			jobs[m][o].roadway = _divideOrNull(jobs[m][o].roadway, avgWayJobs);
-			jobs[m][o].intersection = _divideOrNull(jobs[m][o].intersection, avgIntJobs);
+		capita[m] = {};
+		jobs[m] = {};
+
+		capita[m].years = inputs[m].years;
+		jobs[m].years = inputs[m].years;
+
+		for(let o of OUTCOMES) {
+			capita[m][o] = {};
+			jobs[m][o] = {};
+
+			capita[m][o].roadway = _divideOrNull(inputs[m][o].roadway, avgWayPop);
+			capita[m][o].intersection = _divideOrNull(inputs[m][o].intersection, avgIntPop);
+
+			jobs[m][o].roadway = _divideOrNull(inputs[m][o].roadway, avgWayJobs)
+			jobs[m][o].intersection = _divideOrNull(inputs[m][o].intersection, avgIntJobs)
 		}
 	}
 
