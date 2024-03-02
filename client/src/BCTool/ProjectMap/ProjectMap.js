@@ -208,6 +208,7 @@ class ProjectMap extends React.Component {
         let length = this.calcLength(e.target.getLatLngs());
 
         // double the length for two way streets
+        // (currently disabled)
         // if(!feature.properties.one_way_ca) {
         //   length *= 2;
         // }
@@ -215,6 +216,8 @@ class ProjectMap extends React.Component {
         feature.properties.length = length;
         selectedWays.push(feature);
 
+        // select adjacent intersections automatically
+        // (currently disabled)
         // let intA = feature.properties.source;
         // let intB = feature.properties.target;
 
