@@ -13,6 +13,7 @@ const peter = async (ids) => {
 	console.log('Starting peter report');
 
 	const headers = [
+		// 'id',
 		'Project Name',
 		'BMT (Total)',
 		'BMT (Capita/Total)',
@@ -30,7 +31,6 @@ const peter = async (ids) => {
 		'WALK saftey:combined deaths',
 		'20 year VMT reductions',
 		'20 year VMT reductions per capita',
-		'Greenhouse Gas 20 year reducitons',
 		'CO2',
 		'CH4',
 		'N20',
@@ -131,6 +131,7 @@ const peter = async (ids) => {
 
 				if(hasOnlyUserMapSelections || type === 'non-infrastructure') {
 					rows.push([
+						// projectId,
 						name,
 						'N/A',
 						'N/A',
@@ -148,7 +149,6 @@ const peter = async (ids) => {
 						'N/A',
 						'N/A',
 						'N/A',
-						'', // ghg
 						'N/A',
 						'N/A',
 						'N/A',
@@ -164,24 +164,24 @@ const peter = async (ids) => {
 				}
 				else {
 					rows.push([
+						// projectId,
 						name,
-						benefits.travel.miles.bike.total.mean,
-						benefits.travel.capita.bike.total.mean,
-						benefits.travel.miles.bike.projected.mean,
-						benefits.travel.capita.bike.projected.mean,
-						benefits.travel.miles.pedestrian.total.mean,
-						benefits.travel.capita.pedestrian.total.mean,
-						benefits.travel.miles.pedestrian.projected.mean,
-						benefits.travel.capita.pedestrian.projected.mean,
-						benefits.safetyQuantitative.safety.change.bicycling.crash.mean, // safety
-						benefits.safetyQuantitative.safety.change.bicycling.injury.mean,
-						benefits.safetyQuantitative.safety.change.bicycling.death.mean,
-						benefits.safetyQuantitative.safety.change.walking.crash.mean,
-						benefits.safetyQuantitative.safety.change.walking.injury.mean,
-						benefits.safetyQuantitative.safety.change.walking.death.mean,
+						subtype === "pedestrian-only" ? "N/A" : benefits.travel.miles.bike.total.mean,
+						subtype === "pedestrian-only" ? "N/A" : benefits.travel.capita.bike.total.mean,
+						subtype === "pedestrian-only" ? "N/A" : benefits.travel.miles.bike.projected.mean,
+						subtype === "pedestrian-only" ? "N/A" : benefits.travel.capita.bike.projected.mean,
+						subtype === "bike-only" ? "N/A" : benefits.travel.miles.pedestrian.total.mean,
+						subtype === "bike-only" ? "N/A" : benefits.travel.capita.pedestrian.total.mean,
+						subtype === "bike-only" ? "N/A" : benefits.travel.miles.pedestrian.projected.mean,
+						subtype === "bike-only" ? "N/A" : benefits.travel.capita.pedestrian.projected.mean,
+						subtype === "pedestrian-only" ? "N/A" : benefits.safetyQuantitative.safety.change.bicycling.crash.mean, // safety
+						subtype === "pedestrian-only" ? "N/A" : benefits.safetyQuantitative.safety.change.bicycling.injury.mean,
+						subtype === "pedestrian-only" ? "N/A" : benefits.safetyQuantitative.safety.change.bicycling.death.mean,
+						subtype === "bike-only" ? "N/A" : benefits.safetyQuantitative.safety.change.walking.crash.mean,
+						subtype === "bike-only" ? "N/A" : benefits.safetyQuantitative.safety.change.walking.injury.mean,
+						subtype === "bike-only" ? "N/A" : benefits.safetyQuantitative.safety.change.walking.death.mean,
 						benefits.vmtReductions.miles.mean, // vmt
 						benefits.vmtReductions.capita.mean,
-						'', // ghg
 						benefits.emissions.miles.reductions.CO2.mean,
 						benefits.emissions.miles.reductions.CH4.mean,
 						benefits.emissions.miles.reductions.N2O.mean,
