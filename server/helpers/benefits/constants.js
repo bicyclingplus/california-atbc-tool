@@ -68,6 +68,11 @@ const OTHER_SHIFT = {
     walking: 47.99,
 };
 
+// WEIGHTING
+
+const BIKE_WEIGHT = 0.25;
+const PED_WEIGHT = 0.3;
+
 // HEALTH
 
 const WALK_SPEED = {
@@ -132,6 +137,9 @@ export {
     ROUTE_SHIFT,
     CAR_SHIFT,
     OTHER_SHIFT,
+
+    BIKE_WEIGHT,
+    PED_WEIGHT,
 
     WALK_SPEED,
     BIKE_SPEED,
