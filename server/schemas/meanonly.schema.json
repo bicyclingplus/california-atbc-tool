@@ -6,7 +6,8 @@
 	"properties": {
 		"mean": {
 			"type": "number",
-			"minimum": 0
+			"minimum": 0,
+			"nullable": true
 		}
 	},
 	"required": [
