@@ -23,12 +23,17 @@ const peter = async (ids) => {
 		'WMT (Capita/Total)',
 		'WMT (Projected+Increase)',
 		'WMT (Per Capita/ Projected+Increase)',
-		'BIKE Saftey: combined Crashes',
-		'BIKE saftey: combined injuries',
-		'BIKE saftey:combined deaths',
-		'Walk Saftey: combined Crashes',
-		'WALK saftey: combined injuries',
-		'WALK saftey:combined deaths',
+
+		'Safety - Bike - Crashes',
+		'Safety - Bike - Injuries',
+		'Safety - Bike - Deaths',
+		'Safety - Walk - Crashes',
+		'Safety - Walk - Injuries',
+		'Safety - Walk - Deaths',
+		'Safety - Combined - Crashes',
+		'Safety - Combined - Injuries',
+		'Safety - Combined - Deaths',
+
 		'20 year VMT reductions',
 		'20 year VMT reductions per capita',
 		'CO2',
@@ -160,6 +165,9 @@ const peter = async (ids) => {
 						'N/A',
 						'N/A',
 						'N/A',
+						'N/A',
+						'N/A',
+						'N/A',
 					]);
 				}
 				else {
@@ -180,6 +188,9 @@ const peter = async (ids) => {
 						subtype === "bike-only" ? "N/A" : benefits.safetyQuantitative.safety.change.walking.crash.mean,
 						subtype === "bike-only" ? "N/A" : benefits.safetyQuantitative.safety.change.walking.injury.mean,
 						subtype === "bike-only" ? "N/A" : benefits.safetyQuantitative.safety.change.walking.death.mean,
+						benefits.safetyQuantitative.safety.change.combined.crash.mean,
+						benefits.safetyQuantitative.safety.change.combined.injury.mean,
+						benefits.safetyQuantitative.safety.change.combined.death.mean,
 						benefits.vmtReductions.miles.mean, // vmt
 						benefits.vmtReductions.capita.mean,
 						benefits.emissions.miles.reductions.CO2.mean,
