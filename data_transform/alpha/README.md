@@ -1,0 +1,1 @@
+generate alpha constant lookup by mode, outcome, location type, volume, and functional class for tool from source data

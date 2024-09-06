@@ -1,0 +1,16 @@
+geoid
+node_id
+ped_demand
+functional
+bicycle_node_exposure
+crash_per_year_per_int_bike
+fatalities_per_year_per_int_bike
+injuries_per_year_per_int_bike
+bicycle_exposure_class
+pedestrian_node_exposure
+crash_per_year_per_int_ped
+injuries_per_year_per_int_ped
+fatalities_per_year_per_int_ped
+pedestrian_exposure_class
+population
+jobs
