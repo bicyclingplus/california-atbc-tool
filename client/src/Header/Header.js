@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { NavLink } from "react-router-dom";
 
 import './Header.css';
-import atrc_logo from '../images/ATRC logo_final blue one line.png';
+import atrc_logo from '../images/atrc_logo.png';
 import bp_logo from '../images/logo_bicyclingplus_revised20220623.png';
 
 const Modal = require('bootstrap/js/dist/modal');
