@@ -1,70 +1,34 @@
-// compare output of old network with output of new network
-// difference is the new network has bike/ped demand values broken down by project year
-// for initial analysis, the new network only covers two regions rather than the entire state
-// see debug/travel
-
-// need project_id
-// need to lookup all segments by id
-// need to lookup all intersections by id
-// seems no project has user segments/intersections so those can be empty array
-// need infrastructure in same format
-
-// then we should be able to use the same code
-
-// just need to modify the run for the new network to use
-// different collections in mongo and do the project year lookup
-// what is the project year? is it the same for all projects?
-
-// load project data from CSVs
-// for each project
-// get array of segments from mongo by id
-// usersegments empty array
-// get array of intersections from mongo by id
-// userintersections empty array
-// need to build infrastructure object
-
-// turn off debugging
-// capture return value of calcTravel
-// add rows to output array
-
-// update calcDemand to have a year argument
-// update calcTravel to have a year argument
-// loop over these two calls for year 2019 to 2023
-
-// write out CSV
-
-/*
-
-const project_length = calcProjectLength(segments, userSegments);
-const num_intersections = intersections.length + userIntersections.length;
-
-const weighted_existing_travel = await calcDemand(
-  segments,
-  userSegments,
-  intersections,
-  userIntersections,
-  project_length
-);
-
-calcTravel(
-  infrastructure,
-  weighted_existing_travel,
-  project_length,
-  num_intersections
-);
-
-*/
 import fs from 'fs';
 import path from 'path';
+import tqdm from 'tqdm';
 import { parse } from 'csv-parse/sync';
+import { stringify } from 'csv-stringify/sync';
 import { MongoClient } from 'mongodb';
 import c from './helpers/collector.js';
 import calcProjectLength from './helpers/benefits/calcProjectLength.js';
+import calcDemand from './helpers/benefits/calcDemand.js';
+import calcTravel from './helpers/benefits/calcTravel.js';
 import 'dotenv/config';
 
 c.off(); // disable debugging
 const client = new MongoClient(process.env.MONGO_URI);
 const db = client.db('bctool');
+
+const MIN_YEAR = 2019;
+const MAX_YEAR = 2023;
+
+const base_path = path.join(
+  '/',
+  'home',
+  'matthew',
+  'repos',
+  'caltrans-bc-tool',
+  'data_transform',
+  'network_v4',
+);
+
+const input_path = path.join(base_path, 'input');
+const output_path = path.join(base_path, 'output');
 
 const lookup_segment = async (segmentId) => {
   const segments = db.collection('ways');
@@ -100,19 +64,6 @@ const lookup_intersections = async (intersectionIds) => {
 
 const load_project_data = () => {
   const projectData = {};
-
-  const base_path = path.join(
-    '/',
-    'home',
-    'matthew',
-    'repos',
-    'caltrans-bc-tool',
-    'data_transform',
-    'network_v4',
-  );
-
-  const input_path = path.join(base_path, 'input');
-  const output_path = path.join(base_path, 'output');
 
   const projectPath = path.join(input_path, 'projects.csv');
   const projects = parse(fs.readFileSync(projectPath).toString()).slice(1);
@@ -152,23 +103,84 @@ const load_project_data = () => {
   return projectData;
 }
 
-
-///////////////////////////////////////////////////////////////////////////////////////////////////
-
-
 const projectData = load_project_data();
 
-for(const projectId in projectData) {
+// headers
+const output = [[
+  'project_id',
+  'project_year',
+  'demand_bike_existing',
+  'demand_bike_projected',
+  'demand_ped_existing',
+  'demand_ped_projected',
+]];
+
+for(const projectId of tqdm(Object.keys(projectData))) {
   const project = projectData[projectId];
-  const segments = await lookup_segments(project.segments);
+
+  // NOTE
+  // originally the length for segments was calculated by the frontend
+  // in FEET and added to the properties
+  //
+  // at some point the length was added directly to the segments but
+  // was in MILES
+  //
+  // normally, the segments saved in the project would have had the frontend
+  // generated numbers, however we're looking the segments up directly
+  // here, so they will be in miles. we need to convert to FEET as that's
+  // what the benefits calculations expect
+  //
+  // NOTE
+  // we filter here because one of the projects has an invalid
+  // segment edge_uid
+  // 2e17d626-3e34-4372-8fba-fd1974c369e1
+  // 52933049
+  // so it's either drop this project, or ignore the invalid segment
+
+  const segments = (await lookup_segments(project.segments))
+    .filter(el => el)
+    .map(el => {
+      el.properties.length = el.properties.length * 5280;
+      return el;
+    });
+
   const intersections = await lookup_intersections(project.intersections);
 
   const userSegments = [];
   const userIntersections = [];
 
-  const project_length = calcProjectLength(segments, userSegments);
-  const num_intersections = intersections.length + userIntersections.length;
+  const projectLength = calcProjectLength(segments, userSegments);
+  const numIntersections = intersections.length + userIntersections.length;
 
-  console.log(project_length);
-  process.exit();
+  for(let projectYear = MIN_YEAR; projectYear <= MAX_YEAR; projectYear++) {
+    const existingTravel = await calcDemand(
+      segments,
+      userSegments,
+      intersections,
+      userIntersections,
+      projectLength,
+      projectYear,
+    );
+
+    const projectedTravel = calcTravel(
+      project.infrastructure,
+      existingTravel,
+      projectLength,
+      numIntersections
+    );
+
+    output.push([
+      projectId,
+      projectYear,
+      projectedTravel.miles.bike.existing.mean,
+      projectedTravel.miles.bike.projected.mean,
+      projectedTravel.miles.pedestrian.existing.mean,
+      projectedTravel.miles.pedestrian.projected.mean,
+    ])
+  }
 }
+
+const outputPath = path.join(output_path, 'network_v4_projects_travel.csv');
+fs.writeFileSync(outputPath, stringify(output));
+
+await client.close();

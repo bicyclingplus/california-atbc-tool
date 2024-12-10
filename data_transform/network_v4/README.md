@@ -39,6 +39,8 @@ NETWORK VALIDATION
 
 Received the start/end nodes file and updated ways/intersections files. CRS fixed, numeric values fixed. I was able to add source/target properties.
 
+ways property bike_demand should be called bicyclist_demand
+
 NOTE: row # 102399 of start/end nodes file contains scientific notation 3.53E+08, and must be manually changed to 353000000 (was probably opened in excel or something with the column's type incorrectly set and then saved. as this is column contains ids, scientific notation is not appropriate)
 
 PROJECT VALIDATION

@@ -1,12 +1,18 @@
-const avgProp = (items, property) => {
+const avgProp = (items, property, subProperty=null) => {
 
   let total = 0;
   let count = 0;
 
   for(let item of items) {
 
-    if(item.properties[property] !== null) {
-      total += item.properties[property];
+    let value = item.properties[property];
+
+    if(subProperty) {
+      value = item.properties[property][subProperty];
+    }
+
+    if(value !== null) {
+      total += value;
       count++;
     }
   }

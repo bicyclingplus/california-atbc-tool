@@ -82,7 +82,8 @@ const _adj_selected_segments_avg_length = async (intersection, selectedWays) => 
       // length property stored in project reach network elements was calculated
       // by frontend map and is stored in feet
 
-      return a + b.properties.length * 5280}, 0);
+      return a + b.properties.length * 5280;
+    }, 0);
 
     // return average length
     return adjacentSelectedWays.length > 0 ? totalLength / adjacentSelectedWays.length : 0;
@@ -99,11 +100,13 @@ const _calcPedDemand = async (
   userIntersections,
   selectedWays,
   userWays,
-  projectLength) => {
+  projectLength,
+  projectYear) => {
 
     // Grab the averages
     // null if all were null
-    const avgDemand = avgProp(selectedIntersections, 'ped_demand');
+
+    const avgDemand = avgProp(selectedIntersections, 'ped_demand', projectYear);
     const avgPop = avgProp(selectedIntersections, 'population');
     const avgJobs = avgProp(selectedIntersections, 'jobs');
 
@@ -121,7 +124,15 @@ const _calcPedDemand = async (
       } = intersection.properties;
 
       // fall back to averages if null
-      const d = ped_demand !== null ? ped_demand : avgDemand;
+      let d;
+
+      if(projectYear) {
+        d = ped_demand[projectYear] !== null ? ped_demand[projectYear] : avgDemand;
+      }
+      else {
+        d = ped_demand !== null ? ped_demand : avgDemand;
+      }
+
       const p = population !== null ? population : avgPop;
       const j = jobs !== null ? jobs : avgJobs;
 
@@ -239,13 +250,14 @@ const _calcBikeDemand = (
   existingTravel,
   selectedWays,
   userWays,
-  projectLength) => {
+  projectLength,
+  projectYear) => {
 
     // AVERAGE NEEDED PROPERTIES FOR USER SELECTED WAYS
     // Avg lower/mean/upper used for user defined ways
     // Avg pops/jobs used for user selected ways that are missing
     // these properties as well as user defined ways
-    const avgDemand = avgProp(selectedWays, 'bicyclist_demand');
+    const avgDemand = avgProp(selectedWays, 'bicyclist_demand', projectYear);
     const avgPop = avgProp(selectedWays, 'population');
     const avgJobs = avgProp(selectedWays, 'jobs');
 
@@ -259,7 +271,15 @@ const _calcBikeDemand = (
         length,
       } = way.properties;
 
-      const d = bicyclist_demand !== null ? bicyclist_demand : avgDemand;
+      let d;
+
+      if(projectYear) {
+        d = bicyclist_demand[projectYear] !== null ? bicyclist_demand[projectYear] : avgDemand;
+      }
+      else {
+        d = bicyclist_demand !== null ? bicyclist_demand : avgDemand;
+      }
+
       const p = population !== null ? population : avgPop;
       const j = jobs !== null ? jobs : avgJobs;
 
@@ -373,7 +393,8 @@ const calcDemand = async (
   userWays,
   selectedIntersections,
   userIntersections,
-  projectLength) => {
+  projectLength,
+  projectYear=null) => {
 
 	let existingTravel = {
       "miles": {
@@ -406,7 +427,9 @@ const calcDemand = async (
       existingTravel,
       selectedWays,
       userWays,
-      projectLength);
+      projectLength,
+      projectYear
+    );
 
     await _calcPedDemand(
       existingTravel,
@@ -414,7 +437,9 @@ const calcDemand = async (
       userIntersections,
       selectedWays,
       userWays,
-      projectLength);
+      projectLength,
+      projectYear
+    );
 
     return existingTravel;
 }

@@ -2,7 +2,7 @@ import json
 import os
 
 infilename = 'Study_Area_Bike_Output_job_pop_v9.geojson'
-infilepath = os.path.join('input', infilename)
+infilepath = os.path.join('output', infilename)
 
 geojson = json.load(open(infilepath))
 

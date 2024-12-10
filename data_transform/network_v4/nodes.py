@@ -37,7 +37,7 @@ print('Loaded')
 
 print('Loading src geojson')
 
-geojson = json.load(open(os.path.join('input', geojson_infilename)))
+geojson = json.load(open(os.path.join('output', geojson_infilename)))
 
 print('Loaded')
 
