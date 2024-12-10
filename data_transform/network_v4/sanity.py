@@ -7,7 +7,7 @@ from tqdm import tqdm
 client = MongoClient("mongodb://bctool:phev@localhost:27017")
 dbname = client['bctool']
 
-src = '/home/matthew/Documents/network_input'
+src = 'input'
 
 # get list of project ids
 # make sure there are no duplicate project ids
@@ -90,8 +90,8 @@ for edge_uid in tqdm(edge_udis):
         bad_edge_uids.append(edge_uid)
 
 if len(bad_edge_uids):
-    # for edge_uid in bad_edge_uids:
-    #     print(f"BAD EDGE_UID {edge_uid}")
+    for edge_uid in bad_edge_uids:
+        print(f"BAD EDGE_UID {edge_uid}")
 
     print(f"NUMBER OF BAD EDGE_UIDS {len(bad_edge_uids)} / {len(edge_udis)}")
 
@@ -125,7 +125,7 @@ infrastructure = {}
 for project_id in project_ids:
     infrastructure[project_id] = {}
 
-with open(os.path.join(src, 'infrastructure.csv')) as infile:
+with open(os.path.join('output', 'infrastructure.csv')) as infile:
     reader = csv.reader(infile)
     next(reader)
     for r in reader:
@@ -173,13 +173,50 @@ for project_id in project_ids:
 if bad_names:
     print(f"NUMBER OF BAD INFRASTRUCTURE NAMES {bad_names} / {total_names}")
 
+effective = {}
+
 # make sure all infrastructure elements have a least one value
 no_effect = 0
 for project_id in project_ids:
+    effective[project_id] = []
     for element in infrastructure[project_id]:
         if not any(infrastructure[project_id][element].values()):
             # print(f"INFRASTRUCTURE ELEMENT WITH NO EFFECT {element}")
             no_effect += 1
+        else:
+            effective[project_id].append(element)
 
 if no_effect:
     print(f"NUMBER OF INFRASTRUCTURE ELEMENTS WITH NO EFFECT {no_effect} / {total_names}")
+
+
+travel_data = json.load(open(os.path.join(
+    '/',
+    'home',
+    'matthew',
+    'repos',
+    'caltrans-bc-tool',
+    'server',
+    'data',
+    'travel_volume.json',
+)))
+
+no_benefit = 0
+for project_id in project_ids:
+
+    if not len(effective[project_id]):
+        continue
+
+    has_benefit = [
+        el for el in effective[project_id]
+        if el in list(travel_data.keys())
+    ]
+
+    # print(has_benefit)
+    # exit()
+
+    if not len(has_benefit):
+        no_benefit += 1
+
+if no_benefit:
+    print(f"NUMBER OF PROJECTS WITH NO BENEFITS {no_benefit} / {len(project_ids)}")
