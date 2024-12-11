@@ -7,7 +7,9 @@ from tqdm import tqdm
 client = MongoClient("mongodb://bctool:phev@localhost:27017")
 dbname = client['bctool']
 
-src = 'input'
+current = '2024_12_11'
+src = os.path.join('input', current)
+dest = os.path.join('output', current)
 
 # get list of project ids
 # make sure there are no duplicate project ids
@@ -71,7 +73,7 @@ for project_id in project_ids:
         print(f"PROJECT {project_id} HAS NO NETWORK SELECTIONS")
 
 # make sure all segment/intersections are valid edge_uid / node_id
-collection_name = dbname['ways_v4_partial']
+collection_name = dbname['ways']
 
 edge_udis = []
 for project_id in project_ids:
@@ -95,7 +97,7 @@ if len(bad_edge_uids):
 
     print(f"NUMBER OF BAD EDGE_UIDS {len(bad_edge_uids)} / {len(edge_udis)}")
 
-collection_name = dbname['intersections_v4_partial']
+collection_name = dbname['intersections']
 
 node_ids = []
 for project_id in project_ids:
@@ -125,7 +127,7 @@ infrastructure = {}
 for project_id in project_ids:
     infrastructure[project_id] = {}
 
-with open(os.path.join('output', 'infrastructure.csv')) as infile:
+with open(os.path.join(dest, 'infrastructure.csv')) as infile:
     reader = csv.reader(infile)
     next(reader)
     for r in reader:
@@ -135,11 +137,15 @@ with open(os.path.join('output', 'infrastructure.csv')) as infile:
         upgrade = float(r[3])
         retrofit = float(r[4])
 
-        infrastructure[project_id][element] = {
-            "new": new,
-            "upgrade": upgrade,
-            "retrofit": retrofit,
-        }
+        try:
+            infrastructure[project_id][element] = {
+                "new": new,
+                "upgrade": upgrade,
+                "retrofit": retrofit,
+            }
+
+        except KeyError:
+            print(f"infrastructure element with invalid project id {project_id}")
 
 # make sure all infrastructure element values are valid numbers
 

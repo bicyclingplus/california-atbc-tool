@@ -27,6 +27,9 @@ def map_elements(original):
     if original == 'off_street_paths':
         return 'off-street-multi-use-or-bike-path'
 
+    if original == 'ped_cross_island':
+        return 'crossing-island'
+
     if original == 'prot_bike_lane':
         return 'protected-bike-lane'
 
@@ -47,9 +50,15 @@ import os
 data = []
 
 filename = 'infrastructure.csv'
+current = '2024_12_11'
+src = os.path.join('input', current)
+dest = os.path.join('output', current)
+
+if not os.path.exists(dest):
+    os.mkdir(dest)
 
 # open infrastructure file from input
-with open(os.path.join('input', filename)) as infile:
+with open(os.path.join(src, filename)) as infile:
     reader = csv.reader(infile)
     headers = next(reader)
     for r in reader:
@@ -58,7 +67,7 @@ with open(os.path.join('input', filename)) as infile:
 for r in data:
     r[1] = map_elements(r[1])
 
-with open(os.path.join('output', filename), 'w') as outfile:
+with open(os.path.join(dest, filename), 'w') as outfile:
     writer = csv.writer(outfile)
     writer.writerow(headers)
     for r in data:
