@@ -12,6 +12,9 @@
 		},
 		"miles": {
 			"$ref": "travel.schema.json"
+		},
+		"demand": {
+			"$ref": "travel.schema.json"
 		}
 	},
 	"required": [

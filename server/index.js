@@ -7,7 +7,6 @@ import bodyParser from 'body-parser';
 import compression from 'compression';
 import dotenv from 'dotenv';
 import { MongoClient, ObjectId } from 'mongodb';
-import { BSONTypeError } from 'bson';
 import { createRequire } from "module";
 import Ajv from "ajv";
 
@@ -181,7 +180,7 @@ tool.get('/api/projects/:projectId', async (req, res) => {
   }
   catch (e) {
 
-    if(e instanceof BSONTypeError) {
+    if(e.name === 'BSONError') {
       return res.status(400).json({
         'message': 'Invalid project id',
       });
