@@ -1,6 +1,6 @@
-FROM node:18.18.2
+FROM node:22.12.0
 
-RUN npm install -g npm@10.2.1
+RUN npm install -g npm@10.9.2
 
 RUN mkdir -p /usr/src/app /usr/src/app/server /usr/src/app/client
 
