@@ -743,7 +743,7 @@ class BCTool extends React.Component {
                 }
               </select>
 
-              <p className="mt-4">Last updated July 5, 2022</p>
+              <p className="mt-4">Last updated December 11, 2024</p>
 
               <hr />
 
