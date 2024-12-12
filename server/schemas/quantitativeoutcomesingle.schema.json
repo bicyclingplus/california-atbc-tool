@@ -1,0 +1,25 @@
+{
+	"$id": "schemas/quantitativeoutcomesingle.schema.json",
+	"title": "QuantitativeOutcomesSingle",
+	"type": "object",
+	"additionalProperties": false,
+	"properties": {
+		"crash": {
+			"type": "number",
+			"nullable": true
+		},
+		"death": {
+			"type": "number",
+			"nullable": true
+		},
+		"injury": {
+			"type": "number",
+			"nullable": true
+		}
+	},
+	"required": [
+		"crash",
+		"death",
+		"injury"
+	]
+}

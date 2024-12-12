@@ -1,0 +1,22 @@
+{
+	"$id": "schemas/qualitativebenefit.schema.json",
+	"title": "QualitativeBenefit",
+	"type": "object",
+	"additionalProperties": false,
+	"properties": {
+		"description": {
+			"type": "string"
+		},
+		"key": {
+			"type": "string"
+		},
+		"sources": {
+			"type": "string"
+		}
+	},
+	"required": [
+		"description",
+		"key",
+		"sources"
+	]
+}

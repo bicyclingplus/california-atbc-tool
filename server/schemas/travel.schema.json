@@ -1,0 +1,18 @@
+{
+	"$id": "schemas/travel.schema.json",
+	"title": "Travel",
+	"type": "object",
+	"additionalProperties": false,
+	"properties": {
+		"bike": {
+			"$ref": "meanonly.schema.json"
+		},
+		"pedestrian": {
+			"$ref": "meanonly.schema.json"
+		}
+	},
+	"required": [
+		"bike",
+		"pedestrian"
+	]
+}

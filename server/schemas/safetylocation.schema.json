@@ -1,0 +1,18 @@
+{
+	"$id": "schemas/safetylocation.schema.json",
+	"title": "SafetyLocation",
+	"type": "object",
+	"additionalProperties": false,
+	"properties": {
+		"intersection": {
+			"type": "number"
+		},
+		"roadway": {
+			"type": "number"
+		}
+	},
+	"required": [
+		"intersection",
+		"roadway"
+	]
+}

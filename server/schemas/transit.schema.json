@@ -1,0 +1,6 @@
+{
+	"$id": "schemas/transit.schema.json",
+	"title": "Transit",
+	"type": "string",
+	"pattern": "hub|stops|none"
+}

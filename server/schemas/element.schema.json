@@ -1,0 +1,25 @@
+{
+	"$id": "schemas/element.schema.json",
+	"title": "Element",
+	"type": "object",
+	"additionalProperties": false,
+	"properties": {
+		"new": {
+			"type": "number",
+			"minimum": 0
+		},
+		"retrofit": {
+			"type": "number",
+			"minimum": 0
+		},
+		"upgrade": {
+			"type": "number",
+			"minimum": 0
+		}
+	},
+	"required": [
+		"new",
+		"retrofit",
+		"upgrade"
+	]
+}

@@ -1,0 +1,6 @@
+{
+	"$id": "schemas/type.schema.json",
+	"title": "Type",
+	"type": "string",
+	"pattern": "infrastructure|non-infrastructure|both"
+}

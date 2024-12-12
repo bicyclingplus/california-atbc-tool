@@ -1,0 +1,6 @@
+{
+	"$id": "schemas/feature.schema.json",
+	"title": "Feature",
+	"type": "string",
+	"pattern": "Feature"
+}

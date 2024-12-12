@@ -21,26 +21,25 @@ import ProjectBenefits from './ProjectBenefits/ProjectBenefits';
 import BenefitsButton from './benefits-button';
 import ExportButton from './export-button';
 
-import calcDemand from './helpers/calcDemand';
-import calcProjectLength from './helpers/calcProjectLength';
-import calcBenefits from './helpers/calcBenefits';
 import ExportPDF from './helpers/export';
 
 const Modal = require('bootstrap/js/dist/modal');
-
-const counties = require('./data/counties.json');
-const infrastructure = require('./data/infrastructure.json');
-const nonInfrastructure = require('./data/non_infrastructure.json');
 
 class BCTool extends React.Component {
 
   constructor(props) {
     super(props);
 
-    this.state = this.createDefaultState();
+    this.state = {
+      infrastructure: [],
+      nonInfrastructure: [],
+      counties: [],
+      ...this.createDefaultProjectState(),
+    };
   }
 
   componentDidMount() {
+
     this.startModal = new Modal(document.getElementById('bc-tool-start'), {
       backdrop: 'static',
     });
@@ -49,7 +48,25 @@ class BCTool extends React.Component {
       backdrop: 'static',
     });
 
-    this.initProject();
+    let url = `${process.env.PUBLIC_URL}/api/dropdowns`;
+
+    fetch(url)
+      .then((response) => {
+        if(!response.ok) {
+          throw new Error();
+        }
+        return response.json();
+      })
+      .then(result => {
+        this.setState({
+          infrastructure: result.infrastructure,
+          nonInfrastructure: result.nonInfrastructure,
+          counties: result.counties.counties,
+        });
+      })
+      .catch(error => {
+        console.log('Error loading dropdowns');
+      });
   }
 
   componentDidUpdate(prevProps) {
@@ -58,7 +75,7 @@ class BCTool extends React.Component {
     }
   }
 
-  createDefaultState = () => {
+  createDefaultProjectState = () => {
 
     let safety = {};
 
@@ -124,7 +141,7 @@ class BCTool extends React.Component {
   }
 
   initProject = () => {
-    this.setState(this.createDefaultState(), () => {
+    this.setState(this.createDefaultProjectState(), () => {
       this.startModal.show();
       this.props.projectStarted();
     });
@@ -185,7 +202,7 @@ class BCTool extends React.Component {
     let hasMultiSelected = false;
 
     outer:
-    for(let category of infrastructure.categories) {
+    for(let category of this.state.infrastructure.categories) {
       for(let item of category.items) {
         if(item.shortname in this.state.selectedInfrastructure && category.shortname === 'multi') {
           hasMultiSelected = true;
@@ -194,14 +211,14 @@ class BCTool extends React.Component {
       }
     }
 
-    let hasMapSelections = (
+    let hasMapSelections = Boolean(
       this.state.selectedIntersections.length ||
       this.state.selectedWays.length ||
       this.state.userWays.length ||
       this.state.userIntersections.length
     );
 
-    let hasOnlyUserMapSelections = (
+    let hasOnlyUserMapSelections = Boolean(
       !this.state.selectedIntersections.length &&
       !this.state.selectedWays.length &&
       (this.state.userWays.length ||
@@ -299,27 +316,69 @@ class BCTool extends React.Component {
   }
 
   updateBenefits = () => {
-    this.setState({
-      inputsChanged: false,
-      benefits: calcBenefits(
-        this.state.type,
-        this.state.subtype,
-        this.state.county,
-        this.state.year,
-        this.state.timeframe,
-        this.state.transit,
-        this.state.totalLength,
-        this.state.totalIntersections,
-        infrastructure,
-        this.state.existingTravel,
-        this.state.selectedInfrastructure,
-        this.state.selectedNonInfrastructure,
-        this.state.hasOnlyUserMapSelections,
-        this.state.selectedWays,
-        this.state.selectedIntersections,
-        this.state.safety
-      ),
-    }, this.updateStatuses);
+
+    let {
+      type,
+      subtype,
+      county,
+      year,
+      timeframe,
+      transit,
+      totalLength,
+      totalIntersections,
+      existingTravel,
+      selectedInfrastructure,
+      selectedNonInfrastructure,
+      hasOnlyUserMapSelections,
+      selectedWays,
+      selectedIntersections,
+      safety,
+    } = this.state;
+
+    let url = `${process.env.PUBLIC_URL}/api/benefits`;
+
+    fetch(url, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        type: type,
+        subtype: subtype,
+        county: county,
+        year: year,
+        timeframe: timeframe,
+        transit: transit,
+        totalLength: totalLength,
+        totalIntersections: totalIntersections,
+        existingTravel: existingTravel,
+        selectedInfrastructure: selectedInfrastructure,
+        selectedNonInfrastructure: selectedNonInfrastructure,
+        hasOnlyUserMapSelections: hasOnlyUserMapSelections,
+        selectedWays: selectedWays,
+        selectedIntersections: selectedIntersections,
+        safety: safety,
+      })
+    })
+    .then((response) => {
+      if(!response.ok) {
+        throw new Error();
+      }
+      return response.json();
+    })
+    .then(result => {
+
+        this.setState({
+          inputsChanged: false,
+          benefits: result.benefits,
+        }, () => {
+          this.updateStatuses();
+        });
+      }
+    )
+    .catch(error => {
+      console.log('Error getting benefits');
+    });
   }
 
   updateName = (e) => {
@@ -381,7 +440,7 @@ class BCTool extends React.Component {
 
     let selectedCounty;
 
-    for(let c of counties.counties) {
+    for(let c of this.state.counties) {
       if(c.name === e.target.value) {
         selectedCounty = c;
       }
@@ -432,22 +491,41 @@ class BCTool extends React.Component {
       userIntersections,
     } = this.state;
 
-    let projectLength = calcProjectLength(selectedWays, userWays);
+    let url = `${process.env.PUBLIC_URL}/api/reach`;
 
-    let existingTravel = calcDemand(
-      selectedWays,
-      userWays,
-      selectedIntersections,
-      userIntersections,
-      projectLength
-    );
+    fetch(url, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        selectedWays: selectedWays,
+        userWays: userWays,
+        selectedIntersections: selectedIntersections,
+        userIntersections: userIntersections,
+      })
+    })
+    .then((response) => {
+      if(!response.ok) {
+        throw new Error();
+      }
+      return response.json();
+    })
+    .then(result => {
 
-    this.setState({
-      totalLength: projectLength,
-      totalIntersections: selectedIntersections.length + userIntersections.length,
-      existingTravel: existingTravel,
-      inputsChanged: true,
-    }, this.updateStatuses);
+        this.setState({
+          totalLength: result.projectLength,
+          totalIntersections: selectedIntersections.length + userIntersections.length,
+          existingTravel: result.existingTravel,
+          inputsChanged: true,
+        }, () => {
+          this.updateStatuses();
+        });
+      }
+    )
+    .catch(error => {
+      console.log('Error getting demand');
+    });
   }
 
   updateUserWayStatus = (status) => {
@@ -659,7 +737,7 @@ class BCTool extends React.Component {
               <select id="county" className="form-select mt-4" value={this.state.county} onChange={this.updateCounty}>
                 <option value='' disabled>Select County</option>
                 {
-                  counties.counties.map((county) => (
+                  this.state.counties.map((county) => (
                     <option key={county.name} value={county.name}>{county.name}</option>
                   ))
                 }
@@ -782,8 +860,8 @@ class BCTool extends React.Component {
           <div className="col-sm-12">
             <ProjectElements
               type={this.state.type}
-              infrastructure={infrastructure}
-              nonInfrastructure={nonInfrastructure}
+              infrastructure={this.state.infrastructure}
+              nonInfrastructure={this.state.nonInfrastructure}
               onInfrastructureChange={this.onInfrastructureChange}
               onNonInfrastructureChange={this.onNonInfrastructureChange}
               isAddingUserWay={this.state.isAddingUserWay}
@@ -799,7 +877,7 @@ class BCTool extends React.Component {
         <div className="row mb-3">
           <div className="col-sm-12">
             <SelectedInfrastructure
-              categories={infrastructure.categories}
+              categories={this.state.infrastructure.categories}
               onChange={this.onInfrastructureValueChange}
               multi={this.state.hasMultiSelected}
               selections={this.state.selectedInfrastructure}

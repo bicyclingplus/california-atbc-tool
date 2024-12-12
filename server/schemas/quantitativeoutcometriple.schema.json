@@ -1,0 +1,22 @@
+{
+	"$id": "schemas/quantitativeoutcometriple.schema.json",
+	"title": "QuantitativeOutcomesTriple",
+	"type": "object",
+	"additionalProperties": false,
+	"properties": {
+		"crash": {
+			"$ref": "estimate.schema.json"
+		},
+		"death": {
+			"$ref": "estimate.schema.json"
+		},
+		"injury": {
+			"$ref": "estimate.schema.json"
+		}
+	},
+	"required": [
+		"crash",
+		"death",
+		"injury"
+	]
+}

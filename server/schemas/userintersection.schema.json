@@ -1,0 +1,36 @@
+{
+	"$id": "schemas/userintersection.schema.json",
+	"title": "UserIntersection",
+	"type": "object",
+	"additionalProperties": false,
+	"properties": {
+		"geometry": {
+			"$ref": "point.schema.json"
+		},
+		"type": {
+			"$ref": "feature.schema.json"
+		},
+		"properties": {
+			"type": "object",
+			"additionalProperties": false,
+			"properties": {
+				"id": {
+					"type": "string"
+				},
+				"parent": {
+					"type": "string",
+					"nullable": true
+				}
+			},
+			"required": [
+				"id",
+				"parent"
+			]
+		}
+	},
+	"required": [
+		"geometry",
+		"type",
+		"properties"
+	]
+}

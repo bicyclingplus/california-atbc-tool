@@ -1,7 +1,1 @@
 .venv/
-*.json
-*.geojson
-*.csv
-
-input/
-output/

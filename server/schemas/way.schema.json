@@ -1,0 +1,128 @@
+{
+	"$id": "schemas/way.schema.json",
+	"title": "Way",
+	"type": "object",
+	"additionalProperties": false,
+	"properties": {
+		"geometry": {
+			"$ref": "linestring.schema.json"
+		},
+		"type": {
+			"$ref": "feature.schema.json"
+		},
+		"properties": {
+			"type": "object",
+			"additionalProperties": false,
+			"properties": {
+				"bicycle_exposure_class": {
+					"type": "string",
+					"nullable": true
+				},
+				"bicyclist_demand": {
+					"type": "number",
+					"nullable": true
+				},
+				"bicyclist_link_exposure": {
+					"type": "number",
+					"nullable": true
+				},
+				"crash_per_year_per_mile_bike": {
+					"type": "number",
+					"nullable": true
+				},
+				"crash_per_year_per_mile_ped": {
+					"type": "number",
+					"nullable": true
+				},
+				"edge_uid": {
+					"type": "number"
+				},
+				"fatalities_per_year_per_mile_bike": {
+					"type": "number",
+					"nullable": true
+				},
+				"fatalities_per_year_per_mile_ped": {
+					"type": "number",
+					"nullable": true
+				},
+				"functional": {
+					"type": "string",
+					"nullable": true
+				},
+				"injuries_per_year_per_mile_bike": {
+					"type": "number",
+					"nullable": true
+				},
+				"injuries_per_year_per_mile_ped": {
+					"type": "number",
+					"nullable": true
+				},
+				"jobs": {
+					"type": "number",
+					"nullable": true
+				},
+				"length": {
+					"type": "number"
+				},
+				"one_way": {
+					"type": "string",
+					"nullable": true
+				},
+				"one_way_ca": {
+					"type": "string",
+					"nullable": true
+				},
+				"pedestrian_link_exposure": {
+					"type": "number",
+					"nullable": true
+				},
+				"pedestrian_link_exposure_class": {
+					"type": "string",
+					"nullable": true
+				},
+				"population": {
+					"type": "number",
+					"nullable": true
+				},
+				"source": {
+					"type": "number"
+				},
+				"target": {
+					"type": "number",
+					"nullable": true
+				}
+			},
+			"required": [
+				"bicycle_exposure_class",
+				"bicyclist_demand",
+				"bicyclist_link_exposure",
+				"crash_per_year_per_mile_bike",
+				"crash_per_year_per_mile_ped",
+				"edge_uid",
+				"fatalities_per_year_per_mile_bike",
+				"fatalities_per_year_per_mile_ped",
+				"functional",
+				"injuries_per_year_per_mile_bike",
+				"injuries_per_year_per_mile_ped",
+				"jobs",
+				"length",
+				"one_way",
+				"one_way_ca",
+				"pedestrian_link_exposure",
+				"pedestrian_link_exposure_class",
+				"population",
+				"source",
+				"target"
+			]
+		},
+		"_id": {
+			"type": "string"
+		}
+	},
+	"required": [
+		"geometry",
+		"type",
+		"properties",
+		"_id"
+	]
+}

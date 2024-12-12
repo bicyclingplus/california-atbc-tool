@@ -1,0 +1,16 @@
+{
+	"$id": "schemas/meanonly.schema.json",
+	"title": "MeanOnly",
+	"type": "object",
+	"additionalProperties": false,
+	"properties": {
+		"mean": {
+			"type": "number",
+			"minimum": 0,
+			"nullable": true
+		}
+	},
+	"required": [
+		"mean"
+	]
+}

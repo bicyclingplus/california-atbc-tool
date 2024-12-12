@@ -1,15 +1,37 @@
-const path = require('path');
-const express = require('express');
+import path, { dirname } from 'path';
+import { fileURLToPath } from 'url';
 
+import express from 'express';
+import morgan from 'morgan';
+import bodyParser from 'body-parser';
+import compression from 'compression';
+import dotenv from 'dotenv';
+import { MongoClient, ObjectId } from 'mongodb';
+import { BSONTypeError } from 'bson';
+import { createRequire } from "module";
+import Ajv from "ajv";
+
+import calcDemand from './helpers/benefits/calcDemand.js';
+import calcProjectLength from './helpers/benefits/calcProjectLength.js';
+import calcBenefits from './helpers/benefits/calcBenefits.js';
+
+import schemas from './schemas/schemas.js';
+
+const require = createRequire(import.meta.url);
+
+const infrastructure = require('./data/infrastructure.json');
+const nonInfrastructure = require('./data/non_infrastructure.json');
+const counties = require('./data/counties.json');
+
+const __dirname = dirname(fileURLToPath(import.meta.url));
 const PORT = process.env.PORT || 3001;
 const app = express();
 const tool = express();
-const morgan = require('morgan');
-const bodyParser = require('body-parser');
-const compression = require('compression');
-require('dotenv').config();
+const ajv = new Ajv({
+  schemas: schemas,
+});
 
-const { MongoClient, ObjectId } = require("mongodb");
+dotenv.config();
 
 app.use(compression());
 app.use(morgan('combined'));
@@ -42,7 +64,7 @@ tool.use(express.static(path.resolve(__dirname, '../client/build')));
 // C (x2, y2) North East corner
 // D (y2, y1) South East corner
 // A (x1, y1) Back to the SW corner to close the polygon
-tool.get("/api/bounds", async (req, res) => {
+tool.get("/api/features", async (req, res) => {
   if(!req.query.x1 || !req.query.x2 || !req.query.y1 || !req.query.y2) {
     return res.status(400).send({ "error": "All four bounding box coordinates (x1, y1, x2, and y2) are required."});
   }
@@ -111,14 +133,14 @@ tool.get("/api/bounds", async (req, res) => {
       }
     }
 
-    $query2 = {
+    let query2 = {
       'properties.node_id': {
         '$in': node_ids,
       }
     };
 
     collection = database.collection('intersections');
-    const intersections = await collection.find($query2).toArray();
+    const intersections = await collection.find(query2).toArray();
 
     res.json({
       "ways": {
@@ -142,32 +164,30 @@ tool.get('/api/projects/:projectId', async (req, res) => {
   const client = new MongoClient(process.env.MONGO_URI);
 
   try {
+    const database = client.db('bctool');
+    const collection = database.collection('projects');
 
-    // await client.connect();
+    const project = await collection.findOne({
+      '_id': new ObjectId(req.params.projectId),
+    });
 
-    try {
-      let projectId = new ObjectId(req.params.projectId);
-
-      const database = client.db('bctool');
-      const collection = database.collection('projects');
-
-      let project = await collection.findOne({
-        '_id': new ObjectId(req.params.projectId),
-      });
-
-      if(project) {
-        return res.json(project);
-      }
-
-      return res.status(404).json({
-        'message': 'Project not found',
-      });
+    if(project) {
+      return res.json(project);
     }
-    catch {
+
+    return res.status(404).json({
+      'message': 'Project not found',
+    });
+  }
+  catch (e) {
+
+    if(e instanceof BSONTypeError) {
       return res.status(400).json({
         'message': 'Invalid project id',
       });
     }
+
+    throw(e);
   }
   finally {
     await client.close();
@@ -177,11 +197,18 @@ tool.get('/api/projects/:projectId', async (req, res) => {
 
 tool.post('/api/projects', async (req, res) => {
 
+  const validate = ajv.getSchema("schemas/project.schema.json");
+  const valid = validate(req.body);
+
+  if(!valid) {
+    return res.status(400).json({
+      'error': 'Bad post data',
+    });
+  }
+
   const client = new MongoClient(process.env.MONGO_URI);
 
   try {
-
-    // await client.connect();
 
     const database = client.db('bctool');
     const collection = database.collection('projects');
@@ -197,6 +224,112 @@ tool.post('/api/projects', async (req, res) => {
     await client.close();
   }
 
+});
+
+tool.post('/api/reach', async(req, res) => {
+
+  const validate = ajv.getSchema("schemas/reach.schema.json");
+  const valid = validate(req.body);
+
+  if(!valid) {
+    return res.status(400).json({
+      'error': 'Bad post data',
+    });
+  }
+
+  const {
+    selectedWays,
+    selectedIntersections,
+    userWays,
+    userIntersections,
+  } = req.body;
+
+  const projectLength = calcProjectLength(selectedWays, userWays);
+
+  const existingTravel = await calcDemand(
+    selectedWays,
+    userWays,
+    selectedIntersections,
+    userIntersections,
+    projectLength
+  );
+
+  return res.json({
+    projectLength: projectLength,
+    existingTravel: existingTravel,
+  });
+
+});
+
+tool.post('/api/benefits', async(req, res) => {
+
+  const validate = ajv.getSchema("schemas/benefits.schema.json");
+  const valid = validate(req.body);
+
+  if(!valid) {
+    return res.status(400).json({
+      'error': 'Bad post data',
+    });
+  }
+
+  // TODO
+  // analysis of int/way props and update schemas for
+  // nullable (or other cases)
+  //
+  // checks for:
+  // county in counties
+  // selected infrastructure in infrastructure
+  // selected noninfrastructure in noninfrastructure
+  // year reasonable
+
+  const {
+    type,
+    subtype,
+    county,
+    year,
+    timeframe,
+    transit,
+    totalLength,
+    totalIntersections,
+    existingTravel,
+    selectedInfrastructure,
+    selectedNonInfrastructure,
+    hasOnlyUserMapSelections,
+    selectedWays,
+    selectedIntersections,
+    safety,
+  } = req.body;
+
+  const benefits = calcBenefits(
+        type,
+        subtype,
+        county,
+        year,
+        timeframe,
+        transit,
+        totalLength,
+        totalIntersections,
+        existingTravel,
+        selectedInfrastructure,
+        selectedNonInfrastructure,
+        hasOnlyUserMapSelections,
+        selectedWays,
+        selectedIntersections,
+        safety
+      )
+
+  return res.json({
+    benefits: benefits,
+  });
+
+});
+
+tool.get('/api/dropdowns', async(req, res) => {
+  return res.json({
+    infrastructure: infrastructure,
+    nonInfrastructure: nonInfrastructure,
+    counties: counties,
+  });
 });
 
 app.use('/', tool);

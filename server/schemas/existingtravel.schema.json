@@ -1,0 +1,22 @@
+{
+	"$id": "schemas/existingtravel.schema.json",
+	"title": "ExistingTravel",
+	"type": "object",
+	"additionalProperties": false,
+	"properties": {
+		"capita": {
+			"$ref": "travel.schema.json"
+		},
+		"jobs": {
+			"$ref": "travel.schema.json"
+		},
+		"miles": {
+			"$ref": "travel.schema.json"
+		}
+	},
+	"required": [
+		"capita",
+		"jobs",
+		"miles"
+	]
+}

@@ -112,7 +112,7 @@ class ProjectForm extends React.Component {
           <div className="row mb-2">
             <label htmlFor="project-transit" className="col-sm-4 col-form-label text-end">Transit Type *</label>
             <div className="col-md-8">
-              <select id="project-subtype" className="form-select" value={transit} onChange={updateTransit}>
+              <select id="project-transit" className="form-select" value={transit} onChange={updateTransit}>
                 <option value="" disabled>-- Choose a type --</option>
                 {transitTypeOptions}
               </select>

@@ -1,0 +1,18 @@
+{
+	"$id": "schemas/projectqualitative.schema.json",
+	"title": "ProjectQualitative",
+	"type": "object",
+	"additionalProperties": false,
+	"properties": {
+		"description": {
+			"type": "string"
+		},
+		"name": {
+			"type": "string"
+		}
+	},
+	"required": [
+		"description",
+		"name"
+	]
+}

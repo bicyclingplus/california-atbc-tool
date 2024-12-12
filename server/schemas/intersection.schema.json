@@ -1,0 +1,110 @@
+{
+	"$id": "schemas/intersection.schema.json",
+	"title": "Intersection",
+	"type": "object",
+	"additionalProperties": false,
+	"properties": {
+		"geometry": {
+			"$ref": "point.schema.json"
+		},
+		"type": {
+			"$ref": "feature.schema.json"
+		},
+		"properties": {
+			"type": "object",
+			"additionalProperties": false,
+			"properties": {
+				"bicycle_exposure_class": {
+					"type": "string",
+					"nullable": true
+				},
+				"bicycle_node_exposure": {
+					"type": "number",
+					"nullable": true
+				},
+				"crash_per_year_per_int_bike": {
+					"type": "number",
+					"nullable": true
+				},
+				"crash_per_year_per_int_ped": {
+					"type": "number",
+					"nullable": true
+				},
+				"fatalities_per_year_per_int_bike": {
+					"type": "number",
+					"nullable": true
+				},
+				"fatalities_per_year_per_int_ped": {
+					"type": "number",
+					"nullable": true
+				},
+				"functional": {
+					"type": "string",
+					"nullable": true
+				},
+				"geoid": {
+					"type": "string",
+					"nullable": true
+				},
+				"injuries_per_year_per_int_bike": {
+					"type": "number",
+					"nullable": true
+				},
+				"injuries_per_year_per_int_ped": {
+					"type": "number",
+					"nullable": true
+				},
+				"jobs": {
+					"type": "number",
+					"nullable": true
+				},
+				"node_id": {
+					"type": "number"
+				},
+				"ped_demand": {
+					"type": "number",
+					"nullable": true
+				},
+				"pedestrian_exposure_class": {
+					"type": "string",
+					"nullable": true
+				},
+				"pedestrian_node_exposure": {
+					"type": "number",
+					"nullable": true
+				},
+				"population": {
+					"type": "number",
+					"nullable": true
+				}
+			},
+			"required": [
+				"bicycle_exposure_class",
+				"bicycle_node_exposure",
+				"crash_per_year_per_int_bike",
+				"crash_per_year_per_int_ped",
+				"fatalities_per_year_per_int_bike",
+				"fatalities_per_year_per_int_ped",
+				"functional",
+				"geoid",
+				"injuries_per_year_per_int_bike",
+				"injuries_per_year_per_int_ped",
+				"jobs",
+				"node_id",
+				"ped_demand",
+				"pedestrian_exposure_class",
+				"pedestrian_node_exposure",
+				"population"
+			]
+		},
+		"_id": {
+			"type": "string"
+		}
+	},
+	"required": [
+		"geometry",
+		"type",
+		"properties",
+		"_id"
+	]
+}

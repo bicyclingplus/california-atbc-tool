@@ -1,0 +1,6 @@
+{
+	"$id": "schemas/timeframe.schema.json",
+	"title": "TimeFrame",
+	"type": "number",
+	"minimum": 1
+}

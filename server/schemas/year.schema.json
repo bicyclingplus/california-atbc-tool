@@ -1,0 +1,5 @@
+{
+	"$id": "schemas/year.schema.json",
+	"title": "Year",
+	"type": "number"
+}

@@ -1,0 +1,183 @@
+{
+	"$id": "schemas/project.schema.json",
+	"title": "Project",
+	"type": "object",
+	"additionalProperties": false,
+	"properties": {
+		"benefits": {
+			"type": "object",
+			"additionalProperties": false,
+			"properties": {
+				"emissions": {
+					"$ref": "emissions.schema.json"
+				},
+				"health": {
+					"$ref": "health.schema.json"
+				},
+				"projectQualitative": {
+					"type": "array",
+					"items": {
+						"$ref": "projectqualitative.schema.json"
+					}
+				},
+				"safetyQualitative": {
+					"type": "array",
+					"items": {
+						"$ref": "qualitative.schema.json"
+					}
+				},
+				"safetyQuantitative": {
+					"$ref": "quantitative.schema.json"
+				},
+				"travel": {
+					"$ref": "projectedtravel.schema.json"
+				},
+				"vmtReductions": {
+					"$ref": "vmt.schema.json"
+				}
+			},
+			"required": [
+				"emissions",
+				"health",
+				"projectQualitative",
+				"safetyQualitative",
+				"safetyQuantitative",
+				"travel",
+				"vmtReductions"
+			]
+		},
+		"details": {
+			"type": "object",
+			"additionalProperties": false,
+			"properties": {
+				"cost": {
+					"type": "number"
+				},
+				"county": {
+					"$ref": "county.schema.json"
+				},
+				"date": {
+					"type": "string"
+				},
+				"developer": {
+					"type": "string"
+				},
+				"name": {
+					"type": "string"
+				},
+				"safety": {
+					"$ref": "safetyinputs.schema.json"
+				},
+				"subtype": {
+					"$ref": "subtype.schema.json"
+				},
+				"timeframe": {
+					"$ref": "timeframe.schema.json"
+				},
+				"transit": {
+					"$ref": "transit.schema.json"
+				},
+				"type": {
+					"$ref": "type.schema.json"
+				},
+				"year": {
+					"$ref": "year.schema.json"
+				}
+			},
+			"required": [
+				"cost",
+				"county",
+				"date",
+				"developer",
+				"name",
+				"safety",
+				"subtype",
+				"timeframe",
+				"transit",
+				"type",
+				"year"
+			]
+		},
+		"elements": {
+			"type": "object",
+			"additionalProperties": false,
+			"properties": {
+				"infrastructure": {
+					"$ref": "infrastructure.schema.json"
+				},
+				"nonInfrastructure": {
+					"$ref": "noninfrastructure.schema.json"
+				}
+			},
+			"required": [
+				"infrastructure",
+				"nonInfrastructure"
+			]
+		},
+		"existingTravel": {
+			"$ref": "existingtravel.schema.json"
+		},
+		"scope": {
+			"type": "object",
+			"additionalProperties": false,
+			"properties": {
+				"bounds": {
+					"type": "array",
+					"items": {
+						"$ref": "latlng.schema.json"
+					},
+					"minItems": 2,
+					"maxItems": 2
+				},
+				"intersections": {
+					"type": "array",
+					"items": {
+						"$ref": "intersection.schema.json"
+					}
+				},
+				"segments": {
+					"type": "array",
+					"items": {
+						"$ref": "way.schema.json"
+					}
+				},
+				"totalIntersections": {
+					"type": "number",
+					"minimum": 0
+				},
+				"totalLength": {
+					"type": "number",
+					"minimum": 0
+				},
+				"userIntersections": {
+					"type": "array",
+					"items": {
+						"$ref": "userintersection.schema.json"
+					}
+				},
+				"userSegments": {
+					"type": "array",
+					"items": {
+						"$ref": "userway.schema.json"
+					}
+				}
+			},
+			"required": [
+				"bounds",
+				"intersections",
+				"segments",
+				"totalIntersections",
+				"totalLength",
+				"userIntersections",
+				"userSegments"
+			]
+		}
+	},
+	"required": [
+		"benefits",
+		"details",
+		"elements",
+		"existingTravel",
+		"scope"
+	]
+}

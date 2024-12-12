@@ -1,0 +1,11 @@
+{
+	"$id": "schemas/latlng.schema.json",
+	"title": "LatLng",
+	"description": "",
+	"type": "array",
+	"items": {
+		"type": "number"
+	},
+	"minItems": 2,
+	"maxItems": 2
+}

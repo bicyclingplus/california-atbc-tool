@@ -30,7 +30,10 @@ class SafetyQuantitative extends React.Component {
 
 	render = () => {
 
-		let { benefits } = this.props;
+		const {
+			benefits,
+			timeframe,
+		} = this.props;
 
 		return (
 			<>
@@ -460,9 +463,9 @@ class SafetyQuantitative extends React.Component {
 					<tr>
 						<th className="text-center">Mode</th>
 						<th className="text-center">Outcome</th>
-						<th className="text-center">Benefit</th>
-						<th className="text-center">Benefit / Capita</th>
-						<th className="text-center">Benefit / Jobs</th>
+						<th className="text-center">{timeframe} Year Benefit</th>
+						<th className="text-center">{timeframe} Year Benefit / Capita</th>
+						<th className="text-center">{timeframe} Year Benefit / Jobs</th>
 					</tr>
 				</thead>
 				<tbody>

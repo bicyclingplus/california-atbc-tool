@@ -1,0 +1,38 @@
+{
+	"$id": "schemas/reach.schema.json",
+	"title": "Reach",
+	"type": "object",
+	"additionalProperties": false,
+	"properties": {
+		"selectedWays": {
+			"type": "array",
+			"items": {
+				"$ref": "way.schema.json"
+			}
+		},
+		"selectedIntersections": {
+			"type": "array",
+			"items": {
+				"$ref": "intersection.schema.json"
+			}
+		},
+		"userWays": {
+			"type": "array",
+			"items": {
+				"$ref": "userway.schema.json"
+			}
+		},
+		"userIntersections": {
+			"type": "array",
+			"items": {
+				"$ref": "userintersection.schema.json"
+			}
+		}
+	},
+	"required": [
+		"selectedWays",
+		"selectedIntersections",
+		"userWays",
+		"userIntersections"
+	]
+}

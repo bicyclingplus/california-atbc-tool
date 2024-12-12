@@ -1,0 +1,22 @@
+{
+	"$id": "schemas/quantitativecolumn.schema.json",
+	"title": "QuantitativeColumn",
+	"type": "object",
+	"additionalProperties": false,
+	"properties": {
+		"after": {
+			"$ref": "quantitativesectiontriple.schema.json"
+		},
+		"before": {
+			"$ref": "quantitativesectionsingle.schema.json"
+		},
+		"change": {
+			"$ref": "quantitativesectiontriple.schema.json"
+		}
+	},
+	"required": [
+		"after",
+		"before",
+		"change"
+	]
+}

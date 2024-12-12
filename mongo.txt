@@ -2,8 +2,12 @@ docker-compose exec -T db sh -c 'mongodump --archive --username bctool --passwor
 
 docker-compose exec -T db sh -c 'mongorestore --archive --username bctool --password phev' < 2022_08_01_bctool.dump
 
-docker-compose exec db mongo --username bctool --password phev
+docker compose exec -T db sh -c 'mongorestore --archive --username bctool --password phev' < 2022_08_01_bctool.dump
+
+docker compose exec db mongo --username bctool --password phev
 use bctool;
+
+docker compose exec db mongosh -u bctool -p
 
 # index for spatial query
 db.intersections.createIndex({"geometry": "2dsphere"});
@@ -11,3 +15,13 @@ db.ways.createIndex({"geometry": "2dsphere"});
 
 # index for intersections attached to ways
 db.intersections.createIndex({'properties.node_id': 1}, {unique: true})
+
+# index for ways attached to intersection
+db.ways.createIndex({'properties.source': 1})
+db.ways.createIndex({'properties.target': 1})
+
+docker compose exec -T db sh -c 'mongodump --archive --db=bctool --collection=projects --authenticationDatabase=admin --username=bctool --password=phev' > /home/matthew/2024_03_26_bctool_projects.dump
+
+docker compose exec -T db sh -c 'mongorestore --archive --db=bctool --collection=projects --authenticationDatabase=admin --username bctool --password phev' < /home/matthew/2023_05_08_bctool_projects.dump
+
+docker compose exec -T db sh -c 'mongorestore --archive --db=bctool --collection=projects --authenticationDatabase=admin --username bctool --password phev' < 2024_03_26_bctool_projects.dump

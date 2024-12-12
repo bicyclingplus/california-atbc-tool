@@ -1,0 +1,22 @@
+{
+	"$id": "schemas/linestring.schema.json",
+	"title": "LineString",
+	"type": "object",
+	"additionalProperties": false,
+	"properties": {
+		"type": {
+			"type": "string",
+			"pattern": "LineString"
+		},
+		"coordinates": {
+			"type": "array",
+			"items": {
+				"$ref": "latlng.schema.json"
+			}
+		}
+	},
+	"required": [
+		"type",
+		"coordinates"
+	]
+}

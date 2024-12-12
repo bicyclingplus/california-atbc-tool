@@ -1,0 +1,22 @@
+{
+	"$id": "schemas/safetyinputs.schema.json",
+	"title": "SafetyInputs",
+	"type": "object",
+	"additionalProperties": false,
+	"properties": {
+		"bicycling": {
+			"$ref": "safety.schema.json"
+		},
+		"combined": {
+			"$ref": "safety.schema.json"
+		},
+		"walking": {
+			"$ref": "safety.schema.json"
+		}
+	},
+	"required": [
+		"bicycling",
+		"combined",
+		"walking"
+	]
+}
