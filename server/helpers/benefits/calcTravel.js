@@ -243,4 +243,9 @@ const calcTravel = (
     };
 };
 
-export default calcTravel;
+// export default calcTravel;
+
+export {
+    calcTravel as default,
+    _calc,
+}

@@ -7,7 +7,7 @@ import { MongoClient } from 'mongodb';
 import c from './helpers/collector.js';
 import calcProjectLength from './helpers/benefits/calcProjectLength.js';
 import calcDemand from './helpers/benefits/calcDemand.js';
-import calcTravel from './helpers/benefits/calcTravel.js';
+import calcTravel, { _calc } from './helpers/benefits/calcTravel.js';
 import 'dotenv/config';
 
 c.off(); // disable debugging
@@ -27,8 +27,9 @@ const base_path = path.join(
   'network_v4',
 );
 
-const input_path = path.join(base_path, 'input');
-const output_path = path.join(base_path, 'output');
+const current = '2024_12_11';
+const input_path = path.join(base_path, 'input', current);
+const output_path = path.join(base_path, 'output', current);
 
 const lookup_segment = async (segmentId) => {
   const segments = db.collection('ways');
@@ -109,10 +110,30 @@ const projectData = load_project_data();
 const output = [[
   'project_id',
   'project_year',
-  'demand_bike_existing',
-  'demand_bike_projected',
-  'demand_ped_existing',
-  'demand_ped_projected',
+
+  'bike_demand_existing',
+
+  'bike_demand_projected_lower',
+  'bike_demand_projected_mean',
+  'bike_demand_projected_upper',
+
+  'bike_miles_traveled_existing',
+
+  'bike_miles_traveled_projected_lower',
+  'bike_miles_traveled_projected_mean',
+  'bike_miles_traveled_projected_upper',
+
+  'ped_demand_existing',
+
+  'ped_demand_projected_lower',
+  'ped_demand_projected_mean',
+  'ped_demand_projected_upper',
+
+  'ped_miles_traveled_existing',
+
+  'ped_miles_traveled_projected_lower',
+  'ped_miles_traveled_projected_mean',
+  'ped_miles_traveled_projected_upper',
 ]];
 
 for(const projectId of tqdm(Object.keys(projectData))) {
@@ -162,6 +183,13 @@ for(const projectId of tqdm(Object.keys(projectData))) {
       projectYear,
     );
 
+    const projectedDemand = _calc(
+      project.infrastructure,
+      existingTravel.demand,
+      projectLength,
+      numIntersections
+    );
+
     const projectedTravel = calcTravel(
       project.infrastructure,
       existingTravel,
@@ -172,10 +200,30 @@ for(const projectId of tqdm(Object.keys(projectData))) {
     output.push([
       projectId,
       projectYear,
+
+      existingTravel.demand.bike.mean,
+
+      projectedDemand.bike.projected.lower,
+      projectedDemand.bike.projected.mean,
+      projectedDemand.bike.projected.upper,
+
       projectedTravel.miles.bike.existing.mean,
+
+      projectedTravel.miles.bike.projected.lower,
       projectedTravel.miles.bike.projected.mean,
+      projectedTravel.miles.bike.projected.upper,
+
+      existingTravel.demand.pedestrian.mean,
+
+      projectedDemand.pedestrian.projected.lower,
+      projectedDemand.pedestrian.projected.mean,
+      projectedDemand.pedestrian.projected.upper,
+
       projectedTravel.miles.pedestrian.existing.mean,
+
+      projectedTravel.miles.pedestrian.projected.lower,
       projectedTravel.miles.pedestrian.projected.mean,
+      projectedTravel.miles.pedestrian.projected.upper,
     ])
   }
 }

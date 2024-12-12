@@ -144,6 +144,7 @@ const _calcPedDemand = async (
 
       // could still be null if avg was null
       if(d !== null) {
+        existingTravel.demand.pedestrian.mean += d;
         existingTravel.miles.pedestrian.mean += travel;
 
         // no div by zero
@@ -288,6 +289,7 @@ const _calcBikeDemand = (
 
       if(d !== null) {
 
+        existingTravel.demand.bike.mean += d;
         existingTravel.miles.bike.mean += travel;
 
         // no div by zero
@@ -396,52 +398,48 @@ const calcDemand = async (
   projectLength,
   projectYear=null) => {
 
-	let existingTravel = {
-      "miles": {
-        "bike": {
-          'mean': 0,
-        },
-        "pedestrian": {
-          'mean': 0,
-        }
-      },
-      "capita":  {
-        "bike": {
-          'mean': 0,
-        },
-        "pedestrian": {
-          'mean': 0,
-        }
-      },
-      "jobs":  {
-        "bike": {
-          'mean': 0,
-        },
-        "pedestrian": {
-          'mean': 0,
-        }
-      },
-    };
+  const existingTravel = {};
 
-    _calcBikeDemand(
-      existingTravel,
-      selectedWays,
-      userWays,
-      projectLength,
-      projectYear
-    );
+  const columns = [
+    'demand',
+    'miles',
+    'capita',
+    'jobs',
+  ];
 
-    await _calcPedDemand(
-      existingTravel,
-      selectedIntersections,
-      userIntersections,
-      selectedWays,
-      userWays,
-      projectLength,
-      projectYear
-    );
+  const modes = [
+    'bike',
+    'pedestrian',
+  ];
 
-    return existingTravel;
+  for(let column of columns) {
+    existingTravel[column] = {};
+    for(let mode of modes) {
+      existingTravel[column][mode] = {
+        mean: 0,
+      }
+    }
+  }
+
+  _calcBikeDemand(
+    existingTravel,
+    selectedWays,
+    userWays,
+    projectLength,
+    projectYear
+  );
+
+  await _calcPedDemand(
+    existingTravel,
+    selectedIntersections,
+    userIntersections,
+    selectedWays,
+    userWays,
+    projectLength,
+    projectYear
+  );
+
+  return existingTravel;
 }
 
 export {
