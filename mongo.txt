@@ -9,16 +9,14 @@ use bctool;
 
 docker compose exec db mongosh -u bctool -p
 
-# index for spatial query
-db.intersections.createIndex({"geometry": "2dsphere"});
+# indexes
 db.ways.createIndex({"geometry": "2dsphere"});
-
-# index for intersections attached to ways
-db.intersections.createIndex({'properties.node_id': 1}, {unique: true})
-
-# index for ways attached to intersection
+db.ways.createIndex({'properties.edge_uid': 1}, {unique: true})
 db.ways.createIndex({'properties.source': 1})
 db.ways.createIndex({'properties.target': 1})
+
+db.intersections.createIndex({"geometry": "2dsphere"});
+db.intersections.createIndex({'properties.node_id': 1}, {unique: true})
 
 docker compose exec -T db sh -c 'mongodump --archive --db=bctool --collection=projects --authenticationDatabase=admin --username=bctool --password=phev' > /home/matthew/2024_03_26_bctool_projects.dump
 
