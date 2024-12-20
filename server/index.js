@@ -32,6 +32,8 @@ const ajv = new Ajv({
 
 dotenv.config();
 
+app.set('trust proxy', process.env.PROXY === "1");
+
 app.use(compression());
 app.use(morgan('combined'));
 app.use(bodyParser.json({
