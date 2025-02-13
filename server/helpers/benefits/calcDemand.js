@@ -9,6 +9,10 @@ import {
   PED_WEIGHT,
 } from './constants.js';
 
+import * as turf from "@turf/turf";
+
+const FEET_PER_KM = 3280.84;
+
 const require = createRequire(import.meta.url);
 const distribution = require('../../data/volume_to_miles.json');
 
@@ -76,17 +80,11 @@ const _adj_selected_segments_avg_length = async (intersection, selectedWays) => 
     const adjacentSelectedWays = await collection.find(query).toArray();
 
     const totalLength = adjacentSelectedWays.reduce((a, b) => {
-
-      // NOTE length property returned from network was added directly
-      // at some point and is in miles
-      // length property stored in project reach network elements was calculated
-      // by frontend map and is stored in feet
-
-      return a + b.properties.length * 5280;
-    }, 0);
+      return a + turf.length(b);
+    }, 0); // km
 
     // return average length
-    return adjacentSelectedWays.length > 0 ? totalLength / adjacentSelectedWays.length : 0;
+    return adjacentSelectedWays.length > 0 ? (totalLength * FEET_PER_KM) / adjacentSelectedWays.length : 0; // ft
 
   }
   finally {
@@ -184,7 +182,13 @@ const _calcPedDemand = async (
         continue;
       }
 
-      const travel = avgDemand * (adjUserWay.properties.length / 5280);
+      let length = turf.length(adjUserWay) * FEET_PER_KM; // ft
+
+      if(!adjUserWay.properties.one_way_ca) {
+        length *= 2;
+      }
+
+      const travel = avgDemand * (length / 5280); // mi
 
       if(avgDemand !== null) {
 
@@ -269,8 +273,9 @@ const _calcBikeDemand = (
         bicyclist_demand,
         population,
         jobs,
-        length,
       } = way.properties;
+
+      const length = turf.length(way) * FEET_PER_KM; // ft
 
       let d;
 
@@ -320,7 +325,11 @@ const _calcBikeDemand = (
     // CALCULATE BIKE DEMAND PER USER DEFINED WAY
     for(let way of userWays) {
 
-      const { length } = way.properties;
+      let length = turf.length(way) * FEET_PER_KM; // feet
+
+      if(!way.properties.one_way_ca) {
+        length *= 2;
+      }
 
       // demand calcs all based on miles so convert feet -> miles here
       const travel = avgDemand * (length / 5280);

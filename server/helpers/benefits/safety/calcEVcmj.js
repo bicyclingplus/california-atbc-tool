@@ -6,6 +6,10 @@ import {
 import avgProp from '../avgProp.js';
 import z from '../../collector.js';
 
+import * as turf from "@turf/turf";
+
+const FEET_PER_KM = 3280.84;
+
 const calcEVcmj = (selectedWays, selectedIntersections) => {
 
 	const EVcmj = {};
@@ -47,8 +51,9 @@ const calcEVcmj = (selectedWays, selectedIntersections) => {
 			jobs,
 			functional,
 			bicycle_exposure_class,
-			length,
 		} = way.properties;
+
+		const length = turf.length(way) * FEET_PER_KM; // feet
 
 		const e_b = bikeExp !== null ? bikeExp : avgWayBikeExp;
 		const e_p = pedExp !== null ? pedExp : avgWayPedExp;

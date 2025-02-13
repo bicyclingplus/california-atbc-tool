@@ -6,6 +6,10 @@ import {
 
 import c from '../../collector.js';
 
+import * as turf from "@turf/turf";
+
+const FEET_PER_KM = 3280.84;
+
 // unused now
 const calcLjvf = (selectedWays, selectedIntersections) => {
 
@@ -32,7 +36,7 @@ const calcLjvf = (selectedWays, selectedIntersections) => {
 		// populate Ljvf
 		const functional_class = way.properties.functional;
 		const volume_bike = way.properties.bicycle_exposure_class;
-		const length = way.properties.length / 5280;
+		const length = (turf.length(way) * FEET_PER_KM) / 5280; // mi
 
 		if(volume_bike) {
 			Ljvf.roadway[volume_bike.toLowerCase()][functional_class] += length;

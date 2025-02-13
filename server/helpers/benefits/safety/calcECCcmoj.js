@@ -9,6 +9,10 @@ import {
 import { calcCC } from './calcCCmojvf.js';
 import avgProp from '../avgProp.js';
 
+import * as turf from "@turf/turf";
+
+const FEET_PER_KM = 3280.84;
+
 const require = createRequire(import.meta.url);
 const Amojvf = require('../../../data/alpha_lookup.json');
 
@@ -77,7 +81,6 @@ const calcECCcmoj = (ways, intersections) => {
 	for(let way of ways) {
 
 	  const {
-	    length,
 	    bicycle_exposure_class,
 	    bicyclist_link_exposure,
 	    pedestrian_link_exposure_class,
@@ -86,6 +89,8 @@ const calcECCcmoj = (ways, intersections) => {
 	    population,
 	    jobs,
 	  } = way.properties;
+
+	  const length = turf.length(way) * FEET_PER_KM; // feet
 
 	  if(functional === null) {
 	  	continue;
