@@ -17,6 +17,10 @@ import IO_User_Intersections from './user_intersections.js';
 import IO_Infrastructure from './infrastructure.js';
 import IO_Non_Infrastructure from './non_infrastructure.js';
 
+import IO_Emissions from './emissions.js';
+import IO_VMT from './vmt.js';
+import IO_Physical from './physical.js';
+import IO_General from './general.js';
 import IO_Qualitative from './qualitative.js';
 
 const io = async (ids) => {
@@ -54,24 +58,26 @@ const io = async (ids) => {
           userIntersections: userIntersections,
         } = project.scope;
 
+        // const freshSegments = [];
 
-        const freshSegments = [];
+        // for(let way of selectedWays) {
+        //   const fresh = await ways.findOne({
+        //     '_id': new ObjectId(way._id),
+        //   });
+        //   freshSegments.push(fresh);
+        // }
 
-        for(let way of selectedWays) {
-          const fresh = await ways.findOne({
-            '_id': new ObjectId(way._id),
-          });
-          freshSegments.push(fresh);
-        }
+        // const freshIntersections = [];
 
-        const freshIntersections = [];
+        // for(let intersection of selectedIntersections) {
+        //   const fresh = await intersections.findOne({
+        //     '_id': new ObjectId(intersection._id),
+        //   });
+        //   freshIntersections.push(fresh);
+        // }
 
-        for(let intersection of selectedIntersections) {
-          const fresh = await intersections.findOne({
-            '_id': new ObjectId(intersection._id),
-          });
-          freshIntersections.push(fresh);
-        }
+        const freshSegments = selectedWays;
+        const freshIntersections = selectedIntersections;
 
         const hasOnlyUserMapSelections = Boolean(
           !freshIntersections.length &&
@@ -175,14 +181,26 @@ const io = async (ids) => {
         );
 
         // OUTPUTS
-
-        // travel
-        // quantitative
-        // vmt
-        // emissions
-        // physical
-        // general
-        // qualitative
+        if(!hasOnlyUserMapSelections) {
+          // travel
+          // quantitative
+          IO_VMT(
+            projectId,
+            benefits.vmtReductions,
+          );
+          IO_Emissions(
+            projectId,
+            benefits.emissions,
+          );
+          IO_Physical(
+            projectId,
+            benefits.health,
+          );
+        }
+        IO_General(
+          projectId,
+          benefits.projectQualitative,
+        );
         IO_Qualitative(
           projectId,
           benefits.safetyQualitative,

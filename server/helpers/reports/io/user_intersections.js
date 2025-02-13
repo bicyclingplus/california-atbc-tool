@@ -13,5 +13,4 @@ export default (id, count) => {
   ];
 
   writeOrAppendCSV('io', 'input_user_intersections', headers, [data]);
-
 };

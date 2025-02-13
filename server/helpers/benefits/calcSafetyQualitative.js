@@ -24,6 +24,7 @@ const calcSafetyQualitative = (selectedInfrastructure) => {
 
     benefits.push({
       element: label,
+      shortname: i,
       benefits: qualitative[shortname].map((benefit, idx) => (
         {
           key: `${shortname}-${idx}`,

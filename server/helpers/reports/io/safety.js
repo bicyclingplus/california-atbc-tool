@@ -1,9 +1,3 @@
-// id
-// mode
-// outcome
-// location type
-// value
-
 import { writeOrAppendCSV } from '../../writeCSV.js';
 import {
   MODES,
@@ -38,5 +32,4 @@ export default (id, safety) => {
   }
 
   writeOrAppendCSV('io', 'input_safety', headers, data);
-
 };

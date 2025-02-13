@@ -28,5 +28,4 @@ export default (id, segments) => {
   }
 
   writeOrAppendCSV('io', 'input_user_segments', headers, data);
-
 };

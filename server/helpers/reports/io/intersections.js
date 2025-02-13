@@ -1,9 +1,3 @@
-// id
-// intersection id
-// props
-
-// TODO PROPS USED IN BENEFITS CALCS
-
 import { writeOrAppendCSV } from '../../writeCSV.js';
 
 export default (id, intersections) => {
@@ -40,5 +34,4 @@ export default (id, intersections) => {
   }
 
   writeOrAppendCSV('io', 'input_intersections', headers, data);
-
 };

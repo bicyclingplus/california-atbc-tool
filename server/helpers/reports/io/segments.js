@@ -1,10 +1,3 @@
-// id
-// segment id
-// length
-// props
-
-// TODO PROPS USED IN BENEFITS CALCS
-
 import { writeOrAppendCSV } from '../../writeCSV.js';
 import * as turf from "@turf/turf";
 
@@ -57,5 +50,4 @@ export default (id, segments) => {
   }
 
   writeOrAppendCSV('io', 'input_segments', headers, data);
-
 };

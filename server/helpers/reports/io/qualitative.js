@@ -1,8 +1,3 @@
-// id
-// element
-// benefits
-// sources
-
 import { writeOrAppendCSV } from '../../writeCSV.js';
 
 export default (id, elements) => {
@@ -20,7 +15,7 @@ export default (id, elements) => {
     for(let benefit of element.benefits) {
       data.push([
         id,
-        element.element,
+        element.shortname,
         benefit.description,
         benefit.sources,
       ]);
@@ -28,5 +23,4 @@ export default (id, elements) => {
   }
 
   writeOrAppendCSV('io', 'output_qualitative', headers, data);
-
 };

@@ -1,13 +1,3 @@
-// id
-// name
-// developer
-// cost
-// timeframe
-// type
-// active travel type
-// transit type
-// reach
-
 import { writeOrAppendCSV } from '../../writeCSV.js';
 
 export default (id, details, length, intersections) => {
@@ -45,5 +35,4 @@ export default (id, details, length, intersections) => {
   ];
 
   writeOrAppendCSV('io', 'input_project', headers, [data]);
-
 };

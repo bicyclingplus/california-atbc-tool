@@ -1,6 +1,3 @@
-// id
-// element name
-
 import { writeOrAppendCSV } from '../../writeCSV.js';
 
 export default (id, elements) => {
@@ -20,5 +17,4 @@ export default (id, elements) => {
   }
 
   writeOrAppendCSV('io', 'input_non_infrastructure', headers, data);
-
 };
