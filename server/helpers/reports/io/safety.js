@@ -5,10 +5,10 @@ import {
   LOCATION_TYPES,
 } from '../../benefits/constants.js';
 
-export default (id, safety) => {
+export default (project_id, safety) => {
 
   const headers = [
-    'id',
+    'project_id',
     'mode',
     'outcome',
     'location',
@@ -21,7 +21,7 @@ export default (id, safety) => {
     for(let outcome of OUTCOMES) {
       for(let location of LOCATION_TYPES) {
         data.push([
-          id,
+          project_id,
           mode,
           outcome,
           location,

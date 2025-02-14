@@ -5,7 +5,7 @@ import 'dotenv/config';
 import c from './helpers/collector.js';
 import { clean } from './helpers/writeCSV.js';
 
-// import general from './helpers/reports/overall/general.js';
+import general from './helpers/reports/overall/general.js';
 // import peter from './helpers/reports/overall/peter.js';
 // import reachType from './helpers/reports/overall/reachType.js';
 // import reachLjvf from './helpers/reports/overall/reachLjvf.js';
@@ -34,11 +34,9 @@ c.off(); // disable debugging
 // https://docs.google.com/document/d/1fEByERdU3FYx4nHLPD-fbzJ3HvL6ZmUaqPqVynhaNHA/edit
 const reports = async (ids) => {
 
+	// general/overall
 	await io(ids);
-	return;
-
-	// // general/overall
-	// await general(ids);
+	await general(ids);
 	// await peter(ids);
 	// await reachType(ids);
 	// await reachLjvf(ids);

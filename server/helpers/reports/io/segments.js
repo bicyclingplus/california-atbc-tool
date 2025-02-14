@@ -3,10 +3,10 @@ import * as turf from "@turf/turf";
 
 const FEET_PER_KM = 3280.84;
 
-export default (id, segments) => {
+export default (project_id, segments) => {
 
   const headers = [
-    'id',
+    'project_id',
     'edge_uid',
     'length (ft)',
     'oneway',
@@ -33,7 +33,7 @@ export default (id, segments) => {
     const effective_km = length_km;
 
     data.push([
-      id,
+      project_id,
       segment.properties.edge_uid,
       length_km * FEET_PER_KM, // feet
       segment.properties.one_way_ca,

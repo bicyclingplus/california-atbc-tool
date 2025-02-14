@@ -1,9 +1,9 @@
 import { writeOrAppendCSV } from '../../writeCSV.js';
 
-export default (id, details, length, intersections) => {
+export default (project_id, details) => {
 
   const headers = [
-    'id',
+    'project_id',
     'name',
     'date',
     'developer',
@@ -14,12 +14,10 @@ export default (id, details, length, intersections) => {
     'subtype',
     'year',
     'transit',
-    'length (ft)',
-    'intersections',
   ];
 
   const data = [
-    id,
+    project_id,
     details.name,
     details.date,
     details.developer,
@@ -30,8 +28,6 @@ export default (id, details, length, intersections) => {
     details.subtype,
     details.year,
     details.transit,
-    length,
-    intersections,
   ];
 
   writeOrAppendCSV('io', 'input_project', headers, [data]);

@@ -1,9 +1,3 @@
-// id
-// item
-// reduction lower/mean/upper
-// reduction/capita lower/mean/upper
-// reduction/jobs lower/mean/upper
-
 import {
   ESTIMATES,
   EMISSION_TYPES,
@@ -11,10 +5,10 @@ import {
 
 import { writeOrAppendCSV } from '../../writeCSV.js';
 
-export default (id, benefits) => {
+export default (project_id, benefits) => {
 
   const headers = [
-    'id',
+    'project_id',
     'column',
     'item',
     'estimate',
@@ -27,7 +21,7 @@ export default (id, benefits) => {
     for(let emission_type of EMISSION_TYPES) {
       for(let estimate of ESTIMATES) {
         data.push([
-          id,
+          project_id,
           column,
           emission_type,
           estimate,
@@ -38,7 +32,7 @@ export default (id, benefits) => {
 
     for(let estimate of ESTIMATES) {
       data.push([
-        id,
+        project_id,
         column,
         'equivalent',
         estimate,

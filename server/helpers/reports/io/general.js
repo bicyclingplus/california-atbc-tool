@@ -1,9 +1,9 @@
 import { writeOrAppendCSV } from '../../writeCSV.js';
 
-export default (id, benefits) => {
+export default (project_id, benefits) => {
 
   const headers = [
-    'id',
+    'project_id',
     'name',
     'description',
   ];
@@ -12,7 +12,7 @@ export default (id, benefits) => {
 
   for(let benefit of benefits) {
   	data.push([
-  		id,
+  		project_id,
   		benefit.name,
   		benefit.description,
   	]);

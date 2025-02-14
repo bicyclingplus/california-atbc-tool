@@ -4,10 +4,10 @@ import {
 
 import { writeOrAppendCSV } from '../../writeCSV.js';
 
-export default (id, benefits) => {
+export default (project_id, benefits) => {
 
   const headers = [
-    'id',
+    'project_id',
     'column',
     'estimate',
     'value',
@@ -18,7 +18,7 @@ export default (id, benefits) => {
   for(let column of ['miles', 'capita', 'jobs']) {
     for(let estimate of ESTIMATES) {
       data.push([
-        id,
+        project_id,
         column,
         estimate,
         benefits[column][estimate],

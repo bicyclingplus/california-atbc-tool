@@ -4,21 +4,23 @@ import { BSONError } from 'bson';
 import calcDemand from '../../benefits/calcDemand.js';
 import calcProjectLength from '../../benefits/calcProjectLength.js';
 import calcBenefits from '../../benefits/calcBenefits.js';
-// import util from 'util';
 
+// inputs
 import IO_Project from './project.js';
 import IO_Safety from './safety.js';
-
 import IO_Segments from './segments.js';
 import IO_Intersections from './intersections.js';
 import IO_User_Segments from './user_segments.js';
 import IO_User_Intersections from './user_intersections.js';
-
 import IO_Infrastructure from './infrastructure.js';
 import IO_Non_Infrastructure from './non_infrastructure.js';
 
-import IO_Emissions from './emissions.js';
+// outputs
+import IO_Reach from './reach.js';
+import IO_Travel from './travel.js';
+import IO_Quantitative from './quantitative.js';
 import IO_VMT from './vmt.js';
+import IO_Emissions from './emissions.js';
 import IO_Physical from './physical.js';
 import IO_General from './general.js';
 import IO_Qualitative from './qualitative.js';
@@ -58,26 +60,27 @@ const io = async (ids) => {
           userIntersections: userIntersections,
         } = project.scope;
 
-        // const freshSegments = [];
+        // ensure latest network properties by
+        // looking up all segment/intersections by
+        // id and replacing the objects stored
+        // on the project with ones fresh from mongo
+        const freshSegments = [];
 
-        // for(let way of selectedWays) {
-        //   const fresh = await ways.findOne({
-        //     '_id': new ObjectId(way._id),
-        //   });
-        //   freshSegments.push(fresh);
-        // }
+        for(let way of selectedWays) {
+          const fresh = await ways.findOne({
+            '_id': new ObjectId(way._id),
+          });
+          freshSegments.push(fresh);
+        }
 
-        // const freshIntersections = [];
+        const freshIntersections = [];
 
-        // for(let intersection of selectedIntersections) {
-        //   const fresh = await intersections.findOne({
-        //     '_id': new ObjectId(intersection._id),
-        //   });
-        //   freshIntersections.push(fresh);
-        // }
-
-        const freshSegments = selectedWays;
-        const freshIntersections = selectedIntersections;
+        for(let intersection of selectedIntersections) {
+          const fresh = await intersections.findOne({
+            '_id': new ObjectId(intersection._id),
+          });
+          freshIntersections.push(fresh);
+        }
 
         const hasOnlyUserMapSelections = Boolean(
           !freshIntersections.length &&
@@ -86,6 +89,7 @@ const io = async (ids) => {
           userIntersections.length)
         );
 
+        // calc reach
         const totalLength = calcProjectLength(freshSegments, userWays);
 
         const totalIntersections = (
@@ -93,6 +97,7 @@ const io = async (ids) => {
           userIntersections.length
         );
 
+        // calc travel
         const existingTravel = await calcDemand(
           freshSegments,
           userWays,
@@ -101,6 +106,7 @@ const io = async (ids) => {
           totalLength
         );
 
+        // calc benefits
         const {
           type,
           subtype,
@@ -134,15 +140,10 @@ const io = async (ids) => {
           safety
         );
 
-        // console.log(benefits)
-        // process.exit();
-
         // INPUTS
         IO_Project(
           projectId,
           project.details,
-          totalLength,
-          totalIntersections,
         );
 
         IO_Safety(
@@ -181,9 +182,25 @@ const io = async (ids) => {
         );
 
         // OUTPUTS
+
+        IO_Reach(
+          projectId,
+          totalLength,
+          totalIntersections,
+        );
+
+        // we require some selections from the network
+        // for these because they all rely on properties
+        // from network features
         if(!hasOnlyUserMapSelections) {
-          // travel
-          // quantitative
+          IO_Travel(
+            projectId,
+            benefits.travel
+          );
+          IO_Quantitative(
+            projectId,
+            benefits.safetyQuantitative,
+          );
           IO_VMT(
             projectId,
             benefits.vmtReductions,
@@ -197,6 +214,7 @@ const io = async (ids) => {
             benefits.health,
           );
         }
+
         IO_General(
           projectId,
           benefits.projectQualitative,
@@ -205,7 +223,6 @@ const io = async (ids) => {
           projectId,
           benefits.safetyQualitative,
         );
-
       }
       catch (e) {
         if(BSONError.isBSONError(e)) {

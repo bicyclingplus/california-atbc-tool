@@ -1,19 +1,13 @@
-// id
-// mode
-// increase lower/mean/upper
-// increase/capita lower/mean/upper
-// increase/jobs lower/mean/upper
-
 import {
   ESTIMATES,
 } from '../../benefits/constants.js';
 
 import { writeOrAppendCSV } from '../../writeCSV.js';
 
-export default (id, benefits) => {
+export default (project_id, benefits) => {
 
   const headers = [
-    'id',
+    'project_id',
     'column',
     'mode',
     'estimate',
@@ -26,7 +20,7 @@ export default (id, benefits) => {
     for(let mode of ['pedestrian', 'bike', 'total']) {
       for(let estimate of ESTIMATES) {
         data.push([
-          id,
+          project_id,
           column,
           mode,
           estimate,

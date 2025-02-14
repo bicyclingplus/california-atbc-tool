@@ -1,9 +1,9 @@
 import { writeOrAppendCSV } from '../../writeCSV.js';
 
-export default (id, intersections) => {
+export default (project_id, intersections) => {
 
   const headers = [
-    'id',
+    'project_id',
     'node_id',
     'ped_demand',
     'bicycle_exposure_class',
@@ -20,7 +20,7 @@ export default (id, intersections) => {
   for(let intersection of intersections) {
 
     data.push([
-      id,
+      project_id,
       intersection.properties.node_id,
       intersection.properties.ped_demand,
       intersection.properties.bicycle_exposure_class,

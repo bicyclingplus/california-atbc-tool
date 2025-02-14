@@ -1,14 +1,14 @@
 import { writeOrAppendCSV } from '../../writeCSV.js';
 
-export default (id, count) => {
+export default (project_id, count) => {
 
   const headers = [
-    'id',
+    'project_id',
     'count',
   ];
 
   const data = [
-    id,
+    project_id,
     count,
   ];
 
