@@ -101,34 +101,6 @@ class ProjectMap extends React.Component {
       return symbology.user_defined.link;
     }
 
-    calcLengthArray = (latlngs) => {
-      let total = latlngs[0].distanceTo(latlngs[1]);
-
-      for(let i = 1; i < latlngs.length - 1; i++) {
-        total += latlngs[i].distanceTo(latlngs[i+1]);
-      }
-
-      // m to ft
-      return total * 3.28084;
-    }
-
-    // This can handle multilinestring and linestring
-    calcLength = (latlngs) => {
-
-      if(Array.isArray(latlngs[0])) {
-
-        let total = 0;
-
-        for(let i = 0; i < latlngs.length; i++) {
-          total += this.calcLengthArray(latlngs[i]);
-        }
-
-        return total;
-      }
-
-      return this.calcLengthArray(latlngs);
-    }
-
     userWayClicked = (e) => {
 
       let userWays = structuredClone(this.props.userWays);
@@ -205,15 +177,6 @@ class ProjectMap extends React.Component {
       }
       else {
 
-        let length = this.calcLength(e.target.getLatLngs());
-
-        // double the length for two way streets
-        // (currently disabled)
-        // if(!feature.properties.one_way_ca) {
-        //   length *= 2;
-        // }
-
-        feature.properties.length = length;
         selectedWays.push(feature);
 
         // select adjacent intersections automatically
@@ -688,11 +651,6 @@ class ProjectMap extends React.Component {
       let oneway = shouldFinishWay === 1 ? true : false;
 
       let newId = uuidv4();
-      let length = this.calcLength(Leaflet.GeoJSON.coordsToLatLngs(this.state.userWayPoints));
-
-      if(!oneway) {
-        length *= 2;
-      }
 
       // create the geojson and add to list of user defined ways
       userWays.push({
@@ -703,7 +661,6 @@ class ProjectMap extends React.Component {
         },
         "properties": {
           "id": newId,
-          "length": length,
           "one_way_ca": oneway,
         }
       });
