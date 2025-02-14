@@ -87,10 +87,9 @@ const calcPVcmjk = (
 
                             // this is from the NCmoj equation
                             // Vmj + Vmj * Ei * (Ni / L) * I
-
                             const adjustment = (
                                 EVcmj[c][m][j] *
-                                (benefit[k] / 100) *
+                                (1 + (benefit[k] / 100)) *
                                 share *
                                 SCALING_FACTORS[T]
                             );
@@ -117,7 +116,7 @@ const calcPVcmjk = (
                                 k,
 
                                 EVcmj[c][m][j],
-                                benefit[k] / 100,
+                                (1 + (benefit[k] / 100)),
                                 share,
                                 SCALING_FACTORS[T],
                                 adjustment,

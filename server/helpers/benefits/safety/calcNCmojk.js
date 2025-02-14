@@ -157,7 +157,7 @@ const calcNCmojk = (
       // for this mode
       // for this estimate, k
       // percentage
-      const benefit = travel_volume[i][mode][k] / 100;
+      const benefit = (1 + (travel_volume[i][mode][k] / 100));
 
       // each type of improvment scales the effect
       // by a different factor
@@ -178,6 +178,7 @@ const calcNCmojk = (
 
         // accumulate the total change due to infrastructure elements
         total += benefit * share * SCALING_FACTORS[T];
+
       }
     }
   }
