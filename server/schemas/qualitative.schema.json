@@ -12,6 +12,9 @@
 		},
 		"element": {
 			"type": "string"
+		},
+		"shortname": {
+			"type": "string"
 		}
 	},
 	"required": [
