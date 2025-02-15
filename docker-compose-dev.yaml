@@ -1,6 +1,6 @@
 services:
   db:
-    image: mongo
+    image: mongo:8.0.3
     environment:
       MONGO_INITDB_ROOT_USERNAME: bctool
       MONGO_INITDB_ROOT_PASSWORD: phev

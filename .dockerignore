@@ -1,13 +1,13 @@
 .git/
 
-client/build/
+client/dist/
 client/node_modules/
 
 data_transform/
-geojson/
 
 server/node_modules/
 server/output/
 server/*.zip
 
 *.dump
+*.txt
