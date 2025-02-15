@@ -1,7 +1,7 @@
 import './Footer.css';
 
-import atrc_logo from '../images/atrc_logo.png';
-import bp_logo from '../images/logo_bicyclingplus_revised20220623.png';
+import atrc_logo from '../assets/atrc_logo.png';
+import bp_logo from '../assets/logo_bicyclingplus_revised20220623.png';
 
 function Footer() {
   return (

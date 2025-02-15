@@ -23,7 +23,8 @@ import ExportButton from './export-button';
 
 import ExportPDF from './helpers/export';
 
-const Modal = require('bootstrap/js/dist/modal');
+// const Modal = require('bootstrap/js/dist/modal');
+import Modal from 'bootstrap/js/dist/modal';
 
 class BCTool extends React.Component {
 
@@ -48,7 +49,7 @@ class BCTool extends React.Component {
       backdrop: 'static',
     });
 
-    let url = `${process.env.PUBLIC_URL}/api/dropdowns`;
+    let url = `/api/dropdowns`;
 
     fetch(url)
       .then((response) => {
@@ -260,7 +261,7 @@ class BCTool extends React.Component {
 
   exportBenefits = () => {
 
-    let url = `${process.env.PUBLIC_URL}/api/projects`;
+    let url = `/api/projects`;
 
     let date = new Date().toISOString();
 
@@ -335,7 +336,7 @@ class BCTool extends React.Component {
       safety,
     } = this.state;
 
-    let url = `${process.env.PUBLIC_URL}/api/benefits`;
+    let url = `/api/benefits`;
 
     fetch(url, {
       method: 'POST',
@@ -491,7 +492,7 @@ class BCTool extends React.Component {
       userIntersections,
     } = this.state;
 
-    let url = `${process.env.PUBLIC_URL}/api/reach`;
+    let url = `/api/reach`;
 
     fetch(url, {
       method: 'POST',
@@ -553,7 +554,7 @@ class BCTool extends React.Component {
 
   loadProject = () => {
 
-    let url = `${process.env.PUBLIC_URL}/api/projects/${this.state.projectID}`;
+    let url = `/api/projects/${this.state.projectID}`;
 
     fetch(url)
       .then((response) => {
@@ -729,8 +730,8 @@ class BCTool extends React.Component {
             </div>
             <div className="modal-body">
               <p>This tool has been developed by the UC Davis <a href="https://bicyclingplus.ucdavis.edu/" target="_blank" rel="noreferrer">Bicycling<span className="fst-italic">Plus</span> Research Collaborative</a> to estimate expected benefits of proposed active transportation projects. It can help government agencies, practitioners, and community members understand project-specific cost effectiveness and explore options for improving project design.</p>
-              <p><a href={`${process.env.PUBLIC_URL}/Caltrans ATP BC Tool Technical Documentation Final Draft.pdf`} target="_blank" rel="noreferrer">Technical Documentation</a></p>
-              <p><a href={`${process.env.PUBLIC_URL}/Caltrans ATP B C Tool Literature Review Final Draft.pdf`} target="_blank" rel="noreferrer">Literature Review</a></p>
+              <p><a href="/Caltrans ATP BC Tool Technical Documentation Final Draft.pdf" target="_blank" rel="noreferrer">Technical Documentation</a></p>
+              <p><a href="/Caltrans ATP B C Tool Literature Review Final Draft.pdf" target="_blank" rel="noreferrer">Literature Review</a></p>
               <p>Choose a county below to begin.</p>
 
 

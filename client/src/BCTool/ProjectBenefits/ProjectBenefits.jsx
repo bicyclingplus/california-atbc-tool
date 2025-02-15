@@ -8,7 +8,8 @@ import Health from './Health';
 import ProjectQualitative from './ProjectQualitative';
 import 'bootstrap-icons/font/bootstrap-icons.css';
 
-const Tooltip = require('bootstrap/js/dist/tooltip');
+// const Tooltip = require('bootstrap/js/dist/tooltip');
+import Tooltip from 'bootstrap/js/dist/tooltip';
 
 class ProjectBenefits extends React.Component {
 

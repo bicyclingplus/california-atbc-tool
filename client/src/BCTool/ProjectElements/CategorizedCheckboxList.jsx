@@ -3,7 +3,8 @@ import 'bootstrap-icons/font/bootstrap-icons.css';
 
 import CheckboxList from './CheckboxList';
 
-const Tooltip = require('bootstrap/js/dist/tooltip');
+// const Tooltip = require('bootstrap/js/dist/tooltip');
+import Tooltip from 'bootstrap/js/dist/tooltip';
 
 class CategorizedCheckboxList extends React.Component {
 

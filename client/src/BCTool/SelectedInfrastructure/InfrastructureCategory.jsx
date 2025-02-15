@@ -4,7 +4,8 @@ import 'bootstrap-icons/font/bootstrap-icons.css';
 
 import InfrastructureItem from './InfrastructureItem';
 
-const Tooltip = require('bootstrap/js/dist/tooltip');
+// const Tooltip = require('bootstrap/js/dist/tooltip');
+import Tooltip from 'bootstrap/js/dist/tooltip';
 
 class InfrastructureCategory extends React.Component {
 

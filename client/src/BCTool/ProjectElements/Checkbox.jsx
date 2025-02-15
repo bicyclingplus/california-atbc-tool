@@ -1,6 +1,7 @@
 import React from 'react';
 
-const Tooltip = require('bootstrap/js/dist/tooltip');
+// const Tooltip = require('bootstrap/js/dist/tooltip');
+import Tooltip from 'bootstrap/js/dist/tooltip';
 
 class Checkbox extends React.Component {
 

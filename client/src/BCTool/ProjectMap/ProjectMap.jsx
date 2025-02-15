@@ -1,11 +1,10 @@
 import React from 'react';
-import Leaflet from 'leaflet';
+import LeafletSpin from 'leaflet-spin';
 import { v4 as uuidv4 } from 'uuid';
 
 import symbology from './symbology';
 
 import 'leaflet/dist/leaflet.css';
-import 'leaflet-spin/leaflet.spin.min';
 import './ProjectMap.css';
 
 // remember larger zoom means closer
@@ -14,6 +13,12 @@ import './ProjectMap.css';
 // any less and we display a warning instead
 const ZOOM_CUTOFF = 17;
 const MAX_ZOOM = 20;
+
+// leaflet-spin loads spin.js and leaflet
+// it adds itself as a mixin and hook
+// for leaflet and returns the leaflet
+// library after attaching itself
+const Leaflet = LeafletSpin();
 
 class ProjectMap extends React.Component {
 
@@ -236,7 +241,7 @@ class ProjectMap extends React.Component {
         this.clearFeatures();
         this.map.spin(true);
 
-        let url = `${process.env.PUBLIC_URL}/api/features`;
+        let url = `/api/features`;
 
         url += `?x1=${bounds.getWest()}&x2=${bounds.getEast()}&y1=${bounds.getSouth()}&y2=${bounds.getNorth()}`;
 
@@ -595,7 +600,7 @@ class ProjectMap extends React.Component {
             id: 'mapbox/streets-v11',
             tileSize: 512,
             zoomOffset: -1,
-            accessToken: process.env.REACT_APP_MAPBOX_TOKEN,
+            accessToken: import.meta.env.VITE_MAPBOX_TOKEN,
         }).addTo(this.map);
 
         this.map.on('moveend', () => {
@@ -649,7 +654,6 @@ class ProjectMap extends React.Component {
       // 1 == oneway
       // 2 == twoway
       let oneway = shouldFinishWay === 1 ? true : false;
-
       let newId = uuidv4();
 
       // create the geojson and add to list of user defined ways

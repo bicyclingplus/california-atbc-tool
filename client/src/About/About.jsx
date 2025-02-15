@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from "react-router-dom";
-import img from '../images/pseudo_longexp_roundabout.png';
+import img from '../assets/pseudo_longexp_roundabout.png';
 import './About.css';
 
 function About(props) {
