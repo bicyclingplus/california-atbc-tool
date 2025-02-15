@@ -40,7 +40,7 @@ app.use(bodyParser.json({
   limit: '10mb',
 }));
 
-tool.use(express.static(path.resolve(__dirname, '../client/build')));
+tool.use(express.static(path.resolve(__dirname, '../client/dist')));
 
 // Handle GET requests to /api route
 
