@@ -5,23 +5,24 @@ import 'dotenv/config';
 import c from './helpers/collector.js';
 import { clean } from './helpers/writeCSV.js';
 
-import general from './helpers/reports/overall/general.js';
-// import peter from './helpers/reports/overall/peter.js';
-// import reachType from './helpers/reports/overall/reachType.js';
-// import reachLjvf from './helpers/reports/overall/reachLjvf.js';
-// import infrastructure from './helpers/reports/overall/infrastructure.js';
-// import ways from './helpers/reports/overall/ways.js';
-// import intersections from './helpers/reports/overall/intersections.js';
 import io from './helpers/reports/io/io.js';
+import peter from './helpers/reports/overall/peter.js';
 
-// import crashesModel from './helpers/reports/safety/crashesModel.js';
-// import crashesAll from './helpers/reports/safety/crashesAll.js';
-// import crashesVolume from './helpers/reports/safety/crashesVolume.js';
-// import volumeExistingProjected from './helpers/reports/safety/volumeExistingProjected.js';
-// import volumeAdjustment from './helpers/reports/safety/volumeAdjustment.js';
+import general from './helpers/reports/overall/general.js';
+import reachType from './helpers/reports/overall/reachType.js';
+import reachLjvf from './helpers/reports/overall/reachLjvf.js';
+import infrastructure from './helpers/reports/overall/infrastructure.js';
+import ways from './helpers/reports/overall/ways.js';
+import intersections from './helpers/reports/overall/intersections.js';
 
-// import travelExistingProjected from './helpers/reports/travel/travelExistingProjected.js';
-// import travelChange from './helpers/reports/travel/travelChange.js';
+import crashesModel from './helpers/reports/safety/crashesModel.js';
+import crashesAll from './helpers/reports/safety/crashesAll.js';
+import crashesVolume from './helpers/reports/safety/crashesVolume.js';
+import volumeExistingProjected from './helpers/reports/safety/volumeExistingProjected.js';
+import volumeAdjustment from './helpers/reports/safety/volumeAdjustment.js';
+
+import travelExistingProjected from './helpers/reports/travel/travelExistingProjected.js';
+import travelChange from './helpers/reports/travel/travelChange.js';
 
 const client = new MongoClient(process.env.MONGO_URI);
 
@@ -30,31 +31,40 @@ clean('io');
 
 c.off(); // disable debugging
 
-// reports as specified in:
-// https://docs.google.com/document/d/1fEByERdU3FYx4nHLPD-fbzJ3HvL6ZmUaqPqVynhaNHA/edit
 const reports = async (ids) => {
 
-	// general/overall
+	// all inputs and outputs report
 	await io(ids);
+
+	// custom report for peter
+	await peter(ids);
+
+	// reports for manomani as specified in:
+	// https://docs.google.com/document/d/1fEByERdU3FYx4nHLPD-fbzJ3HvL6ZmUaqPqVynhaNHA/edit
+
+	// general/overall
 	await general(ids);
-	// await peter(ids);
-	// await reachType(ids);
-	// await reachLjvf(ids);
-	// await infrastructure(ids);
-	// await ways(ids);
-	// await intersections(ids);
+	await reachType(ids);
+	await reachLjvf(ids);
+	await infrastructure(ids);
+	await ways(ids);
+	await intersections(ids);
 
-	// // safety
-	// await crashesModel(ids);
-	// await crashesAll(ids);
-	// await crashesVolume(ids);
+	// safety
+	// TODO: this report needs to updated for the latest
+	// version of the safety calcs. This also requires
+	// some work in the calcs to collect the necessary
+	// data through the debugger
+	// await crashesModel(ids); // ERROR
+	await crashesAll(ids);
+	await crashesVolume(ids);
 
-	// await volumeExistingProjected(ids);
-	// await volumeAdjustment(ids);
+	await volumeExistingProjected(ids);
+	await volumeAdjustment(ids);
 
-	// // travel
-	// await travelExistingProjected(ids);
-	// await travelChange(ids);
+	// travel
+	await travelExistingProjected(ids);
+	await travelChange(ids);
 }
 
 const fileProjects = async () => {

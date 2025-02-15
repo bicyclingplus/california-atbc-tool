@@ -1,5 +1,5 @@
 import { MongoClient, ObjectId } from 'mongodb';
-import { BSONTypeError } from 'bson';
+import { BSONError } from 'bson';
 
 import {
 	ESTIMATES
@@ -65,7 +65,7 @@ const travelChange = async (ids) => {
 				const project_length = calcProjectLength(segments, userSegments);
 				const num_intersections = intersections.length + userIntersections.length;
 
-				const weighted_existing_travel = calcDemand(
+				const weighted_existing_travel = await calcDemand(
 					segments,
 					userSegments,
 					intersections,
@@ -101,12 +101,12 @@ const travelChange = async (ids) => {
 				}
 			}
 			catch (e) {
-				if(e instanceof BSONTypeError) {
-					console.log(`Invalid project id: ${projectId}`);
-				}
-				else {
-					throw e;
-				}
+			  if(BSONError.isBSONError(e)) {
+			    console.log(`Invalid project id: ${projectId}`);
+			  }
+			  else {
+			    throw e;
+			  }
 			}
 		}
 

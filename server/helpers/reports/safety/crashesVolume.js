@@ -1,5 +1,5 @@
 import { MongoClient, ObjectId } from 'mongodb';
-import { BSONTypeError } from 'bson';
+import { BSONError } from 'bson';
 
 import c from '../../collector.js';
 import { writeCSV } from '../../writeCSV.js';
@@ -110,12 +110,12 @@ const volumeAdjustment = async (ids) => {
 				}
 			}
 			catch (e) {
-				if(e instanceof BSONTypeError) {
-					console.log(`Invalid project id: ${projectId}`);
-				}
-				else {
-					throw e;
-				}
+			  if(BSONError.isBSONError(e)) {
+			    console.log(`Invalid project id: ${projectId}`);
+			  }
+			  else {
+			    throw e;
+			  }
 			}
 		}
 

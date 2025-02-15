@@ -1,5 +1,5 @@
 import { MongoClient, ObjectId } from 'mongodb';
-import { BSONTypeError } from 'bson';
+import { BSONError } from 'bson';
 
 import { writeCSV } from '../../writeCSV.js';
 
@@ -208,12 +208,12 @@ const peter = async (ids) => {
 				}
 			}
 			catch (e) {
-				if(e instanceof BSONTypeError) {
-					console.log(`Invalid project id: ${projectId}`);
-				}
-				else {
-					throw e;
-				}
+			  if(BSONError.isBSONError(e)) {
+			    console.log(`Invalid project id: ${projectId}`);
+			  }
+			  else {
+			    throw e;
+			  }
 			}
 		}
 	}
