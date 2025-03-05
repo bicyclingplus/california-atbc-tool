@@ -89,7 +89,7 @@ const calcPVcmjk = (
                             // Vmj + Vmj * Ei * (Ni / L) * I
                             const adjustment = (
                                 EVcmj[c][m][j] *
-                                (1 + (benefit[k] / 100)) *
+                                (benefit[k] / 100) *
                                 share *
                                 SCALING_FACTORS[T]
                             );
@@ -116,7 +116,7 @@ const calcPVcmjk = (
                                 k,
 
                                 EVcmj[c][m][j],
-                                (1 + (benefit[k] / 100)),
+                                (benefit[k] / 100),
                                 share,
                                 SCALING_FACTORS[T],
                                 adjustment,

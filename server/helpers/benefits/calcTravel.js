@@ -89,7 +89,7 @@ const _calcTravelMode = (
 
             for(let k of ESTIMATES) {
                 increase[k] = (
-                    (1 + (benefit[k] / 100)) *
+                    (benefit[k] / 100) *
                     travel.existing[k] *
                     share.share *
                     SCALING_FACTORS[T]
@@ -107,7 +107,7 @@ const _calcTravelMode = (
                     share.L,
                     k,
                     travel.existing[k],
-                    (1 + (benefit[k] / 100)),
+                    (benefit[k] / 100),
                     share.share,
                     SCALING_FACTORS[T],
                     increase[k],

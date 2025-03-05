@@ -157,7 +157,7 @@ const calcNCmojk = (
       // for this mode
       // for this estimate, k
       // percentage
-      const benefit = (1 + (travel_volume[i][mode][k] / 100));
+      const benefit = travel_volume[i][mode][k] / 100;
 
       // each type of improvment scales the effect
       // by a different factor
