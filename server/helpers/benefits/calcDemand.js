@@ -12,6 +12,7 @@ import {
 import * as turf from "@turf/turf";
 
 const FEET_PER_KM = 3280.84;
+const FEET_PER_MI = 5280;
 
 const require = createRequire(import.meta.url);
 const distribution = require('../../data/volume_to_miles.json');
@@ -138,7 +139,7 @@ const _calcPedDemand = async (
         intersection, selectedWays);
 
       // demand calcs all based on miles so convert feet -> miles here
-      const travel = d * (adjacentSelectedWaysAvgLength / 5280);
+      const travel = d * (adjacentSelectedWaysAvgLength / FEET_PER_MI);
 
       // could still be null if avg was null
       if(d !== null) {
@@ -188,7 +189,7 @@ const _calcPedDemand = async (
         length *= 2;
       }
 
-      const travel = avgDemand * (length / 5280); // mi
+      const travel = avgDemand * (length / FEET_PER_MI); // mi
 
       if(avgDemand !== null) {
 
@@ -227,7 +228,7 @@ const _calcPedDemand = async (
 
     // then the pedestrian demand is weighted by the project length and
     // number of intersections
-    const projectLengthMiles = projectLength / 5280;
+    const projectLengthMiles = projectLength / FEET_PER_MI;
     const numIntersections = selectedIntersections.length + userIntersections.length;
 
     if(numIntersections > 0) {
@@ -290,7 +291,7 @@ const _calcBikeDemand = (
       const j = jobs !== null ? jobs : avgJobs;
 
       // demand calcs all based on miles so convert feet -> miles here
-      const travel = d * (length / 5280);
+      const travel = d * (length / FEET_PER_MI);
 
       if(d !== null) {
 
@@ -315,7 +316,7 @@ const _calcBikeDemand = (
         d,
         p,
         j,
-        length / 5280,
+        length / FEET_PER_MI,
         d !== null ? travel : null,
         d !== null && p !== null && p !== 0 ? travel / p : null,
         d !== null && j !== null && j !== 0 ? travel / j : null,
@@ -332,7 +333,7 @@ const _calcBikeDemand = (
       }
 
       // demand calcs all based on miles so convert feet -> miles here
-      const travel = avgDemand * (length / 5280);
+      const travel = avgDemand * (length / FEET_PER_MI);
 
       // use averages for everything here because user defined ways
       // won't have any of these properties
@@ -358,7 +359,7 @@ const _calcBikeDemand = (
         avgDemand,
         avgPop,
         avgJobs,
-        length / 5280,
+        length / FEET_PER_MI,
         avgDemand !== null ? travel : null,
         avgDemand !== null && avgPop !== null && avgPop !== 0 ? travel / avgPop : null,
         avgDemand !== null && avgJobs !== null && avgJobs !== 0 ? travel / avgJobs : null,
@@ -374,7 +375,7 @@ const _calcBikeDemand = (
 
     // then the bike demand is weighted by the project length and
     // number of ways
-    const projectLengthMiles = projectLength / 5280;
+    const projectLengthMiles = projectLength / FEET_PER_MI;
     const numWays = selectedWays.length + userWays.length;
 
     if(numWays > 0) {
