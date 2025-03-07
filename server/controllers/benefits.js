@@ -1,7 +1,4 @@
-import {
-  MongoClient,
-  ObjectId
-} from 'mongodb';
+import { MongoClient } from 'mongodb';
 import Ajv from 'ajv';
 
 import schemas from '../schemas/schemas.js';
@@ -40,79 +37,86 @@ const postBenefits = async (req, res) => {
     safety,
     selectedInfrastructure,
     selectedNonInfrastructure,
-    selectedWays,
-    selectedIntersections,
+    selectedWayIds,
+    selectedIntersectionIds,
     userWays,
     userIntersections,
   } = req.body;
-
-  const freshSegments = [];
-  const freshIntersections = [];
 
   const client = new MongoClient(process.env.MONGO_URI);
 
   try {
     const db = client.db('bctool');
-    const ways = db.collection('ways');
-    const intersections = db.collection('intersections');
 
-    for(const way of selectedWays) {
-      const fresh = await ways.findOne({
-        '_id': new ObjectId(way._id),
-      });
-      freshSegments.push(fresh);
-    }
+    const waysQuery = {
+      'properties.edge_uid': {
+        '$in': selectedWayIds,
+      },
+    };
 
-    for(const intersection of selectedIntersections) {
-      const fresh = await intersections.findOne({
-        '_id': new ObjectId(intersection._id),
-      });
-      freshIntersections.push(fresh);
-    }
+    const selectedWays = await db
+      .collection('ways')
+      .find(waysQuery)
+      .toArray();
+
+    const intersectionsQuery = {
+      'properties.node_id': {
+        '$in': selectedIntersectionIds,
+      },
+    };
+
+    const selectedIntersections = await db
+      .collection('intersections')
+      .find(intersectionsQuery)
+      .toArray();
+
+    const projectLength = calcProjectLength(selectedWays, userWays);
+    const totalIntersections = (
+      selectedIntersections.length +
+      userIntersections.length
+    );
+
+    const hasOnlyUserMapSelections = Boolean(
+      !selectedWays.length &&
+      !selectedIntersections.length &&
+      (userWays.length ||
+      userIntersections.length)
+    );
+
+    const existingTravel = await calcDemand(
+      selectedWays,
+      userWays,
+      selectedIntersections,
+      userIntersections,
+      projectLength,
+    );
+
+    const benefits = calcBenefits(
+      type,
+      subtype,
+      county,
+      year,
+      timeframe,
+      transit,
+      projectLength,
+      totalIntersections,
+      existingTravel,
+      selectedInfrastructure,
+      selectedNonInfrastructure,
+      hasOnlyUserMapSelections,
+      selectedWays,
+      selectedIntersections,
+      safety,
+    );
+
+    return res.json({
+      benefits: benefits,
+    });
+
   }
   finally {
     await client.close();
   }
-
-  const projectLength = calcProjectLength(freshSegments, userWays);
-  const totalIntersections = freshIntersections.length + userIntersections.length;
-
-  const hasOnlyUserMapSelections = Boolean(
-    !freshIntersections.length &&
-    !freshSegments.length &&
-    (userWays.length ||
-    userIntersections.length)
-  );
-
-  const existingTravel = await calcDemand(
-    freshSegments,
-    userWays,
-    freshIntersections,
-    userIntersections,
-    projectLength,
-  );
-
-  const benefits = calcBenefits(
-    type,
-    subtype,
-    county,
-    year,
-    timeframe,
-    transit,
-    projectLength,
-    totalIntersections,
-    existingTravel,
-    selectedInfrastructure,
-    selectedNonInfrastructure,
-    hasOnlyUserMapSelections,
-    freshSegments,
-    freshIntersections,
-    safety,
-  );
-
-  return res.json({
-    benefits: benefits,
-  });
 };
 
 export {

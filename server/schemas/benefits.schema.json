@@ -28,16 +28,16 @@
 		"selectedNonInfrastructure": {
 			"$ref": "noninfrastructure.schema.json"
 		},
-		"selectedWays": {
+		"selectedWayIds": {
 			"type": "array",
 			"items": {
-				"$ref": "way.schema.json"
+				"type": "number"
 			}
 		},
-		"selectedIntersections": {
+		"selectedIntersectionIds": {
 			"type": "array",
 			"items": {
-				"$ref": "intersection.schema.json"
+				"type": "number"
 			}
 		},
 		"userWays": {
@@ -65,8 +65,8 @@
 		"transit",
 		"selectedInfrastructure",
 		"selectedNonInfrastructure",
-		"selectedWays",
-		"selectedIntersections",
+		"selectedWayIds",
+		"selectedIntersectionIds",
 		"userWays",
 		"userIntersections",
 		"safety"

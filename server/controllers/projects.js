@@ -10,12 +10,13 @@ const getProject = async (req, res) => {
   const client = new MongoClient(process.env.MONGO_URI);
 
   try {
-    const database = client.db('bctool');
-    const collection = database.collection('projects');
 
-    const project = await collection.findOne({
-      '_id': new ObjectId(req.params.projectId),
-    });
+    const project = await client
+      .db('bctool')
+      .collection('projects')
+      .findOne({
+        '_id': new ObjectId(req.params.projectId),
+      });
 
     if(project) {
       return res.json(project);
@@ -41,9 +42,7 @@ const getProject = async (req, res) => {
 };
 
 const postProject = async (req, res) => {
-  const ajv = new Ajv({
-    schemas: schemas,
-  });
+  const ajv = new Ajv({schemas});
   const validate = ajv.getSchema("schemas/project.schema.json");
   const valid = validate(req.body);
 
