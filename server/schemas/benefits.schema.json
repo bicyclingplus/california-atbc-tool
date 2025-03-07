@@ -4,26 +4,26 @@
 	"type": "object",
 	"additionalProperties": false,
 	"properties": {
+		"type": {
+			"$ref": "type.schema.json"
+		},
+		"subtype": {
+			"$ref": "subtype.schema.json"
+		},
 		"county": {
 			"$ref": "county.schema.json"
 		},
-		"existingTravel": {
-			"$ref": "existingtravel.schema.json"
+		"year": {
+			"$ref": "year.schema.json"
 		},
-		"hasOnlyUserMapSelections": {
-			"type": "boolean"
+		"timeframe": {
+			"$ref": "timeframe.schema.json"
 		},
-		"safety": {
-			"$ref": "safetyinputs.schema.json"
+		"transit": {
+			"$ref": "transit.schema.json"
 		},
 		"selectedInfrastructure": {
 			"$ref": "infrastructure.schema.json"
-		},
-		"selectedIntersections": {
-			"type": "array",
-			"items": {
-				"$ref": "intersection.schema.json"
-			}
 		},
 		"selectedNonInfrastructure": {
 			"$ref": "noninfrastructure.schema.json"
@@ -34,45 +34,41 @@
 				"$ref": "way.schema.json"
 			}
 		},
-		"subtype": {
-			"$ref": "subtype.schema.json"
+		"selectedIntersections": {
+			"type": "array",
+			"items": {
+				"$ref": "intersection.schema.json"
+			}
 		},
-		"timeframe": {
-			"$ref": "timeframe.schema.json"
+		"userWays": {
+			"type": "array",
+			"items": {
+				"$ref": "userway.schema.json"
+			}
 		},
-		"totalIntersections": {
-			"type": "number",
-			"minimum": 0
+		"userIntersections": {
+			"type": "array",
+			"items": {
+				"$ref": "userintersection.schema.json"
+			}
 		},
-		"totalLength": {
-			"type": "number",
-			"minimum": 0
-		},
-		"transit": {
-			"$ref": "transit.schema.json"
-		},
-		"type": {
-			"$ref": "type.schema.json"
-		},
-		"year": {
-			"$ref": "year.schema.json"
+		"safety": {
+			"$ref": "safetyinputs.schema.json"
 		}
 	},
 	"required": [
+		"type",
+		"subtype",
 		"county",
-		"existingTravel",
-		"hasOnlyUserMapSelections",
-		"safety",
+		"year",
+		"timeframe",
+		"transit",
 		"selectedInfrastructure",
-		"selectedIntersections",
 		"selectedNonInfrastructure",
 		"selectedWays",
-		"subtype",
-		"timeframe",
-		"totalIntersections",
-		"totalLength",
-		"transit",
-		"type",
-		"year"
+		"selectedIntersections",
+		"userWays",
+		"userIntersections",
+		"safety"
 	]
 }

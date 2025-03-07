@@ -318,25 +318,23 @@ class BCTool extends React.Component {
 
   updateBenefits = () => {
 
-    let {
+    const {
       type,
       subtype,
       county,
       year,
       timeframe,
       transit,
-      totalLength,
-      totalIntersections,
-      existingTravel,
       selectedInfrastructure,
       selectedNonInfrastructure,
-      hasOnlyUserMapSelections,
       selectedWays,
       selectedIntersections,
+      userWays,
+      userIntersections,
       safety,
     } = this.state;
 
-    let url = `/api/benefits`;
+    const url = `/api/benefits`;
 
     fetch(url, {
       method: 'POST',
@@ -344,21 +342,19 @@ class BCTool extends React.Component {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        type: type,
-        subtype: subtype,
-        county: county,
-        year: year,
-        timeframe: timeframe,
-        transit: transit,
-        totalLength: totalLength,
-        totalIntersections: totalIntersections,
-        existingTravel: existingTravel,
-        selectedInfrastructure: selectedInfrastructure,
-        selectedNonInfrastructure: selectedNonInfrastructure,
-        hasOnlyUserMapSelections: hasOnlyUserMapSelections,
-        selectedWays: selectedWays,
-        selectedIntersections: selectedIntersections,
-        safety: safety,
+        type,
+        subtype,
+        county,
+        year,
+        timeframe,
+        transit,
+        selectedInfrastructure,
+        selectedNonInfrastructure,
+        selectedWays,
+        selectedIntersections,
+        userWays,
+        userIntersections,
+        safety,
       })
     })
     .then((response) => {
