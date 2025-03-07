@@ -123,7 +123,6 @@ class BCTool extends React.Component {
       shouldResetMap: false,
       shouldCancelWay: false,
       shouldFinishWay: 0,
-      existingTravel: {},
 
       selectedNonInfrastructure: [],
       hasSelectedNonInfrastructure: false,
@@ -297,7 +296,6 @@ class BCTool extends React.Component {
             infrastructure: this.state.selectedInfrastructure,
             nonInfrastructure: this.state.selectedNonInfrastructure,
         },
-        existingTravel: this.state.existingTravel,
         benefits: this.state.benefits,
       })
     })
@@ -496,10 +494,10 @@ class BCTool extends React.Component {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        selectedWays: selectedWays,
-        userWays: userWays,
-        selectedIntersections: selectedIntersections,
-        userIntersections: userIntersections,
+        selectedWayIds: selectedWays.map(el => el.properties.edge_uid),
+        selectedIntersectionIds: selectedIntersections.map(el => el.properties.node_id),
+        userWays,
+        userIntersections,
       })
     })
     .then((response) => {
@@ -511,9 +509,8 @@ class BCTool extends React.Component {
     .then(result => {
 
         this.setState({
-          totalLength: result.projectLength,
-          totalIntersections: selectedIntersections.length + userIntersections.length,
-          existingTravel: result.existingTravel,
+          totalLength: result.totalLength,
+          totalIntersections: result.totalIntersections,
           inputsChanged: true,
         }, () => {
           this.updateStatuses();
@@ -586,7 +583,6 @@ class BCTool extends React.Component {
             initialBounds: result.scope.bounds,
             projectBounds: result.scope.bounds,
 
-            existingTravel: result.existingTravel,
             benefits: result.benefits,
           }, () => {
             this.updateStatuses();

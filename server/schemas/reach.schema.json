@@ -4,16 +4,16 @@
 	"type": "object",
 	"additionalProperties": false,
 	"properties": {
-		"selectedWays": {
+		"selectedWayIds": {
 			"type": "array",
 			"items": {
-				"$ref": "way.schema.json"
+				"type": "number"
 			}
 		},
-		"selectedIntersections": {
+		"selectedIntersectionIds": {
 			"type": "array",
 			"items": {
-				"$ref": "intersection.schema.json"
+				"type": "number"
 			}
 		},
 		"userWays": {
@@ -30,8 +30,8 @@
 		}
 	},
 	"required": [
-		"selectedWays",
-		"selectedIntersections",
+		"selectedWayIds",
+		"selectedIntersectionIds",
 		"userWays",
 		"userIntersections"
 	]
