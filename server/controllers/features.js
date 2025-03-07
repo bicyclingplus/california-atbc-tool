@@ -1,5 +1,13 @@
 import { MongoClient } from 'mongodb';
 
+const invalidLng = (coord) => {
+  return isNaN(coord) || coord > 180 || coord < -180;
+}
+
+const invalidLat = (coord) => {
+  return isNaN(coord) || coord > 90 || coord < -90;
+}
+
 // this endpoint takes in the corners of a latlng bounding box
 // the corners of the bounding box are then transformed into a geojson polygon
 // and used to query for ways/intersections that intersect the polygon
@@ -32,25 +40,25 @@ const getFeatures = async (req, res) => {
   const y1 = parseFloat(req.query.y1);
   const y2 = parseFloat(req.query.y2);
 
-  if(isNaN(x1) || x1 > 180 || x1 < -180) {
+  if(invalidLng(x1)) {
     return res.status(400).send({
      error: "Parameter x1 is invalid longitude",
     });
   }
 
-  if(isNaN(x2) || x2 > 180 || x2 < -180) {
+  if(invalidLng(x2)) {
     return res.status(400).send({
       error: "Parameter x2 is invalid longitude",
     });
   }
 
-  if(isNaN(y1) || y1 > 90 || y1 < -90) {
+  if(invalidLat(y1)) {
     return res.status(400).send({
       error: "Parameter y1 is invalid latitude",
     });
   }
 
-  if(isNaN(y2) || y2 > 90 || y2 < -90) {
+  if(invalidLat(y1)) {
     return res.status(400).send({
       error: "Parameter y2 is invalid latitude",
     });
@@ -66,8 +74,8 @@ const getFeatures = async (req, res) => {
 
   try {
 
-    const database = client.db('bctool');
-    const query = {
+    const db = client.db('bctool');
+    const waysQuery = {
       geometry: {
         "$geoIntersects": {
           "$geometry": {
@@ -84,40 +92,37 @@ const getFeatures = async (req, res) => {
       }
     };
 
-    const results = await database
+    const waysResults = await db
       .collection('ways')
-      .find(query)
+      .find(waysQuery)
       .toArray();
 
-    const node_ids = [];
-    for(const way of results) {
-      if(!node_ids.includes(way.properties.source)) {
-        node_ids.push(way.properties.source);
-      }
-      if(!node_ids.includes(way.properties.target)) {
-        node_ids.push(way.properties.target);
-      }
-    }
+    const node_ids = [
+      ...new Set([
+        ...waysResults.map(el => el.properties.source),
+        ...waysResults.map(el => el.properties.target),
+      ]),
+    ];
 
-    const query2 = {
+    const intersectionsQuery = {
       'properties.node_id': {
         '$in': node_ids,
       }
     };
 
-    const results2 = await database
+    const intersectionsResults = await db
       .collection('intersections')
-      .find(query2)
+      .find(intersectionsQuery)
       .toArray();
 
-    res.json({
+    return res.json({
       ways: {
         type: "FeatureCollection",
-        features: results,
+        features: waysResults,
       },
       intersections: {
         type: "FeatureCollection",
-        features: results2,
+        features: intersectionsResults,
       }
     });
   }
