@@ -7,10 +7,9 @@ import {
   TRANSIT_TYPES,
 } from '../helpers/constants';
 
-const ExportPDF = (state, project_id) => {
+const ExportPDF = (state, project_id, date) => {
 
 	let {
-		date,
 		name,
 		developer,
 		cost,

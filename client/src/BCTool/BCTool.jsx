@@ -96,7 +96,6 @@ class BCTool extends React.Component {
     return {
 
       projectID: '',
-      date: '',
       name: '',
       developer: '',
       cost: '',
@@ -260,9 +259,31 @@ class BCTool extends React.Component {
 
   exportBenefits = () => {
 
-    let url = `/api/projects`;
+    const url = `/api/projects`;
 
-    let date = new Date().toISOString();
+    const {
+      //details
+      county,
+      year,
+      name,
+      developer,
+      cost,
+      timeframe,
+      type,
+      subtype,
+      transit,
+      safety,
+
+      //reach
+      selectedWays,
+      selectedIntersections,
+      userWays,
+      userIntersections,
+
+      //elements
+      selectedInfrastructure,
+      selectedNonInfrastructure,
+    } = this.state;
 
     fetch(url, {
       method: 'POST',
@@ -270,43 +291,33 @@ class BCTool extends React.Component {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        details: {
-            name: this.state.name,
-            date: date,
-            developer: this.state.developer,
-            county: this.state.county,
-            cost: this.state.cost,
-            timeframe: this.state.timeframe,
-            type: this.state.type,
-            subtype: this.state.subtype,
-            year: this.state.year,
-            transit: this.state.transit,
-            safety: this.state.safety,
-        },
-        scope: {
-            intersections: this.state.selectedIntersections,
-            segments: this.state.selectedWays,
-            userIntersections: this.state.userIntersections,
-            userSegments: this.state.userWays,
-            totalLength: this.state.totalLength,
-            totalIntersections: this.state.totalIntersections,
-            bounds: this.state.projectBounds,
-        },
-        elements: {
-            infrastructure: this.state.selectedInfrastructure,
-            nonInfrastructure: this.state.selectedNonInfrastructure,
-        },
-        benefits: this.state.benefits,
-      })
+        // details
+        county,
+        year,
+        name,
+        developer,
+        cost,
+        timeframe,
+        type,
+        subtype,
+        transit,
+        safety,
+
+        // reach
+        selectedWayIds: selectedWays.map(el => el.properties.edge_uid),
+        selectedIntersectionIds: electedIntersections.map(el => el.properties.node_id),
+        userWays,
+        userIntersections,
+
+        //elements
+        selectedInfrastructure,
+        selectedNonInfrastructure,
+      }),
     })
       .then((res) => res.json())
       .then(
         (result) => {
-            this.setState({
-              'date': date,
-            }, () => {
-              ExportPDF(this.state, result.id);
-            });
+            ExportPDF(this.state, result.id, result.date);
         },
         (error) => {
           console.log(error);
@@ -317,19 +328,24 @@ class BCTool extends React.Component {
   updateBenefits = () => {
 
     const {
-      type,
-      subtype,
+      //details
       county,
       year,
       timeframe,
+      type,
+      subtype,
       transit,
-      selectedInfrastructure,
-      selectedNonInfrastructure,
+      safety,
+
+      //reach
       selectedWays,
       selectedIntersections,
       userWays,
       userIntersections,
-      safety,
+
+      //elements
+      selectedInfrastructure,
+      selectedNonInfrastructure,
     } = this.state;
 
     const url = `/api/benefits`;
@@ -340,19 +356,24 @@ class BCTool extends React.Component {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        type,
-        subtype,
+        //details
         county,
         year,
+        type,
+        subtype,
         timeframe,
         transit,
-        selectedInfrastructure,
-        selectedNonInfrastructure,
+        safety,
+
+        //reach
         selectedWayIds: selectedWays.map(el => el.properties.edge_uid),
         selectedIntersectionIds: selectedIntersections.map(el => el.properties.node_id),
         userWays,
         userIntersections,
-        safety,
+
+        //elements
+        selectedInfrastructure,
+        selectedNonInfrastructure,
       })
     })
     .then((response) => {
@@ -559,7 +580,6 @@ class BCTool extends React.Component {
       .then(result => {
 
           this.setState({
-            date: result.details.date,
             name: result.details.name,
             developer: result.details.developer,
             cost: result.details.cost,

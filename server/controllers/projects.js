@@ -3,8 +3,12 @@ import {
   ObjectId
 } from 'mongodb';
 import Ajv from 'ajv';
+import * as turf from "@turf/turf";
 
 import schemas from '../schemas/schemas.js';
+import calcProjectLength from '../helpers/benefits/calcProjectLength.js';
+import calcDemand from '../helpers/benefits/calcDemand.js';
+import calcBenefits from '../helpers/benefits/calcBenefits.js';
 
 const getProject = async (req, res) => {
   const client = new MongoClient(process.env.MONGO_URI);
@@ -52,92 +56,155 @@ const postProject = async (req, res) => {
     });
   }
 
-  const project = req.body;
+  const {
+    // details
+    county,
+    year,
+    name,
+    developer,
+    cost,
+    timeframe,
+    type,
+    subtype,
+    transit,
+    safety,
 
-  // remove everything sent from client that the server
-  // should calculate
+    // reach
+    selectedWayIds,
+    selectedIntersectionIds,
+    userWays,
+    userIntersections,
 
-  // details.date
-  // scope.totalLength
-  // scope.totalIntersections
-  // existingTravel
-  // benefits
-
-  // calculate all those things, add to project
-
-  // then save
-
-  // const project = {
-  //   details: {
-  //     name: this.state.name,
-  //     date: date,
-  //     developer: this.state.developer,
-  //     county: this.state.county,
-  //     cost: this.state.cost,
-  //     timeframe: this.state.timeframe,
-  //     type: this.state.type,
-  //     subtype: this.state.subtype,
-  //     year: this.state.year,
-  //     transit: this.state.transit,
-  //     safety: this.state.safety,
-  //   },
-  //   scope: {
-  //     intersections: this.state.selectedIntersections,
-  //     segments: this.state.selectedWays,
-  //     userIntersections: this.state.userIntersections,
-  //     userSegments: this.state.userWays,
-  //     totalLength: this.state.totalLength,
-  //     totalIntersections: this.state.totalIntersections,
-  //     bounds: this.state.projectBounds,
-  //   },
-  //   elements: {
-  //     infrastructure: this.state.selectedInfrastructure,
-  //     nonInfrastructure: this.state.selectedNonInfrastructure,
-  //   },
-  //   existingTravel: this.state.existingTravel,
-  //   benefits: this.state.benefits,
-  // };
-
-  // const project = {
-  //   details: {
-  //     name: this.state.name,
-  //     developer: this.state.developer,
-  //     county: this.state.county,
-  //     cost: this.state.cost,
-  //     timeframe: this.state.timeframe,
-  //     type: this.state.type,
-  //     subtype: this.state.subtype,
-  //     year: this.state.year,
-  //     transit: this.state.transit,
-  //     safety: this.state.safety,
-  //   },
-  //   scope: {
-  //     intersections: this.state.selectedIntersections,
-  //     segments: this.state.selectedWays,
-  //     userIntersections: this.state.userIntersections,
-  //     userSegments: this.state.userWays,
-  //     bounds: this.state.projectBounds,
-  //   },
-  //   elements: {
-  //     infrastructure: this.state.selectedInfrastructure,
-  //     nonInfrastructure: this.state.selectedNonInfrastructure,
-  //   },
-  // };
-
+    //elements
+    selectedInfrastructure,
+    selectedNonInfrastructure,
+  } = req.body;
 
   const client = new MongoClient(process.env.MONGO_URI);
 
   try {
+    const db = client.db('bctool');
 
-    const database = client.db('bctool');
-    const collection = database.collection('projects');
+    const waysQuery = {
+      'properties.edge_uid': {
+        '$in': selectedWayIds,
+      },
+    };
 
-    const project = await collection.insertOne(req.body);
+    const selectedWays = await db
+      .collection('ways')
+      .find(waysQuery)
+      .toArray();
+
+    const intersectionsQuery = {
+      'properties.node_id': {
+        '$in': selectedIntersectionIds,
+      },
+    };
+
+    const selectedIntersections = await db
+      .collection('intersections')
+      .find(intersectionsQuery)
+      .toArray();
+
+    const features = {
+      type: 'FeatureCollection',
+      features: [
+        ...selectedWays,
+        ...selectedIntersections,
+        ...userWays,
+        ...userIntersections,
+      ]
+    };
+    const bbox = turf.bbox(features);
+    const bounds = [
+      [bbox[1], bbox[0]],
+      [bbox[3], bbox[2]],
+    ];
+
+    const projectLength = calcProjectLength(selectedWays, userWays);
+
+    const totalIntersections = (
+      selectedIntersections.length +
+      userIntersections.length
+    );
+
+    const hasOnlyUserMapSelections = Boolean(
+      !selectedWays.length &&
+      !selectedIntersections.length &&
+      (userWays.length ||
+      userIntersections.length)
+    );
+
+    const existingTravel = await calcDemand(
+      selectedWays,
+      userWays,
+      selectedIntersections,
+      userIntersections,
+      projectLength,
+    );
+
+    const benefits = calcBenefits(
+      type,
+      subtype,
+      county,
+      year,
+      timeframe,
+      transit,
+      projectLength,
+      totalIntersections,
+      existingTravel,
+      selectedInfrastructure,
+      selectedNonInfrastructure,
+      hasOnlyUserMapSelections,
+      selectedWays,
+      selectedIntersections,
+      safety,
+    );
+
+    const date = new Date().toISOString();
+
+    const project = {
+      details: {
+        county,
+        year,
+        name,
+        date,
+        developer,
+        cost,
+        timeframe,
+        type,
+        subtype,
+        transit,
+        safety,
+      },
+      scope: {
+        intersections: selectedIntersections,
+        segments: selectedWays,
+        userIntersections: userIntersections,
+        userSegments: userWays,
+        totalLength: projectLength,
+        totalIntersections,
+        bounds,
+      },
+      elements: {
+        infrastructure: selectedInfrastructure,
+        nonInfrastructure: selectedNonInfrastructure,
+      },
+      existingTravel,
+      benefits,
+    };
+
+    const result = await db
+      .collection('projects')
+      .insertOne(project);
 
     return res.json({
-      'message': 'Project added successfully',
-      'id': project.insertedId,
+      message: 'Project added successfully',
+      id: result.insertedId,
+      date,
     });
+
   }
   finally {
     await client.close();

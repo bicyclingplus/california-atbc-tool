@@ -28,15 +28,20 @@ const postBenefits = async (req, res) => {
   // year reasonable
 
   const {
-    type,
-    subtype,
+    // details
     county,
     year,
     timeframe,
+    type,
+    subtype,
     transit,
     safety,
+
+    //elements
     selectedInfrastructure,
     selectedNonInfrastructure,
+
+    // reach
     selectedWayIds,
     selectedIntersectionIds,
     userWays,

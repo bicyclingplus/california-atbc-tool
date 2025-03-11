@@ -4,180 +4,83 @@
 	"type": "object",
 	"additionalProperties": false,
 	"properties": {
-		"benefits": {
-			"type": "object",
-			"additionalProperties": false,
-			"properties": {
-				"emissions": {
-					"$ref": "emissions.schema.json"
-				},
-				"health": {
-					"$ref": "health.schema.json"
-				},
-				"projectQualitative": {
-					"type": "array",
-					"items": {
-						"$ref": "projectqualitative.schema.json"
-					}
-				},
-				"safetyQualitative": {
-					"type": "array",
-					"items": {
-						"$ref": "qualitative.schema.json"
-					}
-				},
-				"safetyQuantitative": {
-					"$ref": "quantitative.schema.json"
-				},
-				"travel": {
-					"$ref": "projectedtravel.schema.json"
-				},
-				"vmtReductions": {
-					"$ref": "vmt.schema.json"
-				}
-			},
-			"required": [
-				"emissions",
-				"health",
-				"projectQualitative",
-				"safetyQualitative",
-				"safetyQuantitative",
-				"travel",
-				"vmtReductions"
-			]
+		"county": {
+			"$ref": "county.schema.json"
 		},
-		"details": {
-			"type": "object",
-			"additionalProperties": false,
-			"properties": {
-				"cost": {
-					"type": "number"
-				},
-				"county": {
-					"$ref": "county.schema.json"
-				},
-				"date": {
-					"type": "string"
-				},
-				"developer": {
-					"type": "string"
-				},
-				"name": {
-					"type": "string"
-				},
-				"safety": {
-					"$ref": "safetyinputs.schema.json"
-				},
-				"subtype": {
-					"$ref": "subtype.schema.json"
-				},
-				"timeframe": {
-					"$ref": "timeframe.schema.json"
-				},
-				"transit": {
-					"$ref": "transit.schema.json"
-				},
-				"type": {
-					"$ref": "type.schema.json"
-				},
-				"year": {
-					"$ref": "year.schema.json"
-				}
-			},
-			"required": [
-				"cost",
-				"county",
-				"date",
-				"developer",
-				"name",
-				"safety",
-				"subtype",
-				"timeframe",
-				"transit",
-				"type",
-				"year"
-			]
+		"year": {
+			"$ref": "year.schema.json"
 		},
-		"elements": {
-			"type": "object",
-			"additionalProperties": false,
-			"properties": {
-				"infrastructure": {
-					"$ref": "infrastructure.schema.json"
-				},
-				"nonInfrastructure": {
-					"$ref": "noninfrastructure.schema.json"
-				}
-			},
-			"required": [
-				"infrastructure",
-				"nonInfrastructure"
-			]
+		"name": {
+			"type": "string"
 		},
-		"existingTravel": {
-			"$ref": "existingtravel.schema.json"
+		"developer": {
+			"type": "string"
 		},
-		"scope": {
-			"type": "object",
-			"additionalProperties": false,
-			"properties": {
-				"bounds": {
-					"type": "array",
-					"items": {
-						"$ref": "latlng.schema.json"
-					},
-					"minItems": 2,
-					"maxItems": 2
-				},
-				"intersections": {
-					"type": "array",
-					"items": {
-						"$ref": "intersection.schema.json"
-					}
-				},
-				"segments": {
-					"type": "array",
-					"items": {
-						"$ref": "way.schema.json"
-					}
-				},
-				"totalIntersections": {
-					"type": "number",
-					"minimum": 0
-				},
-				"totalLength": {
-					"type": "number",
-					"minimum": 0
-				},
-				"userIntersections": {
-					"type": "array",
-					"items": {
-						"$ref": "userintersection.schema.json"
-					}
-				},
-				"userSegments": {
-					"type": "array",
-					"items": {
-						"$ref": "userway.schema.json"
-					}
-				}
-			},
-			"required": [
-				"bounds",
-				"intersections",
-				"segments",
-				"totalIntersections",
-				"totalLength",
-				"userIntersections",
-				"userSegments"
-			]
+		"cost": {
+			"type": "number"
+		},
+		"timeframe": {
+			"$ref": "timeframe.schema.json"
+		},
+		"type": {
+			"$ref": "type.schema.json"
+		},
+		"subtype": {
+			"$ref": "subtype.schema.json"
+		},
+		"transit": {
+			"$ref": "transit.schema.json"
+		},
+		"safety": {
+			"$ref": "safetyinputs.schema.json"
+		},
+		"selectedWayIds": {
+			"type": "array",
+			"items": {
+				"type": "number"
+			}
+		},
+		"selectedIntersectionIds": {
+			"type": "array",
+			"items": {
+				"type": "number"
+			}
+		},
+		"userWays": {
+			"type": "array",
+			"items": {
+				"$ref": "userway.schema.json"
+			}
+		},
+		"userIntersections": {
+			"type": "array",
+			"items": {
+				"$ref": "userintersection.schema.json"
+			}
+		},
+		"selectedInfrastructure": {
+			"$ref": "infrastructure.schema.json"
+		},
+		"selectedNonInfrastructure": {
+			"$ref": "noninfrastructure.schema.json"
 		}
 	},
 	"required": [
-		"benefits",
-		"details",
-		"elements",
-		"existingTravel",
-		"scope"
+		"county",
+		"year",
+		"name",
+		"developer",
+		"cost",
+		"timeframe",
+		"type",
+		"subtype",
+		"transit",
+		"safety",
+		"selectedWayIds",
+		"selectedIntersectionIds",
+		"userWays",
+		"userIntersections",
+		"selectedInfrastructure",
+		"selectedNonInfrastructure"
 	]
 }
