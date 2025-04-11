@@ -4,7 +4,7 @@ function UserGuide(props) {
 
 
 	return(
-		<embed src="/User Guide.pdf" width="100%" height="800px" />
+		<embed src="/Caltrans ATP BC Tool User Guide Final Draft - Screenshots Added.pdf" width="100%" height="800px" />
 	);
 }
 
