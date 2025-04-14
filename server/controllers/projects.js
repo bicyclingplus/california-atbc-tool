@@ -6,9 +6,8 @@ import Ajv from 'ajv';
 import * as turf from "@turf/turf";
 
 import schemas from '../schemas/schemas.js';
-import calcProjectLength from '../helpers/benefits/calcProjectLength.js';
-import calcDemand from '../helpers/benefits/calcDemand.js';
-import calcBenefits from '../helpers/benefits/calcBenefits.js';
+
+import calcAll from '../helpers/benefits/calcAll.js';
 
 const getProject = async (req, res) => {
   const client = new MongoClient(process.env.MONGO_URI);
@@ -80,120 +79,87 @@ const postProject = async (req, res) => {
     selectedNonInfrastructure,
   } = req.body;
 
+  const {
+    benefits,
+    existingTravel,
+    reach,
+  } = await calcAll(
+    selectedWayIds,
+    selectedIntersectionIds,
+    userWays,
+    userIntersections,
+    type,
+    subtype,
+    county,
+    year,
+    timeframe,
+    transit,
+    selectedInfrastructure,
+    selectedNonInfrastructure,
+    safety,
+  );
+
+  const {
+    selectedWays,
+    selectedIntersections,
+    totalLength,
+    totalIntersections,
+  } = reach;
+
+  const features = {
+    type: 'FeatureCollection',
+    features: [
+      ...selectedWays,
+      ...selectedIntersections,
+      ...userWays,
+      ...userIntersections,
+    ]
+  };
+
+  const bbox = turf.bbox(features);
+
+  const bounds = [
+    [bbox[1], bbox[0]],
+    [bbox[3], bbox[2]],
+  ];
+
+  const date = new Date().toISOString();
+
+  const project = {
+    details: {
+      county,
+      year,
+      name,
+      date,
+      developer,
+      cost,
+      timeframe,
+      type,
+      subtype,
+      transit,
+      safety,
+    },
+    scope: {
+      segments: selectedWays,
+      intersections: selectedIntersections,
+      userSegments: userWays,
+      userIntersections,
+      totalLength,
+      totalIntersections,
+      bounds,
+    },
+    elements: {
+      infrastructure: selectedInfrastructure,
+      nonInfrastructure: selectedNonInfrastructure,
+    },
+    existingTravel,
+    benefits,
+  };
+
   const client = new MongoClient(process.env.MONGO_URI);
 
   try {
     const db = client.db('bctool');
-
-    const waysQuery = {
-      'properties.edge_uid': {
-        '$in': selectedWayIds,
-      },
-    };
-
-    const selectedWays = await db
-      .collection('ways')
-      .find(waysQuery)
-      .toArray();
-
-    const intersectionsQuery = {
-      'properties.node_id': {
-        '$in': selectedIntersectionIds,
-      },
-    };
-
-    const selectedIntersections = await db
-      .collection('intersections')
-      .find(intersectionsQuery)
-      .toArray();
-
-    const features = {
-      type: 'FeatureCollection',
-      features: [
-        ...selectedWays,
-        ...selectedIntersections,
-        ...userWays,
-        ...userIntersections,
-      ]
-    };
-    const bbox = turf.bbox(features);
-    const bounds = [
-      [bbox[1], bbox[0]],
-      [bbox[3], bbox[2]],
-    ];
-
-    const projectLength = calcProjectLength(selectedWays, userWays);
-
-    const totalIntersections = (
-      selectedIntersections.length +
-      userIntersections.length
-    );
-
-    const hasOnlyUserMapSelections = Boolean(
-      !selectedWays.length &&
-      !selectedIntersections.length &&
-      (userWays.length ||
-      userIntersections.length)
-    );
-
-    const existingTravel = await calcDemand(
-      selectedWays,
-      userWays,
-      selectedIntersections,
-      userIntersections,
-      projectLength,
-    );
-
-    const benefits = calcBenefits(
-      type,
-      subtype,
-      county,
-      year,
-      timeframe,
-      transit,
-      projectLength,
-      totalIntersections,
-      existingTravel,
-      selectedInfrastructure,
-      selectedNonInfrastructure,
-      hasOnlyUserMapSelections,
-      selectedWays,
-      selectedIntersections,
-      safety,
-    );
-
-    const date = new Date().toISOString();
-
-    const project = {
-      details: {
-        county,
-        year,
-        name,
-        date,
-        developer,
-        cost,
-        timeframe,
-        type,
-        subtype,
-        transit,
-        safety,
-      },
-      scope: {
-        intersections: selectedIntersections,
-        segments: selectedWays,
-        userIntersections: userIntersections,
-        userSegments: userWays,
-        totalLength: projectLength,
-        totalIntersections,
-        bounds,
-      },
-      elements: {
-        infrastructure: selectedInfrastructure,
-        nonInfrastructure: selectedNonInfrastructure,
-      },
-      existingTravel,
-      benefits,
-    };
 
     const result = await db
       .collection('projects')

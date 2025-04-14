@@ -305,7 +305,7 @@ class BCTool extends React.Component {
 
         // reach
         selectedWayIds: selectedWays.map(el => el.properties.edge_uid),
-        selectedIntersectionIds: electedIntersections.map(el => el.properties.node_id),
+        selectedIntersectionIds: selectedIntersections.map(el => el.properties.node_id),
         userWays,
         userIntersections,
 
