@@ -92,9 +92,20 @@ const getFeatures = async (req, res) => {
       }
     };
 
+    const waysProjection = {
+      type: 1,
+      geometry: 1,
+      properties: {
+        source: 1,
+        target: 1,
+        edge_uid: 1,
+      },
+    };
+
     const waysResults = await db
       .collection('ways')
       .find(waysQuery)
+      .project(waysProjection)
       .toArray();
 
     const node_ids = [
@@ -110,9 +121,18 @@ const getFeatures = async (req, res) => {
       }
     };
 
+    const intersectionsProjection = {
+      type: 1,
+      geometry: 1,
+      properties: {
+        node_id: 1,
+      },
+    };
+
     const intersectionsResults = await db
       .collection('intersections')
       .find(intersectionsQuery)
+      .project(intersectionsProjection)
       .toArray();
 
     return res.json({
