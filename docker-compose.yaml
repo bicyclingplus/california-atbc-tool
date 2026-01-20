@@ -10,7 +10,7 @@ services:
     restart: always
 
   db:
-    image: mongo:8.0.17
+    image: mongo:8.0
     restart: always
     volumes:
       - type: volume
