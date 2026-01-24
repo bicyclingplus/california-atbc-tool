@@ -12,5 +12,11 @@
     "morgan": "^1.10.0",
     "tqdm": "^2.0.3"
   },
-  "type": "module"
+  "devDependencies": {
+    "vitest": "^4.0.18"
+  },
+  "type": "module",
+  "scripts": {
+    "test": "vitest"
+  }
 }

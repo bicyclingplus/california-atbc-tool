@@ -3,7 +3,7 @@ import json
 import os
 
 input_file = 'PM25_ITHIM_full_interpolated_2020_2050.csv'
-output_file = 'pm25_mortality.json'
+output_file = 'air_quality_monetary.json'
 
 data = {}
 
