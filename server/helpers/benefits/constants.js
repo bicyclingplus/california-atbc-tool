@@ -124,6 +124,9 @@ const LOCATION_TYPES = ['intersection', 'roadway'];
 const VOLUMES = ['low', 'medium', 'high'];
 const OUTCOMES = ['crash', 'injury', 'death'];
 
+const VALUE_STATISTICAL_LIFE = 13700000;
+const SCC_GROWTH_RATE = 0.02;
+
 export {
     SCALING_FACTORS,
     ESTIMATES,
@@ -159,4 +162,7 @@ export {
     LOCATION_TYPES,
     VOLUMES,
     OUTCOMES,
+
+    VALUE_STATISTICAL_LIFE,
+    SCC_GROWTH_RATE,
 };

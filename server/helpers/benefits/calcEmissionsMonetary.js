@@ -9,14 +9,13 @@ const require = createRequire(import.meta.url);
 const air_quality_monetary = require('../../data/air_quality_monetary.json');
 const ghg_monetary = require('../../data/ghg_monetary.json');
 
-const _calc_air_quality_monetary = (
+const _calc_monetary = (
   project_year,
   project_time_frame,
-  pm25_reduction_grams,
+  reduction_grams,
+  lookup,
 ) => {
-
-  // grams -> metric tons
-  const pm25_reduction_tons = pm25_reduction_grams / 1E6;
+  const reduction_tons = reduction_grams / 1E6;
 
   // independent of outer sum, so precalculate it
   let denominator = 0;
@@ -28,14 +27,30 @@ const _calc_air_quality_monetary = (
   let total = 0;
 
   for(let t = 1; t <= project_time_frame; t++) {
-    const numerator = pm25_reduction_tons * Math.pow(1 + DISCOUNT_RATE, -t);
+    const numerator = reduction_tons * Math.pow(1 + DISCOUNT_RATE, -t);
     const current_year = project_year + t - 1;
-    const pm25_mortality_factor = air_quality_monetary[current_year];
+    const factor = lookup[current_year];
 
-    total += (numerator / denominator) * pm25_mortality_factor;
+    total += (numerator / denominator) * factor;
   }
 
-  return VALUE_STATISTICAL_LIFE * total;
+  return total;
+}
+
+const _calc_air_quality_monetary = (
+  project_year,
+  project_time_frame,
+  pm25_reduction_grams,
+) => {
+
+  const result = _calc_monetary(
+    project_year,
+    project_time_frame,
+    pm25_reduction_grams,
+    air_quality_monetary,
+  );
+
+  return VALUE_STATISTICAL_LIFE * result;
 };
 
 const _calc_GHG_monetary = (
@@ -43,28 +58,13 @@ const _calc_GHG_monetary = (
   project_time_frame,
   co2_reduction_grams,
 ) => {
-  const co2_reduction_tons = co2_reduction_grams / 1E6;
-  const SCC = ghg_monetary[project_year];
 
-  // independent of outer sum, so precalculate it
-  let denominator = 0;
-
-  for(let t = 1; t <= project_time_frame; t++) {
-    denominator += Math.pow(1 + DISCOUNT_RATE, -t);
-  }
-
-  let total = 0;
-
-  for(let t = 1; t <= project_time_frame; t++) {
-    const numerator = co2_reduction_tons * Math.pow(1 + DISCOUNT_RATE, -t);
-    const current_year = project_year + t - 1;
-    const SCC = ghg_monetary[current_year];
-
-    total += (numerator / denominator) * SCC;
-  }
-
-  return total;
-
+  return _calc_monetary(
+    project_year,
+    project_time_frame,
+    co2_reduction_grams,
+    ghg_monetary,
+  );
 };
 
 // what output columns? just one for dollars?
