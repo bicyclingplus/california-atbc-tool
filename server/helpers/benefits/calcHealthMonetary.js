@@ -1,71 +1,68 @@
 import { createRequire } from "module";
-import util from 'util';
 
-// acronyms
-// GBD Global Burden of Disease
-// DALY Disability Adjusted Life Year
-// PAF Population Attributable Fraction
-
-const utilConfig = { depth: null, colors: true, compact: false };
+import {
+  VALUE_STATISTICAL_LIFE,
+  AVG_BIKE_DIST,
+  AVG_WALK_DIST,
+} from './constants.js';
 
 const require = createRequire(import.meta.url);
 const relative_risk = require('../../data/relative_risk.json');
 const disease_burden = require('../../data/disease_burden.json');
 const population = require('../../data/population.json');
+const life_expectancy = require('../../data/life_expectancy.json');
 
-const _calc_cases_avoided = (years, PAF, baseline) => {
+const _calc_DALYs_recovered = (
+  years,
+  pop_factors,
+  pop,
+  PAF,
+) => {
 
-  const cases_avoided = {};
-
-  for(const cause in baseline) {
-
-    cases_avoided[cause] = {}
-
-    for(const age in baseline[cause]) {
-
-      cases_avoided[cause][age] = {};
-
-      for(const sex in baseline[cause][age]) {
-
-        const cases = baseline[cause][age][sex];
-        const avoided = cases * PAF[cause] * years;
-
-        cases_avoided[cause][age][sex] = avoided;
-      }
-    }
-  }
-
-  return cases_avoided;
-};
-
-const _calc_cases_baseline = (pop_factors, pop) => {
-  const cases_baseline = {};
+  const DALYs_recovered = {}
 
   for(const cause in disease_burden) {
 
-    cases_baseline[cause] = {}
+    DALYs_recovered[cause] = {};
 
     for(const age in disease_burden[cause]) {
 
-      cases_baseline[cause][age] = {}
-
+      DALYs_recovered[cause][age] = {};
 
       for(const sex in disease_burden[cause][age]) {
 
-        const incidence = disease_burden[cause][age][sex]['incidence'];
-        const pop_factor = pop_factors[age][sex];
-        const baseline = (incidence / 1e5) * pop_factor * pop;
+        const {
+          incidence,
+          daly_per_case,
+        } = disease_burden[cause][age][sex];
 
-        cases_baseline[cause][age][sex] = baseline;
+        const pop_factor = pop_factors[age][sex];
+
+        // I'm guessing incidence is per 100,000 people
+        const baseline = (incidence / 1e5) * pop_factor * pop;
+        const avoided = baseline * PAF[cause] * years;
+        const recovered = avoided * daly_per_case;
+
+        DALYs_recovered[cause][age][sex] = recovered;
       }
     }
   }
 
-  return cases_baseline;
+  return DALYs_recovered;
 };
 
 const _calc_pop_factors = (tracts) => {
+
+  // TODO population lookup needs to be attached to the network
+  // so when the tracts are passed in, the population data
+  // will already be attached to them
+
+  // lookup the population for each tract
   const tracts_pop = tracts.map(el => population[el]);
+
+  // total up the population of tracts in the
+  // project's buffer zone by age/sex as well
+  // as the overall total
   const pop_counts = {};
   let pop_total = 0;
 
@@ -88,11 +85,13 @@ const _calc_pop_factors = (tracts) => {
     }
   }
 
+  // calculate fraction of total
+  // population for each age/sex
   const pop_factors = {};
 
   for(const age in pop_counts) {
     pop_factors[age] = {}
-    for(const sex of ["Male", "Female"]) {
+    for(const sex in pop_counts[age]) {
       pop_factors[age][sex] = pop_counts[age][sex] / pop_total;
     }
   }
@@ -100,88 +99,90 @@ const _calc_pop_factors = (tracts) => {
   return pop_factors;
 };
 
-// initial pass
-const test = () => {
+// acronyms
+// GBD Global Burden of Disease
+// DALY Disability Adjusted Life Year
+// PAF Population Attributable Fraction
+// MMET Marginal Metabolic Equivalent of Task
+const calc = (
+  project_time_frame,
+  project_county,
+  daily_bmt,
+  daily_wmt,
+  bike_mmet,
+  walk_mmet,
+  bike_tracts,
+  walk_tracts,
+) => {
 
-  // inputs
-  const project_time_frame = 20; // project details
-  const daily_bmt = 434; // tool output
-  const daily_wmt = 265; // tool output
-  const bike_mmet = 442390; // tool output
-  const walk_mmet = 1051377; // tool output
+  // value of a DALY for the project county
+  const county_life_expectancy = life_expectancy[project_county];
+  const DALY_value = VALUE_STATISTICAL_LIFE / county_life_expectancy;
 
-  // hardcoded for now, need to get a list of GEO_IDs
-  // using a buffer and a geospatial query
-  // bike uses a 1.00 mile buffer
-  // walk uses a 0.25 mile buffer
-  const bike_tracts = [
-    "06089010300",
-    "06089010900",
-    "06089011300",
-    "06089010200",
-    "06089010703",
-    "06089010803",
-    "06089011401",
-    "06089011209",
-    "06089010804",
-    "06089010805",
-    "06089011403",
-  ];
-  const walk_tracts = [
-    "06089010300",
-    "06089011300",
-    "06089010803",
-  ];
+  // project population by mode
+  const bike_pop = daily_bmt / (AVG_BIKE_DIST * 2);
+  const walk_pop = daily_wmt / (AVG_WALK_DIST * 2);
 
-  // dist by mode
-  const bike_dist = 1.9;
-  const walk_dist = 0.55;
-
-  // pop by mode
-  const bike_pop = daily_bmt / (bike_dist * 2);
-  const walk_pop = daily_wmt / (walk_dist * 2);
-
-  // mmet per capita by mode
+  // project weekly mmet per capita by mode
   const bike_mmet_cap = (bike_mmet / (project_time_frame * 365 * bike_pop)) * 7;
   const walk_mmet_cap = (walk_mmet / (project_time_frame * 365 * walk_pop)) * 7;
 
   // PAF
-  const PAF_bike = {};
-  const PAF_walk = {};
+  const bike_PAF = {};
+  const walk_PAF = {};
 
   for(const cause in relative_risk) {
-    PAF_bike[cause] = 1 - Math.pow(relative_risk[cause], bike_mmet_cap);
-    PAF_walk[cause] = 1 - Math.pow(relative_risk[cause], walk_mmet_cap);
+    bike_PAF[cause] = 1 - Math.pow(relative_risk[cause], bike_mmet_cap);
+    walk_PAF[cause] = 1 - Math.pow(relative_risk[cause], walk_mmet_cap);
   }
 
   // population factors
   const bike_pop_factors = _calc_pop_factors(bike_tracts);
   const walk_pop_factors = _calc_pop_factors(walk_tracts);
 
-  // baseline cases
-  const bike_cases_baseline = _calc_cases_baseline(bike_pop_factors, bike_pop);
-  const walk_cases_baseline = _calc_cases_baseline(walk_pop_factors, walk_pop);
+  // DALYs recovered
+  const bike_DALYs_recovered = _calc_DALYs_recovered(
+    project_time_frame,
+    bike_pop_factors,
+    bike_pop,
+    bike_PAF,
+  );
 
-  // cases avoided
-  const bike_cases_avoided = _calc_cases_avoided(project_time_frame, PAF_bike, bike_cases_baseline);
-  const walk_cases_avoided = _calc_cases_avoided(project_time_frame, PAF_walk, walk_cases_baseline);
+  const walk_DALYs_recovered = _calc_DALYs_recovered(
+    project_time_frame,
+    walk_pop_factors,
+    walk_pop,
+    walk_PAF,
+  );
 
-  console.log(util.inspect(bike_cases_avoided, utilConfig));
+  // DALY totals
+  let bike_DALYs = 0
+  let walk_DALYs = 0
 
-  let testM = 0;
-  let testF = 0;
-
-  for(const cause in bike_cases_avoided) {
-    for(const age in bike_cases_avoided[cause]) {
-      testM =+ bike_cases_avoided[cause][age].Male;
-      testF =+ bike_cases_avoided[cause][age].Female;
+  for(const cause in bike_DALYs_recovered) {
+    for(const age in bike_DALYs_recovered[cause]) {
+      for(const sex in bike_DALYs_recovered[cause][age]) {
+        bike_DALYs += bike_DALYs_recovered[cause][age][sex];
+        walk_DALYs += walk_DALYs_recovered[cause][age][sex];
+      }
     }
   }
 
-  console.log(testM);
-  console.log(testF);
+  // DALY benefit
+  // this is USD
+  const bike_DALY_benefit = bike_DALYs * DALY_value;
+  const walk_DALY_benefit = walk_DALYs * DALY_value;
 
+  // project total
+  const project_DALY_benefit = bike_DALY_benefit + walk_DALY_benefit;
+
+  return {
+    bicycling: bike_DALY_benefit,
+    walking: walk_DALY_benefit,
+    total: project_DALY_benefit,
+  };
 };
 
-
-test();
+export {
+  calc as default,
+};

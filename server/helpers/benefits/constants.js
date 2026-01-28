@@ -126,6 +126,8 @@ const OUTCOMES = ['crash', 'injury', 'death'];
 
 const VALUE_STATISTICAL_LIFE = 13700000;
 const SCC_GROWTH_RATE = 0.02;
+const AVG_BIKE_DIST = 1.9;
+const AVG_WALK_DIST = 0.55;
 
 export {
     SCALING_FACTORS,
@@ -165,4 +167,6 @@ export {
 
     VALUE_STATISTICAL_LIFE,
     SCC_GROWTH_RATE,
+    AVG_BIKE_DIST,
+    AVG_WALK_DIST,
 };
