@@ -6,10 +6,11 @@ import {
   AVG_WALK_DIST,
 } from './constants.js';
 
+import calc_pop_factors from './calcPopFactors.js';
+
 const require = createRequire(import.meta.url);
 const relative_risk = require('../../data/relative_risk.json');
 const disease_burden = require('../../data/disease_burden.json');
-const population = require('../../data/population.json');
 const life_expectancy = require('../../data/life_expectancy.json');
 
 const _calc_DALYs_recovered = (
@@ -51,54 +52,6 @@ const _calc_DALYs_recovered = (
   return DALYs_recovered;
 };
 
-const _calc_pop_factors = (tracts) => {
-
-  // TODO population lookup needs to be attached to the network
-  // so when the tracts are passed in, the population data
-  // will already be attached to them
-
-  // lookup the population for each tract
-  const tracts_pop = tracts.map(el => population[el]);
-
-  // total up the population of tracts in the
-  // project's buffer zone by age/sex as well
-  // as the overall total
-  const pop_counts = {};
-  let pop_total = 0;
-
-  for(const tract of tracts_pop) {
-    for(const age in tract) {
-
-      if(!(age in pop_counts)) {
-        pop_counts[age] = {};
-      }
-
-      for(const sex in tract[age]) {
-
-        if(!(sex in pop_counts[age])) {
-          pop_counts[age][sex] = 0;
-        }
-
-        pop_counts[age][sex] += tract[age][sex];
-        pop_total += tract[age][sex];
-      }
-    }
-  }
-
-  // calculate fraction of total
-  // population for each age/sex
-  const pop_factors = {};
-
-  for(const age in pop_counts) {
-    pop_factors[age] = {}
-    for(const sex in pop_counts[age]) {
-      pop_factors[age][sex] = pop_counts[age][sex] / pop_total;
-    }
-  }
-
-  return pop_factors;
-};
-
 // acronyms
 // GBD Global Burden of Disease
 // DALY Disability Adjusted Life Year
@@ -137,8 +90,9 @@ const calc = (
   }
 
   // population factors
-  const bike_pop_factors = _calc_pop_factors(bike_tracts);
-  const walk_pop_factors = _calc_pop_factors(walk_tracts);
+  // TODO pass this in so it's only calc'd once
+  const bike_pop_factors = calc_pop_factors(bike_tracts);
+  const walk_pop_factors = calc_pop_factors(walk_tracts);
 
   // DALYs recovered
   const bike_DALYs_recovered = _calc_DALYs_recovered(
