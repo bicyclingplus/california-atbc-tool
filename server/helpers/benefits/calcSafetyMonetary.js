@@ -5,46 +5,69 @@ import {
   VALUE_STATISTICAL_LIFE,
 } from './constants.js';
 
-import calc_pop_factors from './calcPopFactors.js';
-
 const require = createRequire(import.meta.url);
-const life_expectancy = require('../../data/life_expectancy.json');
 const bike_ped_burden = require('../../data/bike_ped_burden.json');
-
-const _calc_injuries_monetary = () => {};
-
-const _calc_fatalities_monetary = () => {
-
-};
+const bike_burden = bike_ped_burden['Cyclist road injuries'];
+const walk_burden = bike_ped_burden['Pedestrian road injuries'];
 
 const calc = (
   project_time_frame,
-  project_county,
+  county_life_expectancy,
   bike_injuries,
   walk_injuries,
   bike_fatalities,
   walk_fatalities,
-  bike_tracts,
-  walk_tracts,
+  bike_pop_factors,
+  walk_pop_factors,
 ) => {
 
-  const county_life_expectancy = life_expectancy[project_county];
+  const total_fatalities = bike_fatalities + walk_fatalities;
 
-  const disc_factor = 0;
+  let injury_DALYs_avoided = 0;
 
-  // population factors
-  // TODO pass this in so it's only calc'd once
-  const bike_pop_factors = calc_pop_factors(bike_tracts);
-  const walk_pop_factors = calc_pop_factors(walk_tracts);
+  for(const age in bike_pop_factors) {
+    for(const sex in bike_pop_factors[age]) {
 
-  return true;
+      const { daly_per_case: bike_daly_per_case  } = bike_burden[age][sex];
+      const bike_pop_factor = bike_pop_factors[age][sex];
+      const bike_avoided = bike_injuries * bike_pop_factor * bike_daly_per_case;
+
+      injury_DALYs_avoided += bike_avoided;
+
+      const { daly_per_case: walk_daly_per_case  } = walk_burden[age][sex];
+      const walk_pop_factor = walk_pop_factors[age][sex];
+      const walk_avoided = walk_injuries * walk_pop_factor * walk_daly_per_case;
+
+      injury_DALYs_avoided += walk_avoided;
+    }
+  }
+
+  // this summation is the same for every iteration
+  // of the outer summation, so precompute
+  let denominator = 0;
+
+  for(let i = 1; i <= project_time_frame; i++) {
+    denominator += Math.pow(1 + DISCOUNT_RATE, -i);
+  }
+
+  // discount the benefits over the project time span
+  let discounted_injuries = 0;
+  let discounted_fatalities = 0;
+
+  for(let i = 1; i <= project_time_frame; i++) {
+    const disc_weight = Math.pow(1 + DISCOUNT_RATE, -i);
+    const injuries_current = (injury_DALYs_avoided * disc_weight) / denominator;
+    const fatalities_current = (total_fatalities * disc_weight) / denominator;
+    discounted_injuries += injuries_current;
+    discounted_fatalities += fatalities_current;
+  }
+
+  // convert to USD
+  const benefit_injuries = (discounted_injuries / county_life_expectancy) * VALUE_STATISTICAL_LIFE;
+  const benefit_fatalities = discounted_fatalities * VALUE_STATISTICAL_LIFE;
+
+  return benefit_injuries + benefit_fatalities;
 
 };
-
-// export {
-//   calc as default,
-//   _calc_injuries_monetary,
-//   _calc_fatalities_monetary,
-// };
 
 export default calc;

@@ -1,5 +1,11 @@
+import { createRequire } from "module";
 import { expect, test } from 'vitest';
+
+import calc_pop_factors from './calcPopFactors.js';
 import calc from './calcHealthMonetary.js';
+
+const require = createRequire(import.meta.url);
+const life_expectancy = require('../../data/life_expectancy.json');
 
 test('health output matches R script', () => {
 
@@ -35,15 +41,18 @@ test('health output matches R script', () => {
 	  "06089010803",
 	];
 
+	const bike_pop_factors = calc_pop_factors(bike_tracts);
+	const walk_pop_factors = calc_pop_factors(walk_tracts);
+
 	const result = calc(
 		project_time_frame,
-		project_county,
+		life_expectancy[project_county],
 		daily_bmt,
 		daily_wmt,
 		bike_mmet,
 		walk_mmet,
-		bike_tracts,
-		walk_tracts,
+		bike_pop_factors,
+		walk_pop_factors,
 	);
 
 	expect(result.bicycling).toBe(4322425.966358626);

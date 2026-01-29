@@ -58,7 +58,6 @@ for cause in data:
 
             transformed[cause][age][sex] = {
                 'daly_per_case': daly_per_case,
-                'incidence': incidence,
             }
 
 json.dump(transformed, open(os.path.join('output', output_file), 'w'))

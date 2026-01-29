@@ -11,7 +11,6 @@ import calc_pop_factors from './calcPopFactors.js';
 const require = createRequire(import.meta.url);
 const relative_risk = require('../../data/relative_risk.json');
 const disease_burden = require('../../data/disease_burden.json');
-const life_expectancy = require('../../data/life_expectancy.json');
 
 const _calc_DALYs_recovered = (
   years,
@@ -59,17 +58,16 @@ const _calc_DALYs_recovered = (
 // MMET Marginal Metabolic Equivalent of Task
 const calc = (
   project_time_frame,
-  project_county,
+  county_life_expectancy,
   daily_bmt,
   daily_wmt,
   bike_mmet,
   walk_mmet,
-  bike_tracts,
-  walk_tracts,
+  bike_pop_factors,
+  walk_pop_factors,
 ) => {
 
   // value of a DALY for the project county
-  const county_life_expectancy = life_expectancy[project_county];
   const DALY_value = VALUE_STATISTICAL_LIFE / county_life_expectancy;
 
   // project population by mode
@@ -88,11 +86,6 @@ const calc = (
     bike_PAF[cause] = 1 - Math.pow(relative_risk[cause], bike_mmet_cap);
     walk_PAF[cause] = 1 - Math.pow(relative_risk[cause], walk_mmet_cap);
   }
-
-  // population factors
-  // TODO pass this in so it's only calc'd once
-  const bike_pop_factors = calc_pop_factors(bike_tracts);
-  const walk_pop_factors = calc_pop_factors(walk_tracts);
 
   // DALYs recovered
   const bike_DALYs_recovered = _calc_DALYs_recovered(
