@@ -85,6 +85,12 @@ const dumpProject = async (projectId) => {
     let walk_buffer = turf.buffer(geojson, 0.25, {units: 'miles'});
     walk_buffer = turf.union(walk_buffer);
 
+    // bike_buffer = turf.simplify(bike_buffer, { tolerance: 3 });
+    // walk_buffer = turf.simplify(walk_buffer, { tolerance: 3 });
+
+    bike_buffer = turf.polygonSmooth(bike_buffer, { iterations: 3 });
+    walk_buffer = turf.polygonSmooth(walk_buffer, { iterations: 3 });
+
     const bike_buffer_filename = path.join(outdir, `${projectId}_buffer_bike.geojson`);
     const walk_buffer_filename = path.join(outdir, `${projectId}_buffer_walk.geojson`);
 

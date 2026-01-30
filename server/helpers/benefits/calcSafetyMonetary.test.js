@@ -3,11 +3,51 @@ import { expect, test } from 'vitest';
 
 import calc_pop_factors from './calcPopFactors.js';
 import calc from './calcSafetyMonetary.js';
+import {
+  MongoClient,
+  ObjectId
+} from 'mongodb';
+import dotenv from 'dotenv';
+
+import calcReach from './calcReach.js';
+import calcTracts from './calcTracts.js';
+
+dotenv.config();
 
 const require = createRequire(import.meta.url);
 const life_expectancy = require('../../data/life_expectancy.json');
 
-test('safety output matches R script', () => {
+test('safety output matches R script', async () => {
+
+  const project_id = '68f970810a24061d521af568';
+
+  const client = new MongoClient(process.env.MONGO_URI);
+
+  const project = await client
+    .db('bctool')
+    .collection('projects')
+    .findOne({
+      '_id': new ObjectId(project_id),
+    });
+
+  const {
+    segments,
+    intersections,
+    userSegments,
+    userIntersections,
+  } = project.scope;
+
+  const selectedWayIds = segments.map(el => el.properties.edge_uid);
+  const selectedIntersectionIds = intersections.map(el => el.properties.node_id);
+
+  const reach = await calcReach(
+    selectedWayIds,
+    selectedIntersectionIds,
+    userSegments,
+    userIntersections,
+  );
+
+  const tracts = await calcTracts(userSegments, userIntersections, reach);
 
   // inputs
   const project_time_frame = 20; // project details
@@ -17,32 +57,8 @@ test('safety output matches R script', () => {
   const bike_fatalities = 0;
   const walk_fatalities = 0;
 
-  // hardcoded for now, need to get a list of GEO_IDs
-  // using a buffer and a geospatial query
-  // bike uses a 1.00 mile buffer
-  // walk uses a 0.25 mile buffer
-  const bike_tracts = [
-    "06089010300",
-    "06089010900",
-    "06089011300",
-    "06089010200",
-    "06089010703",
-    "06089010803",
-    "06089011401",
-    "06089011209",
-    "06089010804",
-    "06089010805",
-    "06089011403",
-  ];
-
-  const walk_tracts = [
-    "06089010300",
-    "06089011300",
-    "06089010803",
-  ];
-
-  const bike_pop_factors = calc_pop_factors(bike_tracts);
-  const walk_pop_factors = calc_pop_factors(walk_tracts);
+  const bike_pop_factors = calc_pop_factors(tracts.bike);
+  const walk_pop_factors = calc_pop_factors(tracts.walk);
 
   const result = calc(
     project_time_frame,
@@ -56,4 +72,4 @@ test('safety output matches R script', () => {
   );
 
   expect(result).toBe(1318136.4859324922);
-});
+}, 20000);

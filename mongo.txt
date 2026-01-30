@@ -1,11 +1,11 @@
 # backup
-docker compose exec -T db sh -c 'mongodump --archive --username bctool --password phev' > 2022_08_01_bctool.dump
+docker compose exec -T db sh -c 'mongodump --archive --gzip --username bctool --password phev' > 2026_01_28_bctool.dump
 
 # backup projects only
 docker compose exec -T db sh -c 'mongodump --archive --db=bctool --collection=projects --authenticationDatabase=admin --username=bctool --password=phev' > /home/matthew/2024_03_26_bctool_projects.dump
 
 # restore
-docker compose exec -T db sh -c 'mongorestore --archive --username bctool --password phev' < 2022_08_01_bctool.dump
+docker compose exec -T db sh -c 'mongorestore --archive --gzip --username bctool --password phev' < 2026_01_28_mongodb.dump.gz
 
 # restore projects only
 docker compose exec -T db sh -c 'mongorestore --archive --db=bctool --collection=projects --authenticationDatabase=admin --username bctool --password phev' < 2024_03_26_bctool_projects.dump
@@ -21,3 +21,5 @@ db.ways.createIndex({'properties.target': 1});
 
 db.intersections.createIndex({"geometry": "2dsphere"});
 db.intersections.createIndex({'properties.node_id': 1}, {unique: true});
+
+
