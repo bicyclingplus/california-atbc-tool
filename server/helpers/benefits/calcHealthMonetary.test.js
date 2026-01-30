@@ -2,7 +2,7 @@ import { createRequire } from "module";
 import { expect, test } from 'vitest';
 
 import calc_pop_factors from './calcPopFactors.js';
-import calc from './calcHealthMonetary.js';
+import { _calc } from './calcHealthMonetary.js';
 
 import {
   MongoClient,
@@ -61,7 +61,7 @@ test('health output matches R script', async () => {
   const bike_pop_factors = calc_pop_factors(tracts.bike);
   const walk_pop_factors = calc_pop_factors(tracts.walk);
 
-  const result = calc(
+  const result = _calc(
     project_time_frame,
     life_expectancy[project_county],
     daily_bmt,

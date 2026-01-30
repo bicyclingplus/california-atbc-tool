@@ -26,7 +26,7 @@ const _calcPed = (travel, transit) => {
   ));
 };
 
-const _calc = (travel, time_frame, transit) => {
+const _calc = (travel, time_frame, transit, discount=true) => {
 
   const benefits = {};
 
@@ -38,8 +38,10 @@ const _calc = (travel, time_frame, transit) => {
       _calcPed(travel.pedestrian.carShift[k], transit)
     );
 
+    const benefit = combined * 365;
+
     // annualize and calc benefits over project time frame
-    benefits[k] = calcDiscount(combined * 365, time_frame);
+    benefits[k] = discount ? calcDiscount(benefit, time_frame) : benefit;
   }
 
   return benefits;
@@ -51,6 +53,7 @@ const calcVMTReductions = (travel, time_frame, transit) => {
     miles: _calc(travel.miles, time_frame, transit),
     capita: _calc(travel.capita, time_frame, transit),
     jobs: _calc(travel.jobs, time_frame, transit),
+    raw: _calc(travel.miles, time_frame, transit, false),
   };
 };
 

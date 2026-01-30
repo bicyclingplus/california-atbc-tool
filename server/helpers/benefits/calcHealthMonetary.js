@@ -4,6 +4,7 @@ import {
   VALUE_STATISTICAL_LIFE,
   AVG_BIKE_DIST,
   AVG_WALK_DIST,
+  ESTIMATES
 } from './constants.js';
 
 import calc_pop_factors from './calcPopFactors.js';
@@ -56,7 +57,7 @@ const _calc_DALYs_recovered = (
 // DALY Disability Adjusted Life Year
 // PAF Population Attributable Fraction
 // MMET Marginal Metabolic Equivalent of Task
-const calc = (
+const _calc = (
   project_time_frame,
   county_life_expectancy,
   daily_bmt,
@@ -130,6 +131,42 @@ const calc = (
   };
 };
 
+const calc = (
+  project_time_frame,
+  county_life_expectancy,
+  benefits,
+  bike_pop_factors,
+  walk_pop_factors,
+) => {
+
+  const monetary = {
+    bike: {},
+    pedestrian: {},
+    total: {},
+  }
+
+  for(const estimate of ESTIMATES) {
+
+    const result = _calc(
+      project_time_frame,
+      county_life_expectancy,
+      benefits.travel.miles.bike.total[estimate],
+      benefits.travel.miles.pedestrian.total[estimate],
+      benefits.health.raw.bike[estimate],
+      benefits.health.raw.pedestrian[estimate],
+      bike_pop_factors,
+      walk_pop_factors,
+    )
+
+    monetary.bike[estimate] = result.bicycling;
+    monetary.pedestrian[estimate] = result.walking;
+    monetary.total[estimate] = result.total;
+  }
+
+  return monetary;
+};
+
 export {
   calc as default,
+  _calc
 };

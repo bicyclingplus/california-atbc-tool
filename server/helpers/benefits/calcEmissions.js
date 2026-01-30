@@ -98,6 +98,7 @@ const calcEmissions = (county, year, vmtReductions) => {
     miles: _calc(county, year, vmtReductions.miles),
     capita: _calc(county, year, vmtReductions.capita),
     jobs: _calc(county, year, vmtReductions.jobs),
+    raw: _calc(county, year, vmtReductions.raw),
   };
 };
 

@@ -24,26 +24,26 @@ const _calcMMET = (travel, estimate, speed, mmet) => {
   return ((combined_travel * 365) / speed[estimate]) * mmet[estimate];
 };
 
-const _calc = (travel, time_frame) => {
+const _calc = (travel, time_frame, discount=true) => {
 
   let benefits = {};
 
   benefits.pedestrian = {};
 
   for(let k of ESTIMATES) {
-    benefits.pedestrian[k] = calcDiscount(
-      _calcMMET(travel.pedestrian, k, WALK_SPEED, WALK_MMET),
-      time_frame
-    );
+
+    const mmet = _calcMMET(travel.pedestrian, k, WALK_SPEED, WALK_MMET);
+
+    benefits.pedestrian[k] = discount ? calcDiscount(mmet, time_frame) : mmet;
   }
 
   benefits.bike = {};
 
   for(let k of ESTIMATES) {
-    benefits.bike[k] = calcDiscount(
-      _calcMMET(travel.bike, k, BIKE_SPEED, BIKE_MMET),
-      time_frame
-    );
+
+    const mmet = _calcMMET(travel.bike, k, BIKE_SPEED, BIKE_MMET);
+
+    benefits.bike[k] = discount ? calcDiscount(mmet, time_frame) : mmet;
   }
 
   benefits.total = {};
@@ -64,6 +64,7 @@ const calcHealth = (travel, time_frame) => {
     miles: _calc(travel.miles, time_frame),
     capita: _calc(travel.capita, time_frame),
     jobs: _calc(travel.jobs, time_frame),
+    raw: _calc(travel.miles, time_frame, false),
   }
 }
 

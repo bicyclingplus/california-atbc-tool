@@ -10,7 +10,7 @@ const bike_ped_burden = require('../../data/bike_ped_burden.json');
 const bike_burden = bike_ped_burden['Cyclist road injuries'];
 const walk_burden = bike_ped_burden['Pedestrian road injuries'];
 
-const calc = (
+const _calc = (
   project_time_frame,
   county_life_expectancy,
   bike_injuries,
@@ -70,4 +70,23 @@ const calc = (
 
 };
 
-export default calc;
+const calc = (
+  project_time_frame,
+  county_life_expectancy,
+  benefits,
+  bike_pop_factors,
+  walk_pop_factors,
+) => {
+  const monetary = {}
+
+  // YOU LEFT OFF HERE
+  // NEED TO FIGURE OUT HOW TO GET UNDISCOUNTED SAFETY BENEFITS
+  // TO PASS INTO THE MONETARY CALCULATION
+
+  return monetary;
+};
+
+export {
+  calc as default,
+  _calc,
+}

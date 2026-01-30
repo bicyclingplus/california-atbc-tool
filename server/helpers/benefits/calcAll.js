@@ -1,6 +1,7 @@
 import calcReach from './calcReach.js';
 import calcDemand from './calcDemand.js';
 import calcBenefits from './calcBenefits.js';
+import calcMonetary from './calcMonetary.js';
 
 const calcAll = async (
   selectedWayIds,
@@ -59,10 +60,21 @@ const calcAll = async (
     safety,
   );
 
+  const monetary = await calcMonetary(
+    year,
+    timeframe,
+    county,
+    userWays,
+    userIntersections,
+    reach,
+    benefits,
+  );
+
   return {
     reach,
     existingTravel,
     benefits,
+    monetary,
   }
 
 };
