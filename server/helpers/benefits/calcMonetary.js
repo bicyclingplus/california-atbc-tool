@@ -34,6 +34,7 @@ const calcMonetary = async (
   const bike_pop_factors = calcPopFactors(tracts.bike);
   const walk_pop_factors = calcPopFactors(tracts.walk);
 
+  // uses travel and health benefits as inputs
   monetary.health = calcHealthMonetary(
     timeframe,
     county_life_expectancy,
@@ -45,12 +46,12 @@ const calcMonetary = async (
   monetary.safety = calcSafetyMonetary(
     timeframe,
     county_life_expectancy,
-    benefits.safety,
+    benefits.safetyQuantitative,
     bike_pop_factors,
     walk_pop_factors,
   );
 
-  // console.log(util.inspect(monetary.safety, { depth: null, colors: true }));
+  console.log(util.inspect(monetary, { showHidden: true, depth: null, colors: true }));
 
   return monetary;
 };

@@ -147,13 +147,21 @@ const calc = (
 
   for(const estimate of ESTIMATES) {
 
+    const {
+      miles: travelBenefits,
+    } = benefits.travel;
+
+    const {
+      raw: healthBenefits,
+    } = benefits.health;
+
     const result = _calc(
       project_time_frame,
       county_life_expectancy,
-      benefits.travel.miles.bike.total[estimate],
-      benefits.travel.miles.pedestrian.total[estimate],
-      benefits.health.raw.bike[estimate],
-      benefits.health.raw.pedestrian[estimate],
+      travelBenefits.bike.total[estimate],
+      travelBenefits.pedestrian.total[estimate],
+      healthBenefits.bike[estimate],
+      healthBenefits.pedestrian[estimate],
       bike_pop_factors,
       walk_pop_factors,
     )

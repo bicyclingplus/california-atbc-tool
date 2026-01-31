@@ -60,21 +60,21 @@ const calcAll = async (
     safety,
   );
 
-  const monetary = await calcMonetary(
-    year,
-    timeframe,
-    county,
-    userWays,
-    userIntersections,
-    reach,
-    benefits,
-  );
+  // leave off for now, but it is integrated end to end
+  // benefits.monetary = await calcMonetary(
+  //   year,
+  //   timeframe,
+  //   county,
+  //   userWays,
+  //   userIntersections,
+  //   reach,
+  //   benefits,
+  // );
 
   return {
     reach,
     existingTravel,
     benefits,
-    monetary,
   }
 
 };

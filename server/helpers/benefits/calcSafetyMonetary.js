@@ -3,6 +3,7 @@ import { createRequire } from "module";
 import {
   DISCOUNT_RATE,
   VALUE_STATISTICAL_LIFE,
+  ESTIMATES,
 } from './constants.js';
 
 const require = createRequire(import.meta.url);
@@ -79,9 +80,29 @@ const calc = (
 ) => {
   const monetary = {}
 
-  // YOU LEFT OFF HERE
-  // NEED TO FIGURE OUT HOW TO GET UNDISCOUNTED SAFETY BENEFITS
-  // TO PASS INTO THE MONETARY CALCULATION
+  for(const estimate of ESTIMATES) {
+
+    const {
+      bicycling,
+      walking,
+    } = benefits.raw.change;
+
+    const bike_injuries = bicycling.injury[estimate];
+    const walk_injuries = walking.injury[estimate];
+    const bike_fatalities = bicycling.death[estimate];
+    const walk_fatalities = walking.death[estimate];
+
+    monetary[estimate] = _calc(
+      project_time_frame,
+      county_life_expectancy,
+      bike_injuries,
+      walk_injuries,
+      bike_fatalities,
+      walk_fatalities,
+      bike_pop_factors,
+      walk_pop_factors,
+    );
+  }
 
   return monetary;
 };

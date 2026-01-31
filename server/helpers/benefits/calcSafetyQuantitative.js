@@ -43,7 +43,9 @@ const _calc = (
   infrastructure,
   project_time_frame,
   project_length,
-  num_intersections) => {
+  num_intersections,
+  discount=true
+) => {
 
   // init objects
   // existing crashes split by m, o, j
@@ -178,7 +180,12 @@ const _calc = (
   for(let m of MODES) {
     for(let o of OUTCOMES) {
       for(let k of ESTIMATES) {
-        projected[m][o][k] = calcDiscount(change[m][o][k], project_time_frame);
+        if(discount) {
+          projected[m][o][k] = calcDiscount(change[m][o][k], project_time_frame);
+        }
+        else {
+          projected[m][o][k] = change[m][o][k];
+        }
       }
     }
   }
@@ -325,6 +332,18 @@ const calcSafetyQuantitative = (
       num_intersections
     );
   }
+
+  benefits.raw = _calc(
+    ECCcmoj.safety,
+    EVcmj.safety,
+    PVcmjk.safety,
+    UI.safety,
+    infrastructure,
+    project_time_frame,
+    project_length,
+    num_intersections,
+    false
+  );
 
   return benefits;
 }

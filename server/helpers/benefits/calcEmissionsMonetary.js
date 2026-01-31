@@ -72,14 +72,19 @@ const _calc_GHG_monetary = (
 const calc = (
   project_year,
   project_time_frame,
-  emissions,
+  benefits,
 ) => {
 
   const air_quality = {};
   const ghg = {}
 
-  const { "PM2.5": pm25_reduction_grams } = emissions.raw.reductions;
-  const { equivalent: co2_reduction_grams } = emissions.raw;
+  const {
+    "PM2.5": pm25_reduction_grams,
+  } = benefits.raw.reductions;
+
+  const {
+    equivalent: co2_reduction_grams
+  } = benefits.raw;
 
   for(const estimate of ESTIMATES) {
     air_quality[estimate] = _calc_air_quality_monetary(
