@@ -2,7 +2,7 @@ import json
 import os
 import csv
 
-outfilename = 'travel.csv'
+outfilename = 'travel_volume.csv'
 outfilepath = os.path.join('output', outfilename)
 
 infilepath = '../../server/data/travel_volume.json'

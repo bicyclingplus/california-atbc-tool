@@ -1,16 +1,14 @@
 import json
 import os
+import csv
 
-data = {
-    "Ischemic heart disease": 0.9764,
-    "Hypertensive heart disease": 0.9764,
-    "Stroke": 0.9697,
-    "Alzheimer's disease and other dementias": 0.9666,
-    "Diabetes mellitus": 0.9666,
-    "Depressive disorders": 0.9695,
-    "Colon and rectum cancer": 0.9940,
-    "Breast cancer": 0.9813,
-    "Tracheal, bronchus, and lung cancer": 0.9771,
-}
+data = {}
+
+with open(os.path.join('input', 'ITHIM_RR_TABLE.csv')) as infile:
+    reader = csv.reader(infile)
+    headers = next(reader)
+    for r in reader:
+        rr = float(r[headers.index('RR_per_unit')])
+        data[r[headers.index('cause_name')]] = rr
 
 json.dump(data, open(os.path.join('output', 'relative_risk.json'), 'w'))

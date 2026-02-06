@@ -2,7 +2,7 @@ import json
 import os
 import csv
 
-outfilename = 'elements.csv'
+outfilename = 'infrastructure_elements.csv'
 outfilepath = os.path.join('output', outfilename)
 
 infilepath = '../../server/data/infrastructure.json'
@@ -16,9 +16,10 @@ for category in elements['categories']:
     for item in category['items']:
 
         output.append((
-            item['shortname'],
-            category['label'],
             item['label'],
+            category['shortname'],
+            item['shortname'],
+            item['description'],
             item['units'],
             item['calc_units'],
         ))
@@ -30,7 +31,8 @@ with open(outfilepath, 'w') as outfile:
     writer.writerow([
         'element',
         'category',
-        'label',
+        'shortname',
+        'description',
         'units',
         'calc_units',
     ])
