@@ -5,7 +5,7 @@ import shapefile
 
 # data source:
 # https://catalog.data.gov/dataset/tiger-line-shapefile-2021-state-california-census-tracts
-# tl_2021_06_tract.zip
+# https://www2.census.gov/geo/tiger/TIGER2021/TRACT/tl_2021_06_tract.zip
 
 population = json.load(open(os.path.join(
     '..',
