@@ -8,11 +8,34 @@ import c from './helpers/collector.js';
 import calcProjectLength from './helpers/benefits/calcProjectLength.js';
 import calcDemand from './helpers/benefits/calcDemand.js';
 import calcTravel, { _calc } from './helpers/benefits/calcTravel.js';
+import calcSafetyQuantitative from './helpers/benefits/calcSafetyQuantitative.js';
+import {
+  MODES,
+  OUTCOMES,
+  LOCATION_TYPES,
+  ESTIMATES,
+  COLUMNS,
+} from './helpers/benefits/constants.js';
 import 'dotenv/config';
 
 c.off(); // disable debugging
 const client = new MongoClient(process.env.MONGO_URI);
 const db = client.db('bctool');
+
+const emptySafety = {};
+
+for(let mode of MODES) {
+  emptySafety[mode] = {};
+
+  for(let item of [...OUTCOMES, 'years']) {
+
+    emptySafety[mode][item] = {}
+
+    for(let location_type of LOCATION_TYPES) {
+      emptySafety[mode][item][location_type] = 0;
+    }
+  }
+}
 
 const MIN_YEAR = 2019;
 const MAX_YEAR = 2023;
@@ -107,7 +130,7 @@ const load_project_data = () => {
 const projectData = load_project_data();
 
 // headers
-const output = [[
+const travelOutput = [[
   'project_id',
   'project_year',
 
@@ -136,6 +159,44 @@ const output = [[
   'ped_miles_traveled_projected_upper',
 ]];
 
+const safetyHeaders = [
+  'project_id',
+  'project_year',
+];
+
+for(let column of COLUMNS) {
+  for(let mode of MODES) {
+    for(let outcome of OUTCOMES) {
+      safetyHeaders.push([
+        column,
+        'before',
+        mode,
+        outcome,
+      ].join('_'))
+    }
+  }
+}
+
+for(let column of COLUMNS) {
+  for(let calcType of ['after', 'change']) {
+    for(let mode of MODES) {
+      for(let outcome of OUTCOMES) {
+        for(let estimate of ESTIMATES) {
+          safetyHeaders.push([
+            column,
+            calcType,
+            mode,
+            outcome,
+            estimate,
+          ].join('_'))
+        }
+      }
+    }
+  }
+}
+
+const safetyOutput = [safetyHeaders];
+
 for(const projectId of tqdm(Object.keys(projectData))) {
   const project = projectData[projectId];
 
@@ -158,12 +219,15 @@ for(const projectId of tqdm(Object.keys(projectData))) {
   // 52933049
   // so it's either drop this project, or ignore the invalid segment
 
+  // const segments = (await lookup_segments(project.segments))
+  //   .filter(el => el)
+  //   .map(el => {
+  //     el.properties.length = el.properties.length * 5280;
+  //     return el;
+  //   });
+
   const segments = (await lookup_segments(project.segments))
-    .filter(el => el)
-    .map(el => {
-      el.properties.length = el.properties.length * 5280;
-      return el;
-    });
+    .filter(el => el);
 
   const intersections = await lookup_intersections(project.intersections);
 
@@ -197,7 +261,17 @@ for(const projectId of tqdm(Object.keys(projectData))) {
       numIntersections
     );
 
-    output.push([
+    const safetyQuantitative = calcSafetyQuantitative(
+      segments,
+      intersections,
+      project.infrastructure,
+      projectLength,
+      numIntersections,
+      emptySafety, // not provided, passing empty object
+      20, // not provided, assuming the default
+    );
+
+    travelOutput.push([
       projectId,
       projectYear,
 
@@ -224,11 +298,47 @@ for(const projectId of tqdm(Object.keys(projectData))) {
       projectedTravel.miles.pedestrian.projected.lower,
       projectedTravel.miles.pedestrian.projected.mean,
       projectedTravel.miles.pedestrian.projected.upper,
-    ])
+    ]);
+
+    const currentSafetyOutput = [
+      projectId,
+      projectYear,
+    ];
+
+    // safety, capita, jobs
+    // change, before, after
+    // mode
+    // outcome - before
+    // estimate - after, change
+
+    for(let column of COLUMNS) {
+      for(let mode of MODES) {
+        for(let outcome of OUTCOMES) {
+          currentSafetyOutput.push(safetyQuantitative[column]['before'][mode][outcome])
+        }
+      }
+    }
+
+    for(let column of COLUMNS) {
+      for(let calcType of ['after', 'change']) {
+        for(let mode of MODES) {
+          for(let outcome of OUTCOMES) {
+            for(let estimate of ESTIMATES) {
+              currentSafetyOutput.push(safetyQuantitative[column][calcType][mode][outcome][estimate])
+            }
+          }
+        }
+      }
+    }
+
+    safetyOutput.push(currentSafetyOutput);
   }
 }
 
-const outputPath = path.join(output_path, 'network_v4_projects_travel.csv');
-fs.writeFileSync(outputPath, stringify(output));
+const travelOutputPath = path.join(output_path, 'network_v4_projects_travel.csv');
+fs.writeFileSync(travelOutputPath, stringify(travelOutput));
+
+const safetyOutputPath = path.join(output_path, 'network_v4_projects_safety.csv');
+fs.writeFileSync(safetyOutputPath, stringify(safetyOutput));
 
 await client.close();

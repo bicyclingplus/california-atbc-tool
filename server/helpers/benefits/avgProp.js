@@ -8,7 +8,19 @@ const avgProp = (items, property, subProperty=null) => {
     let value = item.properties[property];
 
     if(subProperty) {
-      value = item.properties[property][subProperty];
+      try {
+        value = item.properties[property][subProperty];
+      }
+      catch (e) {
+        if(e.name === 'TypeError') {
+          console.log(item)
+          console.log(property)
+          console.log(subProperty)
+          return;
+        }
+
+        throw e;
+      }
     }
 
     if(value !== null) {

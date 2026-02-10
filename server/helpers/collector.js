@@ -15,6 +15,8 @@ class Collector {
 
 	addPrepends(ns1, ns2, prepends) {
 
+		if(!this.enabled) return;
+
 		if(!(ns1 in this.prepends) || !(ns2 in this.prepends[ns1])) {
 			console.log(`${ns1}_${ns2} has no prepends to add on to!`);
 			return;
@@ -27,6 +29,8 @@ class Collector {
 	}
 
 	changePrepend(ns1, ns2, idx, newVal) {
+
+		if(!this.enabled) return;
 
 		if(!(ns1 in this.prepends) ||
 			!(ns2 in this.prepends[ns1]) ||
