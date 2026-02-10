@@ -1,0 +1,22 @@
+todo
+
+refactor safetyquantitative a bit
+
+perhaps _calc function can have each step factored out to separate function calls
+to make the top level file simpler and more readable
+
+update debug/report files to match refactors
+remove unused Ljvf from debug and cleanup file
+
+statuses/notifcation to user for map features with missing data (all, some)
+
+done
+
+handle null in existing volume calculation
+handle null in demand calculation
+handle null in new ECC calculation
+
+some work can be copied from: https://git.phev.ucdavis.edu/matthew/caltrans-bc-tool/-/commit/36c8646c31dc528779b5543c4ef3e42d18be3e48
+
+new ECC calc can be moved out to separate file
+
