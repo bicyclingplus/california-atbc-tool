@@ -145,15 +145,15 @@ const calc = (
     total: {},
   }
 
+  const {
+    miles: travelBenefits,
+  } = benefits.travel;
+
+  const {
+    raw: healthBenefits,
+  } = benefits.health;
+
   for(const estimate of ESTIMATES) {
-
-    const {
-      miles: travelBenefits,
-    } = benefits.travel;
-
-    const {
-      raw: healthBenefits,
-    } = benefits.health;
 
     const result = _calc(
       project_time_frame,
