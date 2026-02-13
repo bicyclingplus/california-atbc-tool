@@ -22,4 +22,7 @@ db.ways.createIndex({'properties.target': 1});
 db.intersections.createIndex({"geometry": "2dsphere"});
 db.intersections.createIndex({'properties.node_id': 1}, {unique: true});
 
+db.tracts.createIndex({"geometry": "2dsphere"});
+db.tracts.createIndex({'properties.GEOID': 1}, {unique: true});
+
 
