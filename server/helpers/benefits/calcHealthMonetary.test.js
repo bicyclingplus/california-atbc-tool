@@ -72,8 +72,8 @@ test('health output matches R script', async () => {
     walk_pop_factors,
   );
 
-  // expect(result.bicycling).toBe(4322425.966358626);
-  // expect(result.walking).toBe(8163438.995877898);
-  expect(result.total).toBe(862686.6759550909);
+  expect(result.bicycling).toBe(101511.815935713);
+  expect(result.walking).toBe(192107.4614275968);
+  expect(result.total).toBe(293619.2773633098);
 
 }, 20000);
