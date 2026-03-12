@@ -11,13 +11,13 @@ import {
 } from './constants.js';
 
 import calc_pop_factors from './calcPopFactors.js';
+import calcDiscount from './calcDiscount.js';
 
 const require = createRequire(import.meta.url);
 const relative_risk = require('../../data/relative_risk.json');
 const disease_burden = require('../../data/disease_burden.json');
 
 const _calc_DALYs_recovered = (
-  years,
   pop_factors,
   pop,
   base_PAF,
@@ -45,7 +45,7 @@ const _calc_DALYs_recovered = (
 
         // I'm guessing incidence is per 100,000 people
         const baseline = (incidence / 1e5) * pop_factor * pop * PROP_INSUF_ACTIVE;
-        const avoided = baseline * (base_PAF[cause] - mode_PAF[cause]) * years;
+        const avoided = baseline * (base_PAF[cause] - mode_PAF[cause]);
         const recovered = avoided * daly_per_case;
 
         DALYs_recovered[cause][age][sex] = recovered;
@@ -80,8 +80,8 @@ const _calc = (
   const walk_pop = daily_wmt / AVG_WALK_DIST;
 
   // project weekly mmet per capita by mode
-  let bike_mmet_cap = (bike_mmet / (project_time_frame * 365 * bike_pop)) * 7;
-  let walk_mmet_cap = (walk_mmet / (project_time_frame * 365 * walk_pop)) * 7;
+  let bike_mmet_cap = (bike_mmet / (365 * bike_pop)) * 7;
+  let walk_mmet_cap = (walk_mmet / (365 * walk_pop)) * 7;
 
   bike_mmet_cap = Math.min(MMET_BASE + bike_mmet_cap, MMET_CAP);
   walk_mmet_cap = Math.min(MMET_BASE + walk_mmet_cap, MMET_CAP);
@@ -105,7 +105,6 @@ const _calc = (
 
   // DALYs recovered
   const bike_DALYs_recovered = _calc_DALYs_recovered(
-    project_time_frame,
     bike_pop_factors,
     bike_pop,
     base_PAF,
@@ -113,7 +112,6 @@ const _calc = (
   );
 
   const walk_DALYs_recovered = _calc_DALYs_recovered(
-    project_time_frame,
     walk_pop_factors,
     walk_pop,
     base_PAF,
@@ -142,9 +140,9 @@ const _calc = (
   const project_DALY_benefit = bike_DALY_benefit + walk_DALY_benefit;
 
   return {
-    bicycling: bike_DALY_benefit,
-    walking: walk_DALY_benefit,
-    total: project_DALY_benefit,
+    bicycling: calcDiscount(bike_DALY_benefit, project_time_frame),
+    walking: calcDiscount(walk_DALY_benefit, project_time_frame),
+    total: calcDiscount(project_DALY_benefit, project_time_frame),
   };
 };
 

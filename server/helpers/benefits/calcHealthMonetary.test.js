@@ -51,7 +51,7 @@ test('health output matches R script', async () => {
   const tracts = await calcTracts(userSegments, userIntersections, reach);
 
   // inputs
-  const project_time_frame = 1; // project details
+  const project_time_frame = 20; // project details
   const project_county = "Shasta";
   const daily_bmt = 434; // tool output
   const daily_wmt = 265; // tool output
@@ -72,8 +72,8 @@ test('health output matches R script', async () => {
     walk_pop_factors,
   );
 
-  expect(result.bicycling).toBe(101511.815935713);
-  expect(result.walking).toBe(192107.4614275968);
-  expect(result.total).toBe(293619.2773633098);
+  expect(result.bicycling).toBe(3423475.2771967226);
+  expect(result.walking).toBe(6478452.690438762);
+  expect(result.total).toBe(9901927.967635483);
 
 }, 20000);

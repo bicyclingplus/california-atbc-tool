@@ -6,7 +6,11 @@ const calcDiscount = (annual_benefit, time_frame) => {
 
 	for(let i = 1; i <= time_frame; i++) {
 
-		total_benefit += annual_benefit / Math.pow(1 + DISCOUNT_RATE, i - 1);
+		const current_benefit = annual_benefit / Math.pow(1 + DISCOUNT_RATE, i - 1);
+
+		// console.log(`${i}: ${current_benefit}`);
+
+		total_benefit += current_benefit;
 	}
 
 	return total_benefit;
