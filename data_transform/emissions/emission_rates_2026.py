@@ -14,7 +14,7 @@ emissions_types = [
     "SOx",
 ]
 
-infilename = 'CA_County_EMFAC.csv'
+infilename = 'EMFAC_BCtool_format.csv'
 outfilename = 'emission_rates.json'
 emissions = {}
 
@@ -27,6 +27,7 @@ with open(os.path.join('input', infilename)) as infile:
     county_idx = headers.index('Region')
     year_idx = headers.index('Calendar Year')
     vehicle_type_idx = headers.index('Fuel')
+    vehicle_cat_idx = headers.index('Vehicle Category')
 
     emissions_idx = [headers.index("{}_RUNEX".format(e))
         for e in emissions_types]
@@ -36,9 +37,16 @@ with open(os.path.join('input', infilename)) as infile:
         county = r[county_idx]
         year = r[year_idx]
         vehicle_type = r[vehicle_type_idx]
+        vehicle_cat = r[vehicle_cat_idx]
+
+        if vehicle_cat != "LDA":
+            continue
 
         # skip, always zero
         if vehicle_type == 'Electricity':
+            continue
+
+        if vehicle_type == 'Fuel Cell Electric Vehicle':
             continue
 
         if county not in emissions:
@@ -62,16 +70,12 @@ print(f"counties: {len(emissions.keys())}")
 num_years = None
 
 for county in emissions:
-
-    curr = len(emissions[county].keys())
-
     if num_years is None:
-        num_years = curr
-    elif num_years != curr:
-        print(f"YEAR MISMATCH {county} {curr}")
+        num_years = len(emissions[county].keys())
+    elif num_years != len(emissions[county].keys()):
+        print(f"MISMATCH {county} {len(emissions[county].keys())}")
 
 print(f"years: {num_years}")
-
 
 num_types = None
 
@@ -87,6 +91,7 @@ for county in emissions:
             print(f"TYPE MISMATCH {county} {year} {curr}")
 
 print(f"types: {num_types}")
+
 
 num_emissions = None
 
