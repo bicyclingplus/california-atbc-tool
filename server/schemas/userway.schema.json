@@ -18,16 +18,12 @@
 				"id": {
 					"type": "string"
 				},
-				"length": {
-					"type": "number"
-				},
 				"one_way_ca": {
 					"type": "boolean"
 				}
 			},
 			"required": [
 				"id",
-				"length",
 				"one_way_ca"
 			]
 		}
