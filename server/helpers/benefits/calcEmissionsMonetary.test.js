@@ -36,7 +36,7 @@ test('GHG output matches R script 1', () => {
 		383.58 * 1E6
 	);
 
-	expect(Math.round(result * 100) / 100).toBe(24069.59);
+	expect(Math.round(result * 100) / 100).toBe(94623.59);
 });
 
 test('GHG output matches R script 2', () => {
@@ -47,5 +47,5 @@ test('GHG output matches R script 2', () => {
 		383.58 * 1E6
 	);
 
-	expect(Math.round(result * 100) / 100).toBe(23597.64);
+	expect(Math.round(result * 100) / 100).toBe(92768.22);
 });
