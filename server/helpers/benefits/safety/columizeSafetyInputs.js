@@ -11,12 +11,6 @@ const _divideOrNull = (n, d) => {
 
 const columizeSafetyInputs = (inputs, ways, intersections) => {
 
-	// grab avg pop/jobs for ways/intersection
-	const avgWayPop = avgProp(ways, 'population');
-	const avgWayJobs = avgProp(ways, 'jobs');
-	const avgIntPop = avgProp(intersections, 'population');
-	const avgIntJobs = avgProp(intersections, 'jobs');
-
 	const capita = {};
 	const jobs = {};
 
@@ -32,11 +26,11 @@ const columizeSafetyInputs = (inputs, ways, intersections) => {
 			capita[m][o] = {};
 			jobs[m][o] = {};
 
-			capita[m][o].roadway = _divideOrNull(inputs[m][o].roadway, avgWayPop);
-			capita[m][o].intersection = _divideOrNull(inputs[m][o].intersection, avgIntPop);
+			capita[m][o].roadway = 0
+			capita[m][o].intersection = 0
 
-			jobs[m][o].roadway = _divideOrNull(inputs[m][o].roadway, avgWayJobs)
-			jobs[m][o].intersection = _divideOrNull(inputs[m][o].intersection, avgIntJobs)
+			jobs[m][o].roadway = 0
+			jobs[m][o].intersection = 0
 		}
 	}
 

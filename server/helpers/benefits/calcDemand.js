@@ -105,9 +105,7 @@ const _calcPedDemand = async (
     // Grab the averages
     // null if all were null
 
-    const avgDemand = avgProp(selectedIntersections, 'ped_demand', projectYear);
-    const avgPop = avgProp(selectedIntersections, 'population');
-    const avgJobs = avgProp(selectedIntersections, 'jobs');
+    const avgDemand = avgProp(selectedIntersections, 'pred_ped_vol', projectYear);
 
     // CALCULATE PEDESTRIAN DEMAND FOR USER SELECTED INTERSECTIONS
     // each selected intersection has some prediction of pedestrian demand,
@@ -117,23 +115,18 @@ const _calcPedDemand = async (
       // each could be null or number
       // number could be zero
       const {
-        ped_demand,
-        population,
-        jobs,
+        pred_ped_vol,
       } = intersection.properties;
 
       // fall back to averages if null
       let d;
 
       if(projectYear) {
-        d = ped_demand[projectYear] !== null ? ped_demand[projectYear] : avgDemand;
+        d = pred_ped_vol[projectYear] !== null ? pred_ped_vol[projectYear] : avgDemand;
       }
       else {
-        d = ped_demand !== null ? ped_demand : avgDemand;
+        d = pred_ped_vol;
       }
-
-      const p = population !== null ? population : avgPop;
-      const j = jobs !== null ? jobs : avgJobs;
 
       const adjacentSelectedWaysAvgLength = await _adj_selected_segments_avg_length(
         intersection, selectedWays);
@@ -145,29 +138,20 @@ const _calcPedDemand = async (
       if(d !== null) {
         existingTravel.demand.pedestrian.mean += d;
         existingTravel.miles.pedestrian.mean += travel;
-
-        // no div by zero
-        if(p !== null && p !== 0) {
-          existingTravel.capita.pedestrian.mean += travel / p;
-        }
-
-        if(j !== null && j !== 0) {
-          existingTravel.jobs.pedestrian.mean += travel / j;
-        }
       }
 
       c.put('travel', 'intersections', [
         'network',
-        ped_demand,
-        population,
-        jobs,
+        pred_ped_vol,
+        'removed',
+        'removed',
         d,
-        p,
-        j,
+        'removed',
+        'removed',
         1,
         d,
-        d !== null && p !== null && p !== 0 ? d / p : null,
-        d !== null && j !== null && j !== 0 ? d / j : null,
+        'removed',
+        'removed',
       ]);
     }
 
@@ -192,16 +176,7 @@ const _calcPedDemand = async (
       const travel = avgDemand * (length / FEET_PER_MI); // mi
 
       if(avgDemand !== null) {
-
         existingTravel.miles.pedestrian.mean += travel;
-
-        if(avgPop !== null && avgPop !== 0) {
-          existingTravel.capita.pedestrian.mean += travel / avgPop;
-        }
-
-        if(avgJobs !== null && avgJobs !== 0) {
-          existingTravel.capita.pedestrian.mean += travel / avgJobs;
-        }
       }
     }
 
@@ -222,8 +197,8 @@ const _calcPedDemand = async (
     c.put('travel', 'existing', [
       'walking',
       existingTravel.miles.pedestrian.mean,
-      existingTravel.capita.pedestrian.mean,
-      existingTravel.jobs.pedestrian.mean,
+      'removed',
+      'removed',
     ])
 
     // then the pedestrian demand is weighted by the project length and
@@ -232,21 +207,14 @@ const _calcPedDemand = async (
     const numIntersections = selectedIntersections.length + userIntersections.length;
 
     if(numIntersections > 0) {
-
       existingTravel.miles.pedestrian.mean = _weightPed(
         projectLengthMiles, existingTravel.miles.pedestrian.mean);
-
-      existingTravel.capita.pedestrian.mean = _weightPed(
-        projectLengthMiles, existingTravel.capita.pedestrian.mean);
-
-      existingTravel.jobs.pedestrian.mean = _weightPed(
-        projectLengthMiles, existingTravel.jobs.pedestrian.mean);
     }
 
     c.append('travel', 'existing', [
       existingTravel.miles.pedestrian.mean,
-      existingTravel.capita.pedestrian.mean,
-      existingTravel.jobs.pedestrian.mean,
+      'removed',,
+      'removed',
     ])
 
     return existingTravel;
@@ -263,17 +231,13 @@ const _calcBikeDemand = (
     // Avg lower/mean/upper used for user defined ways
     // Avg pops/jobs used for user selected ways that are missing
     // these properties as well as user defined ways
-    const avgDemand = avgProp(selectedWays, 'bicyclist_demand', projectYear);
-    const avgPop = avgProp(selectedWays, 'population');
-    const avgJobs = avgProp(selectedWays, 'jobs');
+    const avgDemand = avgProp(selectedWays, 'pred_bike_vol', projectYear);
 
     // CALCULATE BIKE DEMAND PER USER SELECTED WAY
     for(let way of selectedWays) {
 
       const {
-        bicyclist_demand,
-        population,
-        jobs,
+        pred_bike_vol,
       } = way.properties;
 
       const length = turf.length(way) * FEET_PER_KM; // ft
@@ -281,45 +245,32 @@ const _calcBikeDemand = (
       let d;
 
       if(projectYear) {
-        d = bicyclist_demand[projectYear] !== null ? bicyclist_demand[projectYear] : avgDemand;
+        d = pred_bike_vol[projectYear] !== null ? pred_bike_vol[projectYear] : avgDemand;
       }
       else {
-        d = bicyclist_demand !== null ? bicyclist_demand : avgDemand;
+        d = pred_bike_vol;
       }
-
-      const p = population !== null ? population : avgPop;
-      const j = jobs !== null ? jobs : avgJobs;
 
       // demand calcs all based on miles so convert feet -> miles here
       const travel = d * (length / FEET_PER_MI);
 
       if(d !== null) {
-
         existingTravel.demand.bike.mean += d;
         existingTravel.miles.bike.mean += travel;
-
-        // no div by zero
-        if(p !== null && p !== 0) {
-          existingTravel.capita.bike.mean += travel / p;
-        }
-
-        if(j !== null && j !== 0) {
-          existingTravel.jobs.bike.mean += travel / j;
-        }
       }
 
       c.put('travel', 'ways', [
         'network',
-        way.properties.bicyclist_demand,
-        way.properties.population,
-        way.properties.jobs,
+        pred_bike_vol,
+        'removed',
+        'removed',
         d,
-        p,
-        j,
+        'removed',
+        'removed',
         length / FEET_PER_MI,
         d !== null ? travel : null,
-        d !== null && p !== null && p !== 0 ? travel / p : null,
-        d !== null && j !== null && j !== 0 ? travel / j : null,
+        'removed',
+        'removed',
       ]);
     }
 
@@ -338,17 +289,7 @@ const _calcBikeDemand = (
       // use averages for everything here because user defined ways
       // won't have any of these properties
       if(avgDemand !== null) {
-
         existingTravel.miles.bike.mean += travel;
-
-        // no div by zero
-        if(avgPop !== null && avgPop !== 0) {
-          existingTravel.capita.bike.mean += travel / avgPop;
-        }
-
-        if(avgJobs !== null && avgJobs !== 0) {
-          existingTravel.jobs.bike.mean += travel / avgJobs;
-        }
       }
 
       c.put('travel', 'ways', [
@@ -357,20 +298,20 @@ const _calcBikeDemand = (
         '',
         '',
         avgDemand,
-        avgPop,
-        avgJobs,
+        'removed',
+        'removed',
         length / FEET_PER_MI,
         avgDemand !== null ? travel : null,
-        avgDemand !== null && avgPop !== null && avgPop !== 0 ? travel / avgPop : null,
-        avgDemand !== null && avgJobs !== null && avgJobs !== 0 ? travel / avgJobs : null,
+        'removed',
+        'removed',
       ])
     }
 
     c.put('travel', 'existing', [
       'bicycling',
       existingTravel.miles.bike.mean,
-      existingTravel.capita.bike.mean,
-      existingTravel.jobs.bike.mean,
+      'removed',
+      'removed',
     ])
 
     // then the bike demand is weighted by the project length and
@@ -379,25 +320,17 @@ const _calcBikeDemand = (
     const numWays = selectedWays.length + userWays.length;
 
     if(numWays > 0) {
-
       existingTravel.miles.bike.mean = _weightBike(
         projectLengthMiles, existingTravel.miles.bike.mean);
-
-      existingTravel.capita.bike.mean = _weightBike(
-        projectLengthMiles, existingTravel.capita.bike.mean);
-
-      existingTravel.jobs.bike.mean = _weightBike(
-        projectLengthMiles, existingTravel.jobs.bike.mean);
     }
 
     c.append('travel', 'existing', [
       existingTravel.miles.bike.mean,
-      existingTravel.capita.bike.mean,
-      existingTravel.jobs.bike.mean,
+      'removed',
+      'removed',
     ])
 
     return existingTravel;
-
 }
 
 const calcDemand = async (
