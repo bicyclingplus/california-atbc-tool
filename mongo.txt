@@ -8,7 +8,10 @@ docker compose exec -T db sh -c 'mongodump --archive --db=bctool --collection=pr
 docker compose exec -T db sh -c 'mongorestore --archive --gzip --username bctool --password phev' < 2026_01_28_mongodb.dump.gz
 
 # restore projects only
-docker compose exec -T db sh -c 'mongorestore --archive --db=bctool --collection=projects --authenticationDatabase=admin --username bctool --password phev' < 2024_03_26_bctool_projects.dump
+docker compose exec -T db sh -c 'mongorestore --archive --db=bctool --collection=projects --authenticationDatabase=admin --username bctool --password phev' < 2026_01_28_bctool_projects.dump
+
+docker compose exec -T db sh -c 'mongorestore --archive --gzip --nsInclude="bctool.projects" --db=bctool --collection=projects --authenticationDatabase=admin --username bctool --password phev' < 2026_01_28_mongodb.dump.gz
+
 
 # cli
 docker compose exec db mongosh -u bctool -p
