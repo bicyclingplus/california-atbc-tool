@@ -128,18 +128,6 @@ const calcPVcmjk = (
         }
     }
 
-    // combined mode is walking plus bicycling
-    for(let c of COLUMNS) {
-        for(let j of LOCATION_TYPES) {
-            for(let k of ESTIMATES) {
-                PVcmjk[c].combined[j][k] = (
-                    PVcmjk[c].walking[j][k] +
-                    PVcmjk[c].bicycling[j][k]
-                );
-            }
-        }
-    }
-
     // debug
     for(let c of COLUMNS) {
         for(let m of MODES) {

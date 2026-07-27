@@ -143,18 +143,6 @@ const calcECCcmoj = (ways, intersections) => {
 	  );
 	}
 
-	// calc combined mode
-	for(let c of COLUMNS) {
-	  for(let o of OUTCOMES) {
-	    for(let j of LOCATION_TYPES) {
-	      ECCcmoj[c].combined[o][j] = (
-	        ECCcmoj[c].bicycling[o][j] +
-	        ECCcmoj[c].walking[o][j]
-	      );
-	    }
-	  }
-	}
-
 	return ECCcmoj;
 }
 

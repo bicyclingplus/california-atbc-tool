@@ -89,13 +89,6 @@ const calcEVcmj = (selectedWays, selectedIntersections) => {
 		]);
 	}
 
-	// calc combined for Vmj_existing
-	for(let c of COLUMNS) {
-		for(let j of LOCATION_TYPES) {
-			EVcmj[c].combined[j] = EVcmj[c].walking[j] + EVcmj[c].bicycling[j];
-		}
-	}
-
 	// debug
 	for(let c of COLUMNS) {
 		for(let m of MODES) {

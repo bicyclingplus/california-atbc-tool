@@ -7,16 +7,12 @@
 		"bicycling": {
 			"$ref": "safety.schema.json"
 		},
-		"combined": {
-			"$ref": "safety.schema.json"
-		},
 		"walking": {
 			"$ref": "safety.schema.json"
 		}
 	},
 	"required": [
 		"bicycling",
-		"combined",
 		"walking"
 	]
 }

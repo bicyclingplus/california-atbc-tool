@@ -1,32 +1,8 @@
 import React from 'react';
-// import 'bootstrap-icons/font/bootstrap-icons.css';
 
 import { readableNumber } from '../helpers/formatting';
 
-// const Tooltip = require('bootstrap/js/dist/tooltip');
-
 class SafetyQuantitative extends React.Component {
-
-	// componentDidMount() {
- //        this.tooltips = [];
-
- //        let tooltip_ids = [
- //        	'safety-benefits-tooltip',
- //        	'safety-benefits-capita-tooltip',
- //        	'safety-benefits-jobs-tooltip',
- //        	'safety-benefits-combined-tooltip'
- //        ];
-
- //        for(let tooltip_id of tooltip_ids) {
- //        	this.tooltips.push(new Tooltip(document.getElementById(tooltip_id)));
- //        }
- //    }
-
- //    componentWillUnmount() {
- //        for(let tooltip of this.tooltips) {
- //        	tooltip.dispose();
- //        }
- //    }
 
 	render = () => {
 
@@ -325,136 +301,6 @@ class SafetyQuantitative extends React.Component {
 						<td className="text-end">{readableNumber(benefits.jobs.after.walking.death.mean)}</td>
 						<td className="text-end">{readableNumber(benefits.jobs.after.walking.death.upper)}</td>
 					</tr>
-					<tr>
-						<th rowSpan="9" className="align-middle">Combined</th>
-						<th rowSpan="3" className="align-middle">Crashes</th>
-						<th>Change in Crashes</th>
-						<td className="text-end">{readableNumber(benefits.safety.change.combined.crash.lower)}</td>
-						<td className="text-end">{readableNumber(benefits.safety.change.combined.crash.mean)}</td>
-						<td className="text-end">{readableNumber(benefits.safety.change.combined.crash.upper)}</td>
-
-						<td className="text-end">{readableNumber(benefits.capita.change.combined.crash.lower)}</td>
-						<td className="text-end">{readableNumber(benefits.capita.change.combined.crash.mean)}</td>
-						<td className="text-end">{readableNumber(benefits.capita.change.combined.crash.upper)}</td>
-
-						<td className="text-end">{readableNumber(benefits.jobs.change.combined.crash.lower)}</td>
-						<td className="text-end">{readableNumber(benefits.jobs.change.combined.crash.mean)}</td>
-						<td className="text-end">{readableNumber(benefits.jobs.change.combined.crash.upper)}</td>
-					</tr>
-					<tr>
-						<th>Current Rate per 1000 volume</th>
-						<td className="text-end">{readableNumber(benefits.safety.before.combined.crash)}</td>
-						<td className="text-end">{readableNumber(benefits.safety.before.combined.crash)}</td>
-						<td className="text-end">{readableNumber(benefits.safety.before.combined.crash)}</td>
-
-						<td className="text-end">{readableNumber(benefits.capita.before.combined.crash)}</td>
-						<td className="text-end">{readableNumber(benefits.capita.before.combined.crash)}</td>
-						<td className="text-end">{readableNumber(benefits.capita.before.combined.crash)}</td>
-
-						<td className="text-end">{readableNumber(benefits.jobs.before.combined.crash)}</td>
-						<td className="text-end">{readableNumber(benefits.jobs.before.combined.crash)}</td>
-						<td className="text-end">{readableNumber(benefits.jobs.before.combined.crash)}</td>
-					</tr>
-					<tr>
-						<th>Estimated After-project Rate per 1000 volume</th>
-						<td className="text-end">{readableNumber(benefits.safety.after.combined.crash.lower)}</td>
-						<td className="text-end">{readableNumber(benefits.safety.after.combined.crash.mean)}</td>
-						<td className="text-end">{readableNumber(benefits.safety.after.combined.crash.upper)}</td>
-
-						<td className="text-end">{readableNumber(benefits.capita.after.combined.crash.lower)}</td>
-						<td className="text-end">{readableNumber(benefits.capita.after.combined.crash.mean)}</td>
-						<td className="text-end">{readableNumber(benefits.capita.after.combined.crash.upper)}</td>
-
-						<td className="text-end">{readableNumber(benefits.jobs.after.combined.crash.lower)}</td>
-						<td className="text-end">{readableNumber(benefits.jobs.after.combined.crash.mean)}</td>
-						<td className="text-end">{readableNumber(benefits.jobs.after.combined.crash.upper)}</td>
-					</tr>
-					<tr>
-						<th rowSpan="3" className="align-middle">Injuries</th>
-						<th>Change in Injuries</th>
-						<td className="text-end">{readableNumber(benefits.safety.change.combined.injury.lower)}</td>
-						<td className="text-end">{readableNumber(benefits.safety.change.combined.injury.mean)}</td>
-						<td className="text-end">{readableNumber(benefits.safety.change.combined.injury.upper)}</td>
-
-						<td className="text-end">{readableNumber(benefits.capita.change.combined.injury.lower)}</td>
-						<td className="text-end">{readableNumber(benefits.capita.change.combined.injury.mean)}</td>
-						<td className="text-end">{readableNumber(benefits.capita.change.combined.injury.upper)}</td>
-
-						<td className="text-end">{readableNumber(benefits.jobs.change.combined.injury.lower)}</td>
-						<td className="text-end">{readableNumber(benefits.jobs.change.combined.injury.mean)}</td>
-						<td className="text-end">{readableNumber(benefits.jobs.change.combined.injury.upper)}</td>
-					</tr>
-					<tr>
-						<th>Current Rate per 1000 volume</th>
-						<td className="text-end">{readableNumber(benefits.safety.before.combined.injury)}</td>
-						<td className="text-end">{readableNumber(benefits.safety.before.combined.injury)}</td>
-						<td className="text-end">{readableNumber(benefits.safety.before.combined.injury)}</td>
-
-						<td className="text-end">{readableNumber(benefits.capita.before.combined.injury)}</td>
-						<td className="text-end">{readableNumber(benefits.capita.before.combined.injury)}</td>
-						<td className="text-end">{readableNumber(benefits.capita.before.combined.injury)}</td>
-
-						<td className="text-end">{readableNumber(benefits.jobs.before.combined.injury)}</td>
-						<td className="text-end">{readableNumber(benefits.jobs.before.combined.injury)}</td>
-						<td className="text-end">{readableNumber(benefits.jobs.before.combined.injury)}</td>
-					</tr>
-					<tr>
-						<th>Estimated After-project Rate per 1000 volume</th>
-						<td className="text-end">{readableNumber(benefits.safety.after.combined.injury.lower)}</td>
-						<td className="text-end">{readableNumber(benefits.safety.after.combined.injury.mean)}</td>
-						<td className="text-end">{readableNumber(benefits.safety.after.combined.injury.upper)}</td>
-
-						<td className="text-end">{readableNumber(benefits.capita.after.combined.injury.lower)}</td>
-						<td className="text-end">{readableNumber(benefits.capita.after.combined.injury.mean)}</td>
-						<td className="text-end">{readableNumber(benefits.capita.after.combined.injury.upper)}</td>
-
-						<td className="text-end">{readableNumber(benefits.jobs.after.combined.injury.lower)}</td>
-						<td className="text-end">{readableNumber(benefits.jobs.after.combined.injury.mean)}</td>
-						<td className="text-end">{readableNumber(benefits.jobs.after.combined.injury.upper)}</td>
-					</tr>
-					<tr>
-						<th rowSpan="3" className="align-middle">Deaths</th>
-						<th>Change in Deaths</th>
-						<td className="text-end">{readableNumber(benefits.safety.change.combined.death.lower)}</td>
-						<td className="text-end">{readableNumber(benefits.safety.change.combined.death.mean)}</td>
-						<td className="text-end">{readableNumber(benefits.safety.change.combined.death.upper)}</td>
-
-						<td className="text-end">{readableNumber(benefits.capita.change.combined.death.lower)}</td>
-						<td className="text-end">{readableNumber(benefits.capita.change.combined.death.mean)}</td>
-						<td className="text-end">{readableNumber(benefits.capita.change.combined.death.upper)}</td>
-
-						<td className="text-end">{readableNumber(benefits.jobs.change.combined.death.lower)}</td>
-						<td className="text-end">{readableNumber(benefits.jobs.change.combined.death.mean)}</td>
-						<td className="text-end">{readableNumber(benefits.jobs.change.combined.death.upper)}</td>
-					</tr>
-					<tr>
-						<th>Current Rate per 1000 volume</th>
-						<td className="text-end">{readableNumber(benefits.safety.before.combined.death)}</td>
-						<td className="text-end">{readableNumber(benefits.safety.before.combined.death)}</td>
-						<td className="text-end">{readableNumber(benefits.safety.before.combined.death)}</td>
-
-						<td className="text-end">{readableNumber(benefits.capita.before.combined.death)}</td>
-						<td className="text-end">{readableNumber(benefits.capita.before.combined.death)}</td>
-						<td className="text-end">{readableNumber(benefits.capita.before.combined.death)}</td>
-
-						<td className="text-end">{readableNumber(benefits.jobs.before.combined.death)}</td>
-						<td className="text-end">{readableNumber(benefits.jobs.before.combined.death)}</td>
-						<td className="text-end">{readableNumber(benefits.jobs.before.combined.death)}</td>
-					</tr>
-					<tr>
-						<th>Estimated After-project Rate per 1000 volume</th>
-						<td className="text-end">{readableNumber(benefits.safety.after.combined.death.lower)}</td>
-						<td className="text-end">{readableNumber(benefits.safety.after.combined.death.mean)}</td>
-						<td className="text-end">{readableNumber(benefits.safety.after.combined.death.upper)}</td>
-
-						<td className="text-end">{readableNumber(benefits.capita.after.combined.death.lower)}</td>
-						<td className="text-end">{readableNumber(benefits.capita.after.combined.death.mean)}</td>
-						<td className="text-end">{readableNumber(benefits.capita.after.combined.death.upper)}</td>
-
-						<td className="text-end">{readableNumber(benefits.jobs.after.combined.death.lower)}</td>
-						<td className="text-end">{readableNumber(benefits.jobs.after.combined.death.mean)}</td>
-						<td className="text-end">{readableNumber(benefits.jobs.after.combined.death.upper)}</td>
-					</tr>
 				</tbody>
 			</table>
 
@@ -506,25 +352,6 @@ class SafetyQuantitative extends React.Component {
 						<td className="text-end">{readableNumber(benefits.safety.change.walking.death.mean)}</td>
 						<td className="text-end">{readableNumber(benefits.capita.change.walking.death.mean)}</td>
 						<td className="text-end">{readableNumber(benefits.jobs.change.walking.death.mean)}</td>
-					</tr>
-					<tr>
-						<th rowSpan="3" className="align-middle">Combined</th>
-						<th className="align-middle">Crashes</th>
-						<td className="text-end">{readableNumber(benefits.safety.change.combined.crash.mean)}</td>
-						<td className="text-end">{readableNumber(benefits.capita.change.combined.crash.mean)}</td>
-						<td className="text-end">{readableNumber(benefits.jobs.change.combined.crash.mean)}</td>
-					</tr>
-					<tr>
-						<th className="align-middle">Injuries</th>
-						<td className="text-end">{readableNumber(benefits.safety.change.combined.injury.mean)}</td>
-						<td className="text-end">{readableNumber(benefits.capita.change.combined.injury.mean)}</td>
-						<td className="text-end">{readableNumber(benefits.jobs.change.combined.injury.mean)}</td>
-					</tr>
-					<tr>
-						<th className="align-middle">Deaths</th>
-						<td className="text-end">{readableNumber(benefits.safety.change.combined.death.mean)}</td>
-						<td className="text-end">{readableNumber(benefits.capita.change.combined.death.mean)}</td>
-						<td className="text-end">{readableNumber(benefits.jobs.change.combined.death.mean)}</td>
 					</tr>
 				</tbody>
 			</table>
@@ -620,46 +447,6 @@ class SafetyQuantitative extends React.Component {
 						<td className="text-end">{readableNumber(benefits.safety.after.walking.death.mean)}</td>
 						<td className="text-end">{readableNumber(benefits.capita.after.walking.death.mean)}</td>
 						<td className="text-end">{readableNumber(benefits.jobs.after.walking.death.mean)}</td>
-					</tr>
-					<tr>
-						<th rowSpan="6" className="align-middle">Combined</th>
-						<th rowSpan="2" className="align-middle">Crashes</th>
-						<th>Current Rate per 1000 volume</th>
-						<td className="text-end">{readableNumber(benefits.safety.before.combined.crash)}</td>
-						<td className="text-end">{readableNumber(benefits.capita.before.combined.crash)}</td>
-						<td className="text-end">{readableNumber(benefits.jobs.before.combined.crash)}</td>
-					</tr>
-					<tr>
-						<th>Estimated After-project Rate per 1000 volume</th>
-						<td className="text-end">{readableNumber(benefits.safety.after.combined.crash.mean)}</td>
-						<td className="text-end">{readableNumber(benefits.capita.after.combined.crash.mean)}</td>
-						<td className="text-end">{readableNumber(benefits.jobs.after.combined.crash.mean)}</td>
-					</tr>
-					<tr>
-						<th rowSpan="2" className="align-middle">Injuries</th>
-						<th>Current Rate per 1000 volume</th>
-						<td className="text-end">{readableNumber(benefits.safety.before.combined.injury)}</td>
-						<td className="text-end">{readableNumber(benefits.capita.before.combined.injury)}</td>
-						<td className="text-end">{readableNumber(benefits.jobs.before.combined.injury)}</td>
-					</tr>
-					<tr>
-						<th>Estimated After-project Rate per 1000 volume</th>
-						<td className="text-end">{readableNumber(benefits.safety.after.combined.injury.mean)}</td>
-						<td className="text-end">{readableNumber(benefits.capita.after.combined.injury.mean)}</td>
-						<td className="text-end">{readableNumber(benefits.jobs.after.combined.injury.mean)}</td>
-					</tr>
-					<tr>
-						<th rowSpan="2" className="align-middle">Deaths</th>
-						<th>Current Rate per 1000 volume</th>
-						<td className="text-end">{readableNumber(benefits.safety.before.combined.death)}</td>
-						<td className="text-end">{readableNumber(benefits.capita.before.combined.death)}</td>
-						<td className="text-end">{readableNumber(benefits.jobs.before.combined.death)}</td>
-					</tr>
-					<tr>
-						<th>Estimated After-project Rate per 1000 volume</th>
-						<td className="text-end">{readableNumber(benefits.safety.after.combined.death.mean)}</td>
-						<td className="text-end">{readableNumber(benefits.capita.after.combined.death.mean)}</td>
-						<td className="text-end">{readableNumber(benefits.jobs.after.combined.death.mean)}</td>
 					</tr>
 				</tbody>
 			</table>

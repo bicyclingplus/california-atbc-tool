@@ -18,7 +18,7 @@ const TRANSIT_TYPES = {
     none: 'no transit connections',
 };
 
-const MODES = ['bicycling', 'walking', 'combined'];
+const MODES = ['bicycling', 'walking'];
 const LOCATION_TYPES = ['intersection', 'roadway'];
 const OUTCOMES = ['crash', 'injury', 'death'];
 

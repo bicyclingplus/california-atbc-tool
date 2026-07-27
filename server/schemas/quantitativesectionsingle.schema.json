@@ -7,16 +7,12 @@
 		"bicycling": {
 			"$ref": "quantitativeoutcomesingle.schema.json"
 		},
-		"combined": {
-			"$ref": "quantitativeoutcomesingle.schema.json"
-		},
 		"walking": {
 			"$ref": "quantitativeoutcomesingle.schema.json"
 		}
 	},
 	"required": [
 		"bicycling",
-		"combined",
 		"walking"
 	]
 }

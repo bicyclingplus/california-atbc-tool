@@ -713,17 +713,6 @@ class BCTool extends React.Component {
 
       safety[mode][item][location_type] = parsed;
 
-      // add both modes for combined
-      safety.combined[item][location_type] = (
-        safety.walking[item][location_type] +
-        safety.bicycling[item][location_type]
-      );
-
-      // take the average of years?
-      if(item === 'years') {
-        safety.combined[item][location_type] /= 2;
-      }
-
       this.setState({
         safety: safety,
         inputsChanged: true,

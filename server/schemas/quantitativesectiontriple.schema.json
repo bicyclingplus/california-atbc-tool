@@ -7,16 +7,12 @@
 		"bicycling": {
 			"$ref": "quantitativeoutcometriple.schema.json"
 		},
-		"combined": {
-			"$ref": "quantitativeoutcometriple.schema.json"
-		},
 		"walking": {
 			"$ref": "quantitativeoutcometriple.schema.json"
 		}
 	},
 	"required": [
 		"bicycling",
-		"combined",
 		"walking"
 	]
 }

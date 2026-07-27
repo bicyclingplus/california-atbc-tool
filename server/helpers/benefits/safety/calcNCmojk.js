@@ -58,8 +58,8 @@ const calcNCmojk = (
     for(let benefit of quantitative[i]) {
 
       // does this benefit apply to this mode?
-      // combined mode receives all benefits
-      if(m !== 'combined' && benefit.mode !== m) {
+      // apply combined mode benefits to both walk and bike 50%
+      if(benefit.mode !== m && benefit.mode !== 'combined') {
         continue;
       }
 
@@ -71,6 +71,14 @@ const calcNCmojk = (
       // does this benefit apply to this location type
       if(benefit.location_type !== j) {
         continue;
+      }
+
+      let benefit_k = benefit[k];
+
+      // apply 50% of combined mode benefits
+      // to bike and walk mode
+      if(m === 'combined') {
+        benefit_k *= 0.50;
       }
 
       // example
@@ -93,7 +101,7 @@ const calcNCmojk = (
       // reduced by 7.2, ie 12.8
       //
       // so we just do 20 * (1 - (36 / 100)) = 12.8
-      CRFmojk *= (1 - (benefit[k] / 100));
+      CRFmojk *= (1 - (benefit_k / 100));
 
       c.put('safety', 'reductions', [
         m,
@@ -147,8 +155,7 @@ const calcNCmojk = (
     for(let mode in travel_volume[i]) {
 
       // does this benefit apply to this mode?
-      // combined mode receives all benefits
-      if(m !== 'combined' && m !== mode) {
+      if(m !== mode) {
         continue;
       }
 
