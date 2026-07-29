@@ -1,81 +1,68 @@
 import React from 'react';
 
+import Summary from './Summary';
+import Monetary from './Monetary';
 import Travel from './Travel';
-import SafetyQualitative from './SafetyQualitative';
-import SafetyQuantitative from './SafetyQuantitative';
-import Emissions from './Emissions';
-import Health from './Health';
+import Quantitative from './Quantitative';
 import ProjectQualitative from './ProjectQualitative';
-import 'bootstrap-icons/font/bootstrap-icons.css';
+import SafetyQualitative from './SafetyQualitative';
 
-// const Tooltip = require('bootstrap/js/dist/tooltip');
-import Tooltip from 'bootstrap/js/dist/tooltip';
+import './ProjectBenefits.css';
 
-class ProjectBenefits extends React.Component {
+const ProjectBenefits = (props) => {
 
-  componentDidMount() {
+  const {
+    benefits,
+    name,
+    cost,
+    type,
+    timeframe,
+    subtype,
+    hasOnlyUserMapSelections,
+  } = props;
 
-    let { benefits, hasOnlyUserMapSelections } = this.props;
+  return (
+    <div className="project-benefits">
+      <div className="section-bar first">Project Benefits</div>
 
-    if(!hasOnlyUserMapSelections && (benefits.safetyQuantitative || benefits.emissions || benefits.health)) {
-      this.tooltip = new Tooltip(document.getElementById(`project-timeframe-tooltip`));
-    }
-  }
+      <Summary
+        name={name}
+        cost={cost}
+        type={type}
+        subtype={subtype}
+        timeframe={timeframe}
+      />
 
-  componentWillUnmount() {
-    if(this.tooltip) {
-      this.tooltip.dispose();
-    }
-  }
+      { benefits.monetary ?
+      <Monetary
+        benefits={benefits.monetary}
+        timeframe={timeframe}
+        cost={cost}
+      />
+      : null }
 
-  render() {
+      { benefits.travel && !hasOnlyUserMapSelections ?
+      <Travel benefits={benefits.travel} subtype={subtype} />
+      : null }
 
-    let { benefits, timeframe, subtype, hasOnlyUserMapSelections } = this.props;
+      { (benefits.safetyQuantitative || benefits.emissions || benefits.health) && !hasOnlyUserMapSelections ?
+      <Quantitative
+        timeframe={timeframe}
+        benefits={benefits}
+        hasOnlyUserMapSelections={hasOnlyUserMapSelections}
+        subtype={subtype}
+      />
+      : null }
 
-    return (
-      <div>
-        <h4 className="text-center section-header">Project Benefits</h4>
+      { benefits.projectQualitative ?
+      <ProjectQualitative benefits={benefits.projectQualitative} />
+      : null }
 
-        { benefits.travel && !hasOnlyUserMapSelections ?
-        <Travel benefits={benefits.travel} subtype={subtype} />
-        : null }
-
-        { (benefits.safetyQuantitative || benefits.emissions || benefits.health) && !hasOnlyUserMapSelections ?
-        <h4 className="mt-4  section-sub-header">
-          Project-Level Quantitative Benefits
-          <i id={`project-timeframe-tooltip`}
-            className="bi bi-info-circle ms-2"
-            data-bs-toggle="tooltip"
-            data-bs-placement="right"
-            data-bs-html="true"
-            title={`All benefits calculated at the ${timeframe} year level.`}>
-          </i>
-        </h4>
-        : null }
-
-        { benefits.safetyQuantitative && !hasOnlyUserMapSelections ?
-        <SafetyQuantitative benefits={benefits.safetyQuantitative} timeframe={timeframe} />
-        : null }
-
-        { benefits.emissions && !hasOnlyUserMapSelections ?
-        <Emissions emissions={benefits.emissions} vmtReductions={benefits.vmtReductions} timeframe={timeframe} />
-        : null }
-
-        { benefits.health && !hasOnlyUserMapSelections ?
-        <Health benefits={benefits.health} subtype={subtype} timeframe={timeframe} />
-        : null }
-
-        { benefits.projectQualitative ?
-        <ProjectQualitative benefits={benefits.projectQualitative} />
-        : null }
-
-        { benefits.safetyQualitative ?
-        <SafetyQualitative benefits={benefits.safetyQualitative} />
-        : null }
-      </div>
-    );
-  }
-
+      { benefits.safetyQualitative ?
+      <SafetyQualitative benefits={benefits.safetyQualitative} />
+      : null }
+    </div>
+  );
 }
 
 export default ProjectBenefits;

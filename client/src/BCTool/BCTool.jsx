@@ -730,6 +730,7 @@ class BCTool extends React.Component {
               <h5 className="modal-title" id="startModalTitle">California Active Transportation Benefit-Cost Tool</h5>
             </div>
             <div className="modal-body">
+              <p><strong><em>Note: this is a preview version of the tool from the current development cycle. Not everything is finished and functional.</em></strong></p>
               <p>This tool has been developed by the UC Davis <a href="https://bicyclingplus.ucdavis.edu/" target="_blank" rel="noreferrer">Bicycling<span className="fst-italic">Plus</span> Research Collaborative</a> to estimate expected benefits of proposed active transportation projects. It can help government agencies, practitioners, and community members understand project-specific cost effectiveness and explore options for improving project design.</p>
               <p><a href="/Caltrans ATP BC Tool Technical Documentation Final Draft (v2).pdf" target="_blank" rel="noreferrer">Technical Documentation</a></p>
               <p><a href="/Litreview.pdf" target="_blank" rel="noreferrer">Literature Review</a></p>
@@ -745,7 +746,7 @@ class BCTool extends React.Component {
                 }
               </select>
 
-              <p className="mt-4">Last updated April 11, 2025</p>
+              <p className="mt-4">Last updated July 28, 2026</p>
 
               <hr />
 
@@ -915,6 +916,7 @@ class BCTool extends React.Component {
               benefits={this.state.benefits}
               name={this.state.name}
               cost={this.state.cost}
+              type={this.state.type}
               timeframe={this.state.timeframe}
               subtype={this.state.subtype}
               hasOnlyUserMapSelections={this.state.hasOnlyUserMapSelections}

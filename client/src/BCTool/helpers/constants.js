@@ -18,6 +18,11 @@ const TRANSIT_TYPES = {
     none: 'no transit connections',
 };
 
+const TIMEFRAMES = {
+    1: "1 year",
+    20: "20 years",
+}
+
 const MODES = ['bicycling', 'walking'];
 const LOCATION_TYPES = ['intersection', 'roadway'];
 const OUTCOMES = ['crash', 'injury', 'death'];
@@ -26,7 +31,7 @@ export {
     PROJECT_TYPES,
     PROJECT_SUBTYPES,
     TRANSIT_TYPES,
-
+    TIMEFRAMES,
     MODES,
     LOCATION_TYPES,
     OUTCOMES,

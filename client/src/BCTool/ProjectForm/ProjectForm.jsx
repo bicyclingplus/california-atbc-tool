@@ -3,6 +3,7 @@ import {
   PROJECT_TYPES,
   PROJECT_SUBTYPES,
   TRANSIT_TYPES,
+  TIMEFRAMES,
 } from '../helpers/constants';
 
 class ProjectForm extends React.Component {
@@ -82,8 +83,8 @@ class ProjectForm extends React.Component {
             <div className="col-md-8">
               <select id="project-time-frame" className="form-select" value={timeframe} onChange={updateTimeFrame}>
                 <option value="" disabled>-- Choose a time frame --</option>
-                <option value="1">1 year</option>
-                <option value="20">20 years (default)</option>
+                <option value="1">{TIMEFRAMES[1]}</option>
+                <option value="20">{TIMEFRAMES[20]} (default)</option>
               </select>
             </div>
           </div>

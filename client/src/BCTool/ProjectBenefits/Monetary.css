@@ -1,0 +1,80 @@
+.sec1 {
+  display: grid;
+  grid-template-columns: 1.05fr 1fr;
+  gap: 24px;
+  margin-bottom: 12px;
+}
+
+.ratio-card-wrap {
+  display: flex;
+  flex-direction: column;
+}
+
+.ratio-card {
+  background: #e8ebee;
+  padding: 16px 20px;
+  border-radius: 8px;
+  min-height: 92px;
+  margin-bottom: 16px;
+}
+.ratio-card.light { background: #eaf1f8; }
+.ratio-card .lbl {
+  font-size: 13px;
+  color: #4a5567;
+  margin-bottom: 6px;
+}
+.ratio-card .val {
+  font-size: 26px;
+  font-weight: 700;
+  color: #1d2939;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+.gauge {
+  width: 56px;
+  height: 32px;
+  position: relative;
+  margin-left: auto;
+}
+.gauge svg { width: 100%; height: 100%; }
+
+.category-header {
+  background: #1d3a5f;
+  color: #ffffff;
+  padding: 10px 16px;
+  border-radius: 22px;
+  font-size: 14px;
+  margin-bottom: 14px;
+}
+.category-header strong { font-weight: 700; }
+.cat-row {
+  display: grid;
+  grid-template-columns: 36px 1fr 200px;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+.cat-icon {
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.cat-icon svg { width: 26px; height: 26px; }
+.cat-label {
+  font-size: 14px;
+  color: #1d2939;
+}
+.cat-label strong { font-weight: 700; }
+.cat-amount {
+  background: #e8ebee;
+  padding: 8px 16px;
+  border-radius: 22px;
+  font-size: 15px;
+  font-weight: 700;
+  color: #1d2939;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}

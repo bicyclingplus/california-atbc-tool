@@ -1,8 +1,8 @@
-export function numberWithCommas(x) {
+const numberWithCommas = (x) => {
     return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-}
+};
 
-export function readableNumber(number, places = 3, suffix = '') {
+const readableNumber = (number, places = 3, suffix = '') => {
 
   if(Number.isNaN(number)) {
     return "N/A";
@@ -20,4 +20,23 @@ export function readableNumber(number, places = 3, suffix = '') {
 
   return numberWithCommas(Math.round((number + Number.EPSILON))) + suffix;
 
-}
+};
+
+const moneyFmt = (val) => {
+
+  const valAbs = Math.abs(val);
+
+  const formatted = valAbs.toLocaleString('en-US', {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  });
+
+  return val >= 0 ? `$${formatted}` : `- $${formatted}`;
+
+};
+
+export {
+  numberWithCommas,
+  readableNumber,
+  moneyFmt,
+};

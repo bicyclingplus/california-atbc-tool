@@ -1,52 +1,48 @@
 import React from 'react';
 
-class SafetyQualitative extends React.Component {
+const firstRow = (element, idx) => {
+  if(element.benefits.length > 1) {
+    if(idx === 0) {
+      return <td className="first" rowSpan={element.benefits.length}>{element.element}</td>;
+    }
+  }
+  else {
+    return <td className="first">{element.element}</td>
+  }
+}
 
-	firstRow = (element, idx) => {
+const SafetyQualitative = (props) => {
 
-		if(element.benefits.length > 1) {
-			if(idx === 0) {
-				return <td rowSpan={element.benefits.length}>{element.element}</td>;
-			}
-		}
-		else {
-			return <td>{element.element}</td>
-		}
+  const { benefits } = props;
 
-	}
+  return (
+    <>
+    <div className="section-bar">Section 5: <strong>Element Specific General Benefits</strong></div>
 
-	render = () => {
-
-		let { benefits } = this.props;
-
-		return (
-			<>
-			<h4 className="mt-4 section-sub-header">Element Specific General Benefits</h4>
-			<table className="table table-striped" id="element-specific">
-				<thead>
-					<tr>
-						<th>Infrastructure Element</th>
-						<th>Benefits</th>
-						<th>Sources</th>
-					</tr>
-				</thead>
-				<tbody>
-				{
-					benefits.map((element) => (
-						element.benefits.map((benefit, idx) => (
-							<tr key={benefit.key}>
-								{this.firstRow(element, idx)}
-								<td>{benefit.description}</td>
-								<td>{benefit.sources}</td>
-							</tr>
-						))
-					))
-				}
-				</tbody>
-			</table>
-			</>
-		);
-	};
+    <table className="general-tbl">
+      <thead>
+        <tr>
+          <th>Infrastructure Element</th>
+          <th>Description</th>
+          <th>Sources</th>
+        </tr>
+      </thead>
+      <tbody>
+      {
+        benefits.map((element) => (
+          element.benefits.map((benefit, idx) => (
+            <tr key={benefit.key}>
+              {firstRow(element, idx)}
+              <td>{benefit.description}</td>
+              <td className="source-cell">{benefit.sources}</td>
+            </tr>
+          ))
+        ))
+      }
+      </tbody>
+    </table>
+    </>
+  );
 }
 
 export default SafetyQualitative;

@@ -37,13 +37,13 @@
 		"selectedWayIds": {
 			"type": "array",
 			"items": {
-				"type": "number"
+				"type": "string"
 			}
 		},
 		"selectedIntersectionIds": {
 			"type": "array",
 			"items": {
-				"type": "number"
+				"type": "string"
 			}
 		},
 		"userWays": {

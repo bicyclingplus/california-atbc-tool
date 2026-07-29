@@ -1,0 +1,94 @@
+.vmt-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 18px;
+  margin-bottom: 20px;
+}
+.vmt-card {
+  background: #f3f3f3;
+  padding: 14px 18px;
+  border-radius: 4px;
+  border-left: 3px solid #1f5d3d;
+}
+.vmt-card .lbl {
+  font-size: 13px;
+  color: #4a5567;
+  margin-bottom: 4px;
+}
+.vmt-card .val {
+  font-size: 22px;
+  font-weight: 700;
+  color: #1d2939;
+}
+.emissions-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 22px;
+  margin-bottom: 18px;
+}
+.em-tbl {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+  background: #f8f8f8;
+  border-radius: 4px;
+  overflow: hidden;
+}
+.em-tbl thead th {
+  background: #f8f8f8;
+  color: #1f5d3d;
+  font-weight: 700;
+  padding: 8px 14px;
+  text-align: right;
+  border-bottom: 1px solid #e5e5e5;
+}
+.em-tbl thead th:first-child {
+  background: #f8f8f8;
+  text-align: left;
+}
+.em-tbl thead th .sub {
+  font-weight: 400;
+  font-size: 11px;
+  color: #6b7c8c;
+  display: block;
+}
+.em-tbl tbody td {
+  padding: 7px 14px;
+  text-align: right;
+  border-bottom: 1px solid #ececec;
+  font-variant-numeric: tabular-nums;
+}
+.em-tbl tbody td:first-child {
+  text-align: left;
+  font-weight: 500;
+}
+.em-tbl tbody tr:last-child td {
+  border-bottom: none;
+}
+.co2eq {
+  background: #f3f3f3;
+  padding: 12px 18px;
+  border-radius: 4px;
+  border-left: 3px solid #1f5d3d;
+  margin-top: 14px;
+  width: calc(50% - 11px);
+}
+.co2eq .lbl {
+  font-size: 13px;
+  color: #4a5567;
+  margin-bottom: 4px;
+}
+.co2eq .val {
+  font-size: 20px;
+  font-weight: 700;
+  color: #1d2939;
+}
+.co2eq .val .units {
+  font-size: 13px;
+  font-weight: 400;
+  color: #6b7c8c;
+}
+.sub-num {
+  font-size: 10px;
+  vertical-align: sub;
+}

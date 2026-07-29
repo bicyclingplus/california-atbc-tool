@@ -2,457 +2,114 @@ import React from 'react';
 
 import { readableNumber } from '../helpers/formatting';
 
-class SafetyQuantitative extends React.Component {
+const SafetyQuantitative = (props) => {
 
-	render = () => {
+  const {
+    benefits,
+    subtype,
+  } = props;
 
-		const {
-			benefits,
-			timeframe,
-		} = this.props;
+  return (
+    <>
 
-		return (
-			<>
-			<h5 className="mt-4">Safety</h5>
+    <div className="colored-header orange">
+      <svg viewBox="0 0 24 24" fill="#ffffff">
+        <path d="M12 2L4 5v6c0 5 3.5 9.5 8 11 4.5-1.5 8-6 8-11V5l-8-3z"></path>
+      </svg>
+      Safety Benefits
+    </div>
 
-			<table className="table table-bordered table-striped d-none" id="safety">
-				<thead>
-					<tr>
-						<th></th>
-						<th></th>
-						<th></th>
-						<th colSpan="3" className="text-center">Benefit</th>
-						<th colSpan="3" className="text-center">Benefit / Capita</th>
-						<th colSpan="3" className="text-center">Benefit / Jobs</th>
-					</tr>
-					<tr>
-						<th className="text-center">Mode</th>
-						<th className="text-center">Outcome</th>
-						<th></th>
-						<th className="text-center">Lower</th>
-						<th className="text-center">Mean</th>
-						<th className="text-center">Upper</th>
-						<th className="text-center">Lower</th>
-						<th className="text-center">Mean</th>
-						<th className="text-center">Upper</th>
-						<th className="text-center">Lower</th>
-						<th className="text-center">Mean</th>
-						<th className="text-center">Upper</th>
-					</tr>
-				</thead>
-				<tbody>
-					<tr>
-						<th rowSpan="9" className="align-middle">Bike</th>
-						<th rowSpan="3" className="align-middle">Crashes</th>
-						<th>Change in Crashes</th>
-						<td className="text-end">{readableNumber(benefits.safety.change.bicycling.crash.lower)}</td>
-						<td className="text-end">{readableNumber(benefits.safety.change.bicycling.crash.mean)}</td>
-						<td className="text-end">{readableNumber(benefits.safety.change.bicycling.crash.upper)}</td>
+    <div className="safety-row">
 
-						<td className="text-end">{readableNumber(benefits.capita.change.bicycling.crash.lower)}</td>
-						<td className="text-end">{readableNumber(benefits.capita.change.bicycling.crash.mean)}</td>
-						<td className="text-end">{readableNumber(benefits.capita.change.bicycling.crash.upper)}</td>
+      { subtype !== "pedestrian-only" ?
+      <div className="crash-block">
+        <div className="crash-title">Crash Rate: TODO</div>
+        <div className="crash-block-wrap">
+          <div className="crash-icon-side">
+            <svg viewBox="0 0 24 24" fill="#f59f3a">
+              <circle cx="5.5" cy="17.5" r="3.5" fill="none" stroke="#f59f3a" strokeWidth="1.7"></circle>
+              <circle cx="18.5" cy="17.5" r="3.5" fill="none" stroke="#f59f3a" strokeWidth="1.7"></circle>
+              <path d="M15 4l-1 3h-3l-2 5 4 2 2-4 3 4" fill="none" stroke="#f59f3a" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round"></path>
+              <circle cx="16" cy="3.5" r="1.2"></circle>
+            </svg>
+          </div>
+          <div style={{flex: 1}}>
+            <table className="crash-tbl">
+              <thead>
+                <tr>
+                  <th></th>
+                  <th>Annual benefit</th>
+                  <th>Annual benefit per person</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Crashes</td>
+                  <td className="bold">{readableNumber(benefits.raw.change.bicycling.crash.mean)}</td>
+                  <td className="bold">TODO</td>
+                </tr>
+                <tr>
+                  <td>Injuries</td>
+                  <td>{readableNumber(benefits.raw.change.bicycling.injury.mean)}</td>
+                  <td>TODO</td>
+                </tr>
+                <tr>
+                  <td>Deaths</td>
+                  <td>{readableNumber(benefits.raw.change.bicycling.death.mean)}</td>
+                  <td>TODO</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+      : null }
 
-						<td className="text-end">{readableNumber(benefits.jobs.change.bicycling.crash.lower)}</td>
-						<td className="text-end">{readableNumber(benefits.jobs.change.bicycling.crash.mean)}</td>
-						<td className="text-end">{readableNumber(benefits.jobs.change.bicycling.crash.upper)}</td>
-					</tr>
-					<tr>
-						<th>Current Rate per 1000 volume</th>
-						<td className="text-end">{readableNumber(benefits.safety.before.bicycling.crash)}</td>
-						<td className="text-end">{readableNumber(benefits.safety.before.bicycling.crash)}</td>
-						<td className="text-end">{readableNumber(benefits.safety.before.bicycling.crash)}</td>
+      { subtype !== "bike-only" ?
+      <div className="crash-block">
+        <div className="crash-title">Crash Rate: TODO</div>
+        <div className="crash-block-wrap">
+          <div className="crash-icon-side">
+            <svg viewBox="0 0 24 24" fill="#f59f3a">
+              <circle cx="13" cy="4" r="2"></circle>
+              <path d="M11 22l1-7-2-3v-4l3-2 3 4 2 1v 2l-2-1-2-1-1 1 2 3 1 7" fill="#f59f3a"></path>
+            </svg>
+          </div>
+          <div style={{flex: 1}}>
+            <table className="crash-tbl">
+              <thead>
+                <tr>
+                  <th></th>
+                  <th>Annual benefit</th>
+                  <th>Annual benefit per person</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Crashes</td>
+                  <td className="bold">{readableNumber(benefits.raw.change.walking.crash.mean)}</td>
+                  <td className="bold">TODO</td>
+                </tr>
+                <tr>
+                  <td>Injuries</td>
+                  <td>{readableNumber(benefits.raw.change.walking.injury.mean)}</td>
+                  <td>TODO</td>
+                </tr>
+                <tr>
+                  <td>Deaths</td>
+                  <td>{readableNumber(benefits.raw.change.walking.death.mean)}</td>
+                  <td>TODO</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+      : null }
 
-						<td className="text-end">{readableNumber(benefits.capita.before.bicycling.crash)}</td>
-						<td className="text-end">{readableNumber(benefits.capita.before.bicycling.crash)}</td>
-						<td className="text-end">{readableNumber(benefits.capita.before.bicycling.crash)}</td>
-
-						<td className="text-end">{readableNumber(benefits.jobs.before.bicycling.crash)}</td>
-						<td className="text-end">{readableNumber(benefits.jobs.before.bicycling.crash)}</td>
-						<td className="text-end">{readableNumber(benefits.jobs.before.bicycling.crash)}</td>
-					</tr>
-					<tr>
-						<th>Estimated After-project Rate per 1000 volume</th>
-						<td className="text-end">{readableNumber(benefits.safety.after.bicycling.crash.lower)}</td>
-						<td className="text-end">{readableNumber(benefits.safety.after.bicycling.crash.mean)}</td>
-						<td className="text-end">{readableNumber(benefits.safety.after.bicycling.crash.upper)}</td>
-
-						<td className="text-end">{readableNumber(benefits.capita.after.bicycling.crash.lower)}</td>
-						<td className="text-end">{readableNumber(benefits.capita.after.bicycling.crash.mean)}</td>
-						<td className="text-end">{readableNumber(benefits.capita.after.bicycling.crash.upper)}</td>
-
-						<td className="text-end">{readableNumber(benefits.jobs.after.bicycling.crash.lower)}</td>
-						<td className="text-end">{readableNumber(benefits.jobs.after.bicycling.crash.mean)}</td>
-						<td className="text-end">{readableNumber(benefits.jobs.after.bicycling.crash.upper)}</td>
-					</tr>
-					<tr>
-						<th rowSpan="3" className="align-middle">Injuries</th>
-						<th>Change in Injuries</th>
-						<td className="text-end">{readableNumber(benefits.safety.change.bicycling.injury.lower)}</td>
-						<td className="text-end">{readableNumber(benefits.safety.change.bicycling.injury.mean)}</td>
-						<td className="text-end">{readableNumber(benefits.safety.change.bicycling.injury.upper)}</td>
-
-						<td className="text-end">{readableNumber(benefits.capita.change.bicycling.injury.lower)}</td>
-						<td className="text-end">{readableNumber(benefits.capita.change.bicycling.injury.mean)}</td>
-						<td className="text-end">{readableNumber(benefits.capita.change.bicycling.injury.upper)}</td>
-
-						<td className="text-end">{readableNumber(benefits.jobs.change.bicycling.injury.lower)}</td>
-						<td className="text-end">{readableNumber(benefits.jobs.change.bicycling.injury.mean)}</td>
-						<td className="text-end">{readableNumber(benefits.jobs.change.bicycling.injury.upper)}</td>
-					</tr>
-					<tr>
-						<th>Current Rate per 1000 volume</th>
-						<td className="text-end">{readableNumber(benefits.safety.before.bicycling.injury)}</td>
-						<td className="text-end">{readableNumber(benefits.safety.before.bicycling.injury)}</td>
-						<td className="text-end">{readableNumber(benefits.safety.before.bicycling.injury)}</td>
-
-						<td className="text-end">{readableNumber(benefits.capita.before.bicycling.injury)}</td>
-						<td className="text-end">{readableNumber(benefits.capita.before.bicycling.injury)}</td>
-						<td className="text-end">{readableNumber(benefits.capita.before.bicycling.injury)}</td>
-
-						<td className="text-end">{readableNumber(benefits.jobs.before.bicycling.injury)}</td>
-						<td className="text-end">{readableNumber(benefits.jobs.before.bicycling.injury)}</td>
-						<td className="text-end">{readableNumber(benefits.jobs.before.bicycling.injury)}</td>
-					</tr>
-					<tr>
-						<th>Estimated After-project Rate per 1000 volume</th>
-						<td className="text-end">{readableNumber(benefits.safety.after.bicycling.injury.lower)}</td>
-						<td className="text-end">{readableNumber(benefits.safety.after.bicycling.injury.mean)}</td>
-						<td className="text-end">{readableNumber(benefits.safety.after.bicycling.injury.upper)}</td>
-
-						<td className="text-end">{readableNumber(benefits.capita.after.bicycling.injury.lower)}</td>
-						<td className="text-end">{readableNumber(benefits.capita.after.bicycling.injury.mean)}</td>
-						<td className="text-end">{readableNumber(benefits.capita.after.bicycling.injury.upper)}</td>
-
-						<td className="text-end">{readableNumber(benefits.jobs.after.bicycling.injury.lower)}</td>
-						<td className="text-end">{readableNumber(benefits.jobs.after.bicycling.injury.mean)}</td>
-						<td className="text-end">{readableNumber(benefits.jobs.after.bicycling.injury.upper)}</td>
-					</tr>
-					<tr>
-						<th rowSpan="3" className="align-middle">Deaths</th>
-						<th>Change in Deaths</th>
-						<td className="text-end">{readableNumber(benefits.safety.change.bicycling.death.lower)}</td>
-						<td className="text-end">{readableNumber(benefits.safety.change.bicycling.death.mean)}</td>
-						<td className="text-end">{readableNumber(benefits.safety.change.bicycling.death.upper)}</td>
-
-						<td className="text-end">{readableNumber(benefits.capita.change.bicycling.death.lower)}</td>
-						<td className="text-end">{readableNumber(benefits.capita.change.bicycling.death.mean)}</td>
-						<td className="text-end">{readableNumber(benefits.capita.change.bicycling.death.upper)}</td>
-
-						<td className="text-end">{readableNumber(benefits.jobs.change.bicycling.death.lower)}</td>
-						<td className="text-end">{readableNumber(benefits.jobs.change.bicycling.death.mean)}</td>
-						<td className="text-end">{readableNumber(benefits.jobs.change.bicycling.death.upper)}</td>
-					</tr>
-					<tr>
-						<th>Current Rate per 1000 volume</th>
-						<td className="text-end">{readableNumber(benefits.safety.before.bicycling.death)}</td>
-						<td className="text-end">{readableNumber(benefits.safety.before.bicycling.death)}</td>
-						<td className="text-end">{readableNumber(benefits.safety.before.bicycling.death)}</td>
-
-						<td className="text-end">{readableNumber(benefits.capita.before.bicycling.death)}</td>
-						<td className="text-end">{readableNumber(benefits.capita.before.bicycling.death)}</td>
-						<td className="text-end">{readableNumber(benefits.capita.before.bicycling.death)}</td>
-
-						<td className="text-end">{readableNumber(benefits.jobs.before.bicycling.death)}</td>
-						<td className="text-end">{readableNumber(benefits.jobs.before.bicycling.death)}</td>
-						<td className="text-end">{readableNumber(benefits.jobs.before.bicycling.death)}</td>
-					</tr>
-					<tr>
-						<th>Estimated After-project Rate per 1000 volume</th>
-						<td className="text-end">{readableNumber(benefits.safety.after.bicycling.death.lower)}</td>
-						<td className="text-end">{readableNumber(benefits.safety.after.bicycling.death.mean)}</td>
-						<td className="text-end">{readableNumber(benefits.safety.after.bicycling.death.upper)}</td>
-
-						<td className="text-end">{readableNumber(benefits.capita.after.bicycling.death.lower)}</td>
-						<td className="text-end">{readableNumber(benefits.capita.after.bicycling.death.mean)}</td>
-						<td className="text-end">{readableNumber(benefits.capita.after.bicycling.death.upper)}</td>
-
-						<td className="text-end">{readableNumber(benefits.jobs.after.bicycling.death.lower)}</td>
-						<td className="text-end">{readableNumber(benefits.jobs.after.bicycling.death.mean)}</td>
-						<td className="text-end">{readableNumber(benefits.jobs.after.bicycling.death.upper)}</td>
-					</tr>
-					<tr>
-						<th rowSpan="9" className="align-middle">Pedestrian</th>
-						<th rowSpan="3" className="align-middle">Crashes</th>
-						<th>Change in Crashes</th>
-						<td className="text-end">{readableNumber(benefits.safety.change.walking.crash.lower)}</td>
-						<td className="text-end">{readableNumber(benefits.safety.change.walking.crash.mean)}</td>
-						<td className="text-end">{readableNumber(benefits.safety.change.walking.crash.upper)}</td>
-
-						<td className="text-end">{readableNumber(benefits.capita.change.walking.crash.lower)}</td>
-						<td className="text-end">{readableNumber(benefits.capita.change.walking.crash.mean)}</td>
-						<td className="text-end">{readableNumber(benefits.capita.change.walking.crash.upper)}</td>
-
-						<td className="text-end">{readableNumber(benefits.jobs.change.walking.crash.lower)}</td>
-						<td className="text-end">{readableNumber(benefits.jobs.change.walking.crash.mean)}</td>
-						<td className="text-end">{readableNumber(benefits.jobs.change.walking.crash.upper)}</td>
-					</tr>
-					<tr>
-						<th>Current Rate per 1000 volume</th>
-						<td className="text-end">{readableNumber(benefits.safety.before.walking.crash)}</td>
-						<td className="text-end">{readableNumber(benefits.safety.before.walking.crash)}</td>
-						<td className="text-end">{readableNumber(benefits.safety.before.walking.crash)}</td>
-
-						<td className="text-end">{readableNumber(benefits.capita.before.walking.crash)}</td>
-						<td className="text-end">{readableNumber(benefits.capita.before.walking.crash)}</td>
-						<td className="text-end">{readableNumber(benefits.capita.before.walking.crash)}</td>
-
-						<td className="text-end">{readableNumber(benefits.jobs.before.walking.crash)}</td>
-						<td className="text-end">{readableNumber(benefits.jobs.before.walking.crash)}</td>
-						<td className="text-end">{readableNumber(benefits.jobs.before.walking.crash)}</td>
-					</tr>
-					<tr>
-						<th>Estimated After-project Rate per 1000 volume</th>
-						<td className="text-end">{readableNumber(benefits.safety.after.walking.crash.lower)}</td>
-						<td className="text-end">{readableNumber(benefits.safety.after.walking.crash.mean)}</td>
-						<td className="text-end">{readableNumber(benefits.safety.after.walking.crash.upper)}</td>
-
-						<td className="text-end">{readableNumber(benefits.capita.after.walking.crash.lower)}</td>
-						<td className="text-end">{readableNumber(benefits.capita.after.walking.crash.mean)}</td>
-						<td className="text-end">{readableNumber(benefits.capita.after.walking.crash.upper)}</td>
-
-						<td className="text-end">{readableNumber(benefits.jobs.after.walking.crash.lower)}</td>
-						<td className="text-end">{readableNumber(benefits.jobs.after.walking.crash.mean)}</td>
-						<td className="text-end">{readableNumber(benefits.jobs.after.walking.crash.upper)}</td>
-					</tr>
-					<tr>
-						<th rowSpan="3" className="align-middle">Injuries</th>
-						<th>Change in Injuries</th>
-						<td className="text-end">{readableNumber(benefits.safety.change.walking.injury.lower)}</td>
-						<td className="text-end">{readableNumber(benefits.safety.change.walking.injury.mean)}</td>
-						<td className="text-end">{readableNumber(benefits.safety.change.walking.injury.upper)}</td>
-
-						<td className="text-end">{readableNumber(benefits.capita.change.walking.injury.lower)}</td>
-						<td className="text-end">{readableNumber(benefits.capita.change.walking.injury.mean)}</td>
-						<td className="text-end">{readableNumber(benefits.capita.change.walking.injury.upper)}</td>
-
-						<td className="text-end">{readableNumber(benefits.jobs.change.walking.injury.lower)}</td>
-						<td className="text-end">{readableNumber(benefits.jobs.change.walking.injury.mean)}</td>
-						<td className="text-end">{readableNumber(benefits.jobs.change.walking.injury.upper)}</td>
-					</tr>
-					<tr>
-						<th>Current Rate per 1000 volume</th>
-						<td className="text-end">{readableNumber(benefits.safety.before.walking.injury)}</td>
-						<td className="text-end">{readableNumber(benefits.safety.before.walking.injury)}</td>
-						<td className="text-end">{readableNumber(benefits.safety.before.walking.injury)}</td>
-
-						<td className="text-end">{readableNumber(benefits.capita.before.walking.injury)}</td>
-						<td className="text-end">{readableNumber(benefits.capita.before.walking.injury)}</td>
-						<td className="text-end">{readableNumber(benefits.capita.before.walking.injury)}</td>
-
-						<td className="text-end">{readableNumber(benefits.jobs.before.walking.injury)}</td>
-						<td className="text-end">{readableNumber(benefits.jobs.before.walking.injury)}</td>
-						<td className="text-end">{readableNumber(benefits.jobs.before.walking.injury)}</td>
-					</tr>
-					<tr>
-						<th>Estimated After-project Rate per 1000 volume</th>
-						<td className="text-end">{readableNumber(benefits.safety.after.walking.injury.lower)}</td>
-						<td className="text-end">{readableNumber(benefits.safety.after.walking.injury.mean)}</td>
-						<td className="text-end">{readableNumber(benefits.safety.after.walking.injury.upper)}</td>
-
-						<td className="text-end">{readableNumber(benefits.capita.after.walking.injury.lower)}</td>
-						<td className="text-end">{readableNumber(benefits.capita.after.walking.injury.mean)}</td>
-						<td className="text-end">{readableNumber(benefits.capita.after.walking.injury.upper)}</td>
-
-						<td className="text-end">{readableNumber(benefits.jobs.after.walking.injury.lower)}</td>
-						<td className="text-end">{readableNumber(benefits.jobs.after.walking.injury.mean)}</td>
-						<td className="text-end">{readableNumber(benefits.jobs.after.walking.injury.upper)}</td>
-					</tr>
-					<tr>
-						<th rowSpan="3" className="align-middle">Deaths</th>
-						<th>Change in Deaths</th>
-						<td className="text-end">{readableNumber(benefits.safety.change.walking.death.lower)}</td>
-						<td className="text-end">{readableNumber(benefits.safety.change.walking.death.mean)}</td>
-						<td className="text-end">{readableNumber(benefits.safety.change.walking.death.upper)}</td>
-
-						<td className="text-end">{readableNumber(benefits.capita.change.walking.death.lower)}</td>
-						<td className="text-end">{readableNumber(benefits.capita.change.walking.death.mean)}</td>
-						<td className="text-end">{readableNumber(benefits.capita.change.walking.death.upper)}</td>
-
-						<td className="text-end">{readableNumber(benefits.jobs.change.walking.death.lower)}</td>
-						<td className="text-end">{readableNumber(benefits.jobs.change.walking.death.mean)}</td>
-						<td className="text-end">{readableNumber(benefits.jobs.change.walking.death.upper)}</td>
-					</tr>
-					<tr>
-						<th>Current Rate per 1000 volume</th>
-						<td className="text-end">{readableNumber(benefits.safety.before.walking.death)}</td>
-						<td className="text-end">{readableNumber(benefits.safety.before.walking.death)}</td>
-						<td className="text-end">{readableNumber(benefits.safety.before.walking.death)}</td>
-
-						<td className="text-end">{readableNumber(benefits.capita.before.walking.death)}</td>
-						<td className="text-end">{readableNumber(benefits.capita.before.walking.death)}</td>
-						<td className="text-end">{readableNumber(benefits.capita.before.walking.death)}</td>
-
-						<td className="text-end">{readableNumber(benefits.jobs.before.walking.death)}</td>
-						<td className="text-end">{readableNumber(benefits.jobs.before.walking.death)}</td>
-						<td className="text-end">{readableNumber(benefits.jobs.before.walking.death)}</td>
-					</tr>
-					<tr>
-						<th>Estimated After-project Rate per 1000 volume</th>
-						<td className="text-end">{readableNumber(benefits.safety.after.walking.death.lower)}</td>
-						<td className="text-end">{readableNumber(benefits.safety.after.walking.death.mean)}</td>
-						<td className="text-end">{readableNumber(benefits.safety.after.walking.death.upper)}</td>
-
-						<td className="text-end">{readableNumber(benefits.capita.after.walking.death.lower)}</td>
-						<td className="text-end">{readableNumber(benefits.capita.after.walking.death.mean)}</td>
-						<td className="text-end">{readableNumber(benefits.capita.after.walking.death.upper)}</td>
-
-						<td className="text-end">{readableNumber(benefits.jobs.after.walking.death.lower)}</td>
-						<td className="text-end">{readableNumber(benefits.jobs.after.walking.death.mean)}</td>
-						<td className="text-end">{readableNumber(benefits.jobs.after.walking.death.upper)}</td>
-					</tr>
-				</tbody>
-			</table>
-
-			<table className="table table-bordered table-striped" id="safety-simple-change">
-				<thead>
-					<tr>
-						<th className="text-center">Mode</th>
-						<th className="text-center">Outcome</th>
-						<th className="text-center">{timeframe} Year Benefit</th>
-						<th className="text-center">{timeframe} Year Benefit / Capita</th>
-						<th className="text-center">{timeframe} Year Benefit / Jobs</th>
-					</tr>
-				</thead>
-				<tbody>
-					<tr>
-						<th rowSpan="3" className="align-middle">Bike</th>
-						<th className="align-middle">Crashes</th>
-						<td className="text-end">{readableNumber(benefits.safety.change.bicycling.crash.mean)}</td>
-						<td className="text-end">{readableNumber(benefits.capita.change.bicycling.crash.mean)}</td>
-						<td className="text-end">{readableNumber(benefits.jobs.change.bicycling.crash.mean)}</td>
-					</tr>
-					<tr>
-						<th className="align-middle">Injuries</th>
-						<td className="text-end">{readableNumber(benefits.safety.change.bicycling.injury.mean)}</td>
-						<td className="text-end">{readableNumber(benefits.capita.change.bicycling.injury.mean)}</td>
-						<td className="text-end">{readableNumber(benefits.jobs.change.bicycling.injury.mean)}</td>
-					</tr>
-					<tr>
-						<th className="align-middle">Deaths</th>
-						<td className="text-end">{readableNumber(benefits.safety.change.bicycling.death.mean)}</td>
-						<td className="text-end">{readableNumber(benefits.capita.change.bicycling.death.mean)}</td>
-						<td className="text-end">{readableNumber(benefits.jobs.change.bicycling.death.mean)}</td>
-					</tr>
-					<tr>
-						<th rowSpan="3" className="align-middle">Pedestrian</th>
-						<th className="align-middle">Crashes</th>
-						<td className="text-end">{readableNumber(benefits.safety.change.walking.crash.mean)}</td>
-						<td className="text-end">{readableNumber(benefits.capita.change.walking.crash.mean)}</td>
-						<td className="text-end">{readableNumber(benefits.jobs.change.walking.crash.mean)}</td>
-					</tr>
-					<tr>
-						<th className="align-middle">Injuries</th>
-						<td className="text-end">{readableNumber(benefits.safety.change.walking.injury.mean)}</td>
-						<td className="text-end">{readableNumber(benefits.capita.change.walking.injury.mean)}</td>
-						<td className="text-end">{readableNumber(benefits.jobs.change.walking.injury.mean)}</td>
-					</tr>
-					<tr>
-						<th className="align-middle">Deaths</th>
-						<td className="text-end">{readableNumber(benefits.safety.change.walking.death.mean)}</td>
-						<td className="text-end">{readableNumber(benefits.capita.change.walking.death.mean)}</td>
-						<td className="text-end">{readableNumber(benefits.jobs.change.walking.death.mean)}</td>
-					</tr>
-				</tbody>
-			</table>
-
-			<table className="table table-bordered table-striped d-none" id="safety-simple-rates">
-				<thead>
-					<tr>
-						<th className="text-center">Mode</th>
-						<th className="text-center">Outcome</th>
-						<th className="text-center"></th>
-						<th className="text-center">Benefit</th>
-						<th className="text-center">Benefit / Capita</th>
-						<th className="text-center">Benefit / Jobs</th>
-					</tr>
-				</thead>
-				<tbody>
-					<tr>
-						<th rowSpan="6" className="align-middle">Bike</th>
-						<th rowSpan="2" className="align-middle">Crashes</th>
-						<th>Current Rate per 1000 volume</th>
-						<td className="text-end">{readableNumber(benefits.safety.before.bicycling.crash)}</td>
-						<td className="text-end">{readableNumber(benefits.capita.before.bicycling.crash)}</td>
-						<td className="text-end">{readableNumber(benefits.jobs.before.bicycling.crash)}</td>
-					</tr>
-					<tr>
-						<th>Estimated After-project Rate per 1000 volume</th>
-						<td className="text-end">{readableNumber(benefits.safety.after.bicycling.crash.mean)}</td>
-						<td className="text-end">{readableNumber(benefits.capita.after.bicycling.crash.mean)}</td>
-						<td className="text-end">{readableNumber(benefits.jobs.after.bicycling.crash.mean)}</td>
-					</tr>
-					<tr>
-						<th rowSpan="2" className="align-middle">Injuries</th>
-						<th>Current Rate per 1000 volume</th>
-						<td className="text-end">{readableNumber(benefits.safety.before.bicycling.injury)}</td>
-						<td className="text-end">{readableNumber(benefits.capita.before.bicycling.injury)}</td>
-						<td className="text-end">{readableNumber(benefits.jobs.before.bicycling.injury)}</td>
-					</tr>
-					<tr>
-						<th>Estimated After-project Rate per 1000 volume</th>
-						<td className="text-end">{readableNumber(benefits.safety.after.bicycling.injury.mean)}</td>
-						<td className="text-end">{readableNumber(benefits.capita.after.bicycling.injury.mean)}</td>
-						<td className="text-end">{readableNumber(benefits.jobs.after.bicycling.injury.mean)}</td>
-					</tr>
-					<tr>
-						<th rowSpan="2" className="align-middle">Deaths</th>
-						<th>Current Rate per 1000 volume</th>
-						<td className="text-end">{readableNumber(benefits.safety.before.bicycling.death)}</td>
-						<td className="text-end">{readableNumber(benefits.capita.before.bicycling.death)}</td>
-						<td className="text-end">{readableNumber(benefits.jobs.before.bicycling.death)}</td>
-					</tr>
-					<tr>
-						<th>Estimated After-project Rate per 1000 volume</th>
-						<td className="text-end">{readableNumber(benefits.safety.after.bicycling.death.mean)}</td>
-						<td className="text-end">{readableNumber(benefits.capita.after.bicycling.death.mean)}</td>
-						<td className="text-end">{readableNumber(benefits.jobs.after.bicycling.death.mean)}</td>
-					</tr>
-					<tr>
-						<th rowSpan="6" className="align-middle">Pedestrian</th>
-						<th rowSpan="2" className="align-middle">Crashes</th>
-						<th>Current Rate per 1000 volume</th>
-						<td className="text-end">{readableNumber(benefits.safety.before.walking.crash)}</td>
-						<td className="text-end">{readableNumber(benefits.capita.before.walking.crash)}</td>
-						<td className="text-end">{readableNumber(benefits.jobs.before.walking.crash)}</td>
-					</tr>
-					<tr>
-						<th>Estimated After-project Rate per 1000 volume</th>
-						<td className="text-end">{readableNumber(benefits.safety.after.walking.crash.mean)}</td>
-						<td className="text-end">{readableNumber(benefits.capita.after.walking.crash.mean)}</td>
-						<td className="text-end">{readableNumber(benefits.jobs.after.walking.crash.mean)}</td>
-					</tr>
-					<tr>
-						<th rowSpan="2" className="align-middle">Injuries</th>
-						<th>Current Rate per 1000 volume</th>
-						<td className="text-end">{readableNumber(benefits.safety.before.walking.injury)}</td>
-						<td className="text-end">{readableNumber(benefits.capita.before.walking.injury)}</td>
-						<td className="text-end">{readableNumber(benefits.jobs.before.walking.injury)}</td>
-					</tr>
-					<tr>
-						<th>Estimated After-project Rate per 1000 volume</th>
-						<td className="text-end">{readableNumber(benefits.safety.after.walking.injury.mean)}</td>
-						<td className="text-end">{readableNumber(benefits.capita.after.walking.injury.mean)}</td>
-						<td className="text-end">{readableNumber(benefits.jobs.after.walking.injury.mean)}</td>
-					</tr>
-					<tr>
-						<th rowSpan="2" className="align-middle">Deaths</th>
-						<th>Current Rate per 1000 volume</th>
-						<td className="text-end">{readableNumber(benefits.safety.before.walking.death)}</td>
-						<td className="text-end">{readableNumber(benefits.capita.before.walking.death)}</td>
-						<td className="text-end">{readableNumber(benefits.jobs.before.walking.death)}</td>
-					</tr>
-					<tr>
-						<th>Estimated After-project Rate per 1000 volume</th>
-						<td className="text-end">{readableNumber(benefits.safety.after.walking.death.mean)}</td>
-						<td className="text-end">{readableNumber(benefits.capita.after.walking.death.mean)}</td>
-						<td className="text-end">{readableNumber(benefits.jobs.after.walking.death.mean)}</td>
-					</tr>
-				</tbody>
-			</table>
-			</>
-		);
-	};
+    </div>
+    </>
+  );
 }
 
 export default SafetyQuantitative;

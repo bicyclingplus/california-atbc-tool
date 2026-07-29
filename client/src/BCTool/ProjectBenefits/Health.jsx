@@ -2,130 +2,81 @@ import React from 'react';
 
 import { readableNumber } from '../helpers/formatting';
 
-class HealthBenefits extends React.Component {
+import './Health.css';
 
-  render() {
+const HealthBenefits = (props) => {
 
-    const {
-      benefits,
-      subtype,
-      timeframe,
-    } = this.props;
+  const {
+    benefits,
+    subtype,
+  } = props;
 
-    return (
-      <>
-      <h5 className="mt-4">Physical Activity</h5>
+  return (
+    <>
+    <div className="colored-header teal">
+      <svg viewBox="0 0 24 24" fill="none" stroke="#ffffff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M3 12h3l2-5 4 10 2-5h2"></path>
+        <circle cx="18" cy="12" r="1.6" fill="#ffffff"></circle>
+      </svg>
+      Physical Activity Benefits
+    </div>
 
-      <table className="table table-bordered" id="health-simple">
-        <thead>
-          <tr>
-            <th><br /></th>
-            <th className="text-center">{timeframe} Year Marginal Metabolic Equivalent of Task (MMET) Increase</th>
-            <th className="text-center">{timeframe} Year MMET Increase / Capita</th>
-            <th className="text-center">{timeframe} Year MMET Increase / Jobs</th>
-          </tr>
-        </thead>
-        <tbody>
-          { subtype !== 'pedestrian-only' ?
-          <tr className="striped-row">
-            <th>Bicyling</th>
-            <td className="text-end">{readableNumber(benefits.miles.bike.mean)}</td>
-            <td className="text-end">{readableNumber(benefits.capita.bike.mean)}</td>
-            <td className="text-end">{readableNumber(benefits.jobs.bike.mean)}</td>
-          </tr>
-          : null }
-          { subtype !== 'bike-only' ?
-          <tr>
-            <th>Walking</th>
-            <td className="text-end">{readableNumber(benefits.miles.pedestrian.mean)}</td>
-            <td className="text-end">{readableNumber(benefits.capita.pedestrian.mean)}</td>
-            <td className="text-end">{readableNumber(benefits.jobs.pedestrian.mean)}</td>
-          </tr>
-          : null }
-          <tr className="striped-row">
-            <th>TOTAL</th>
-            <td className="text-end">{readableNumber(benefits.miles.total.mean)}</td>
-            <td className="text-end">{readableNumber(benefits.capita.total.mean)}</td>
-            <td className="text-end">{readableNumber(benefits.jobs.total.mean)}</td>
-          </tr>
-        </tbody>
-      </table>
+    <div className="info-bar">
+      <span className="info-i">i</span>
+      A Marginal Metabolic Equivalent of Task (MMET) measures the extra physical effort from walking or biking beyond just sitting still.
+    </div>
 
-      <table className="table table-bordered d-none" id="health">
+    <div className="mmet-row">
+      <div className="mmet-card">
+        <div className="lbl">Annual MMET increase</div>
+        <div className="val">{readableNumber(benefits.raw.total.mean)}</div>
+      </div>
+      <div className="mmet-card">
+        <div className="lbl">Annual MMET increase per person</div>
+        <div className="val">TODO</div>
+      </div>
+      <table className="mmet-tbl">
         <thead>
           <tr>
             <th></th>
-            <th colSpan="3" className="text-center">Marginal Metabolic Equivalent of Task (MMET) Increase</th>
-            <th colSpan="3" className="text-center">MMET Increase / Capita</th>
-            <th colSpan="3" className="text-center">MMET Increase / Jobs</th>
-          </tr>
-          <tr>
-            <th></th>
-            <th className="text-center">Lower</th>
-            <th className="text-center">Mean</th>
-            <th className="text-center">Upper</th>
-            <th className="text-center">Lower</th>
-            <th className="text-center">Mean</th>
-            <th className="text-center">Upper</th>
-            <th className="text-center">Lower</th>
-            <th className="text-center">Mean</th>
-            <th className="text-center">Upper</th>
+            <th>Annual MMET increase</th>
+            <th>Annual MMET increase per person</th>
           </tr>
         </thead>
         <tbody>
-          { subtype !== 'pedestrian-only' ?
-          <tr className="striped-row">
-            <th>Bicyling</th>
-            <td className="text-end">{readableNumber(benefits.miles.bike.lower)}</td>
-            <td className="text-end">{readableNumber(benefits.miles.bike.mean)}</td>
-            <td className="text-end">{readableNumber(benefits.miles.bike.upper)}</td>
-
-            <td className="text-end">{readableNumber(benefits.capita.bike.lower)}</td>
-            <td className="text-end">{readableNumber(benefits.capita.bike.mean)}</td>
-            <td className="text-end">{readableNumber(benefits.capita.bike.upper)}</td>
-
-            <td className="text-end">{readableNumber(benefits.jobs.bike.lower)}</td>
-            <td className="text-end">{readableNumber(benefits.jobs.bike.mean)}</td>
-            <td className="text-end">{readableNumber(benefits.jobs.bike.upper)}</td>
-          </tr>
-          : null }
-          { subtype !== 'bike-only' ?
+          { subtype !== "pedestrian-only" ?
           <tr>
-            <th>Walking</th>
-            <td className="text-end">{readableNumber(benefits.miles.pedestrian.lower)}</td>
-            <td className="text-end">{readableNumber(benefits.miles.pedestrian.mean)}</td>
-            <td className="text-end">{readableNumber(benefits.miles.pedestrian.upper)}</td>
-
-            <td className="text-end">{readableNumber(benefits.capita.pedestrian.lower)}</td>
-            <td className="text-end">{readableNumber(benefits.capita.pedestrian.mean)}</td>
-            <td className="text-end">{readableNumber(benefits.capita.pedestrian.upper)}</td>
-
-            <td className="text-end">{readableNumber(benefits.jobs.pedestrian.lower)}</td>
-            <td className="text-end">{readableNumber(benefits.jobs.pedestrian.mean)}</td>
-            <td className="text-end">{readableNumber(benefits.jobs.pedestrian.upper)}</td>
+            <td>
+              <svg viewBox="0 0 24 24" fill="#3aa9a3">
+                <circle cx="5.5" cy="17.5" r="3.5" fill="none" stroke="#3aa9a3" strokeWidth="1.7"></circle>
+                <circle cx="18.5" cy="17.5" r="3.5" fill="none" stroke="#3aa9a3" strokeWidth="1.7"></circle>
+                <path d="M15 4l-1 3h-3l-2 5 4 2 2-4 3 4" fill="none" stroke="#3aa9a3" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round"></path>
+                <circle cx="16" cy="3.5" r="1.2"></circle>
+              </svg>
+            </td>
+            <td>{readableNumber(benefits.raw.bike.mean)}</td>
+            <td>TODO</td>
           </tr>
           : null }
-          <tr className="striped-row">
-            <th>TOTAL</th>
-            <td className="text-end">{readableNumber(benefits.miles.total.lower)}</td>
-            <td className="text-end">{readableNumber(benefits.miles.total.mean)}</td>
-            <td className="text-end">{readableNumber(benefits.miles.total.upper)}</td>
 
-            <td className="text-end">{readableNumber(benefits.capita.total.lower)}</td>
-            <td className="text-end">{readableNumber(benefits.capita.total.mean)}</td>
-            <td className="text-end">{readableNumber(benefits.capita.total.upper)}</td>
-
-            <td className="text-end">{readableNumber(benefits.jobs.total.lower)}</td>
-            <td className="text-end">{readableNumber(benefits.jobs.total.mean)}</td>
-            <td className="text-end">{readableNumber(benefits.jobs.total.upper)}</td>
+          { subtype !== "bike-only" ?
+          <tr>
+            <td>
+              <svg viewBox="0 0 24 24" fill="#3aa9a3">
+                <circle cx="13" cy="4" r="2"></circle>
+                <path d="M11 22l1-7-2-3v-4l3-2 3 4 2 1v 2l-2-1-2-1-1 1 2 3 1 7" fill="#3aa9a3"></path>
+              </svg>
+            </td>
+            <td>{readableNumber(benefits.raw.pedestrian.mean)}</td>
+            <td>TODO</td>
           </tr>
+          : null }
+
         </tbody>
       </table>
-      </>
-    );
-  }
-
+    </div>
+    </>
+  );
 }
 
 export default HealthBenefits;
-

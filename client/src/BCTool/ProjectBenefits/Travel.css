@@ -1,0 +1,198 @@
+.travel-block {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 36px;
+  margin-bottom: 28px;
+}
+.travel-head {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 12px;
+  flex-wrap: wrap;
+}
+.travel-icon-box {
+  width: 38px;
+  height: 38px;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+.travel-icon-box.biking {
+  background: #2d6a3f;
+}
+.travel-icon-box.walking {
+  background: #4a2d7a;
+}
+.travel-icon-box svg {
+  width: 24px;
+  height: 24px;
+  fill: #ffffff;
+}
+.travel-title {
+  font-size: 18px;
+  font-weight: 700;
+  color: #1d2939;
+}
+.travel-sub {
+  font-size: 12px;
+  color: #6b7c8c;
+}
+.pct-badge {
+  background: #d1f5dc;
+  color: #166534;
+  padding: 6px 14px;
+  border-radius: 22px;
+  font-size: 13px;
+  font-weight: 600;
+  margin-left: auto;
+}
+.pct-badge.walk {
+  background: #d1f5dc;
+  color: #166534;
+}
+.exist-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+  margin-bottom: 10px;
+}
+.exist-card {
+  background: #f3f3f3;
+  padding: 8px 14px;
+  border-radius: 4px;
+  font-size: 13px;
+  color: #1d2939;
+}
+.exist-card strong {
+  font-weight: 700;
+}
+table.bmt-tbl {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+.bmt-tbl thead th {
+  background: #f3f3f3;
+  color: #1d2939;
+  font-weight: 700;
+  padding: 10px 14px;
+  text-align: right;
+  border-bottom: 1px solid #e5e5e5;
+}
+.bmt-tbl thead th:first-child {
+  text-align: left;
+  background: #f3f3f3;
+}
+.bmt-tbl tbody td {
+  padding: 8px 14px;
+  border-bottom: 1px solid #ececec;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+.bmt-tbl tbody td:first-child {
+  text-align: left;
+}
+.bmt-tbl .increase-row td {
+  font-weight: 700;
+  padding-top: 12px;
+  padding-bottom: 6px;
+  border-bottom: none;
+}
+.bmt-tbl .increase-row.bike td {
+  color: #2d6a3f;
+}
+.bmt-tbl .increase-row.walk td {
+  color: #4a2d7a;
+}
+.bmt-tbl .total-row td {
+  font-weight: 700;
+  background: #f8f8f8;
+}
+
+/* ===== STACKED BAR CHARTS ===== */
+.chart-area {
+  height: 320px;
+  position: relative;
+  padding-left: 30px;
+  padding-bottom: 24px;
+}
+.chart-legend {
+  display: flex;
+  gap: 14px;
+  margin-bottom: 12px;
+  flex-wrap: wrap;
+  font-size: 12px;
+  color: #4a5567;
+}
+.legend-item {
+  display: flex;
+  align-items:
+  center; gap: 5px;
+}
+.legend-dot {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  display: inline-block;
+}
+.chart-body {
+  height: 100%;
+  display: flex;
+  align-items: flex-end;
+  gap: 40px;
+  padding-bottom: 28px;
+  border-bottom: 1px solid #e5e5e5;
+  position: relative;
+}
+.chart-yaxis {
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 28px;
+  width: 30px;
+  display: flex;
+  flex-direction: column-reverse;
+  justify-content: space-between;
+  font-size: 11px;
+  color: #6b7c8c;
+}
+.chart-yaxis span {
+  transform: translateY(50%);
+}
+.bar-wrap {
+  flex: 1;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  position: relative;
+}
+.bar-label {
+  position: absolute;
+  bottom: -22px;
+  width: 100%;
+  text-align: center;
+  font-size: 12px;
+  color: #4a5567;
+}
+.stack-seg {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #1d2939;
+  font-size: 13px;
+  font-weight: 500;
+  border-top-left-radius: 0;
+  border-top-right-radius: 0;
+}
+.stack-seg.top {
+  border-top-left-radius: 6px;
+  border-top-right-radius: 6px;
+}
+.stack-seg.white-text {
+  color: #ffffff;
+}

@@ -1,35 +1,29 @@
 import React from 'react';
 
-class ProjectQualitative extends React.Component {
+const ProjectQualitative = (props) => {
 
-	render = () => {
+  const { benefits } = props;
 
-		let { benefits } = this.props;
-
-		return (
-			<>
-			<h4 className="mt-4 section-sub-header">General Benefits</h4>
-            <table className="table table-striped" id="project-qualitative">
-            	<thead>
-            		<tr>
-            			<th>Theme</th>
-            			<th>Description</th>
-            		</tr>
-            	</thead>
-            	<tbody>
-            	{
-            		benefits.map((benefit, idx) => (
-            			<tr key={idx}>
-	            			<td>{benefit.name}</td>
-	            			<td>{benefit.description}</td>
-	            		</tr>
-            		))
-            	}
-            	</tbody>
-            </table>
-			</>
-		);
-	};
+  return (
+    <>
+    <div className="section-bar">Section 4: <strong>General Benefits</strong></div>
+    <table className="general-tbl">
+      <thead>
+        <tr><th>Theme</th><th>Description</th></tr>
+      </thead>
+      <tbody>
+        {
+          benefits.map((benefit, idx) => (
+            <tr key={idx}>
+              <td>{benefit.name}</td>
+              <td>{benefit.description}</td>
+            </tr>
+          ))
+        }
+      </tbody>
+    </table>
+    </>
+  );
 }
 
 export default ProjectQualitative;

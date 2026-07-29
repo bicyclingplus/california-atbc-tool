@@ -49,6 +49,8 @@ const ExportPDF = (state, project_id, date) => {
 		`Length: ${readableNumber(totalLength)} ft (${readableNumber(totalLength/5280, 2)} mi)`,
 	], 10, 10);
 
+	/*
+
 	// travel benefits
 	doc.addPage();
 	doc.text([
@@ -117,6 +119,8 @@ const ExportPDF = (state, project_id, date) => {
 	doc.addPage();
 	doc.text(['Physical Activity'], 10, 10);
 	doc.autoTable({ html: '#health', startY: 20});
+
+	*/
 
 	doc.save("caltrans-bc-tool-export.pdf");
 };

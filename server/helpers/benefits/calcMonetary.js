@@ -51,7 +51,7 @@ const calcMonetary = async (
     walk_pop_factors,
   );
 
-  console.log(util.inspect(monetary, { showHidden: true, depth: null, colors: true }));
+  // console.log(util.inspect(monetary, { showHidden: true, depth: null, colors: true }));
 
   return monetary;
 };
