@@ -17,17 +17,35 @@ docker compose exec -T db sh -c 'mongorestore --archive --gzip --nsInclude="bcto
 docker compose exec db mongosh -u bctool -p
 
 # indexes
+
+for some reason the spatial indexes sometimes don't get created properly by the insert
+script and they need to be dropped and recreated in order to actually work
+
+## NETWORK WAYS
+
+db.ways.dropIndex("geometry_1_2dsphere_1");
+
 db.ways.createIndex({"geometry": "2dsphere"});
 db.ways.createIndex({'properties.edge_uid': 1}, {unique: true});
 db.ways.createIndex({'properties.source': 1});
 db.ways.createIndex({'properties.target': 1});
 
+## NETWORK INTERSECTIONS
+
+db.intersections.dropIndex("geometry_1_2dsphere_1");
+
 db.intersections.createIndex({"geometry": "2dsphere"});
 db.intersections.createIndex({'properties.node_id': 1}, {unique: true});
+
+## CENSUS TRACTS FOR POPULATION FACTORS FOR MONETARY BENEFITS
+
+db.tracts.dropIndex("geometry_2dsphere");
 
 db.tracts.createIndex({"geometry": "2dsphere"});
 db.tracts.createIndex({'properties.GEOID': 1}, {unique: true});
 
+## CONTEXT BLOCKS FOR USER ADDED INTERSECTIONS/WAYS VOLUME
+
+db.blocks.dropIndex("geometry_2dsphere");
+
 db.blocks.createIndex({"geometry": "2dsphere"});
-
-
