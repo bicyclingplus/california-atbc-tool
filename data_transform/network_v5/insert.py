@@ -48,3 +48,23 @@ indexes = [
 ]
 
 collection_name.create_indexes(indexes)
+
+print('Starting blocks')
+
+collection_name = dbname['blocks']
+collection_name.delete_many({})
+collection_name.drop_indexes()
+
+blocks_files = [
+    "2026_07_24_context_blocks.geojson",
+]
+
+for file in blocks_files:
+    geojson = json.load(open(os.path.join('input', file)))
+    collection_name.insert_many(geojson['features'])
+
+indexes = [
+    IndexModel(['geometry', GEOSPHERE]),
+]
+
+collection_name.create_indexes(indexes)

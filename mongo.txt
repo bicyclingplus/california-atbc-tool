@@ -28,4 +28,6 @@ db.intersections.createIndex({'properties.node_id': 1}, {unique: true});
 db.tracts.createIndex({"geometry": "2dsphere"});
 db.tracts.createIndex({'properties.GEOID': 1}, {unique: true});
 
+db.blocks.createIndex({"geometry": "2dsphere"});
+
 
