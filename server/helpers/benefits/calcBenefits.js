@@ -5,6 +5,7 @@ import calcEmissions from './calcEmissions.js';
 import calcHealth from './calcHealth.js';
 import calcSafetyQualitative from './calcSafetyQualitative.js';
 import calcSafetyQuantitative from './calcSafetyQuantitative.js';
+import calcPopulation from './calcPopulation.js';
 
 const calcBenefits = (
 	project_type,
@@ -37,6 +38,9 @@ const calcBenefits = (
       	existingTravel,
       	project_length,
       	num_intersections);
+
+      // project population by mode
+      benefits.population = calcPopulation(benefits.travel.miles);
 
       benefits.vmtReductions = calcVMTReductions(
       	benefits.travel, project_time_frame, project_transit);

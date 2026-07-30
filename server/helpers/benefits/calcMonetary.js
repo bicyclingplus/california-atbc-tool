@@ -38,7 +38,8 @@ const calcMonetary = async (
   monetary.health = calcHealthMonetary(
     timeframe,
     county_life_expectancy,
-    benefits,
+    benefits.population,
+    benefits.health.raw,
     bike_pop_factors,
     walk_pop_factors,
   );
@@ -46,7 +47,7 @@ const calcMonetary = async (
   monetary.safety = calcSafetyMonetary(
     timeframe,
     county_life_expectancy,
-    benefits.safetyQuantitative,
+    benefits.safetyQuantitative.raw.change,
     bike_pop_factors,
     walk_pop_factors,
   );

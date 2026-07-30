@@ -2,8 +2,6 @@ import { createRequire } from "module";
 
 import {
   VALUE_STATISTICAL_LIFE,
-  AVG_BIKE_DIST,
-  AVG_WALK_DIST,
   ESTIMATES,
   MMET_BASE,
   MMET_CAP,
@@ -64,8 +62,8 @@ const _calc_DALYs_recovered = (
 const _calc = (
   project_time_frame,
   county_life_expectancy,
-  daily_bmt,
-  daily_wmt,
+  bike_pop,
+  walk_pop,
   bike_mmet,
   walk_mmet,
   bike_pop_factors,
@@ -75,22 +73,12 @@ const _calc = (
   // value of a DALY for the project county
   const DALY_value = VALUE_STATISTICAL_LIFE / county_life_expectancy;
 
-  // project population by mode
-  const bike_pop = daily_bmt / AVG_BIKE_DIST;
-  const walk_pop = daily_wmt / AVG_WALK_DIST;
-
   // project weekly mmet per capita by mode
   let bike_mmet_cap = (bike_mmet / (365 * bike_pop)) * 7;
   let walk_mmet_cap = (walk_mmet / (365 * walk_pop)) * 7;
 
   bike_mmet_cap = Math.min(MMET_BASE + bike_mmet_cap, MMET_CAP);
   walk_mmet_cap = Math.min(MMET_BASE + walk_mmet_cap, MMET_CAP);
-
-  // this is done in sampath's code but not actually used
-  // i can replicate his output without it, but it's likely
-  // supposed to happen and was a mistake on his side
-  // bike_mmet_cap = bike_mmet_cap - MMET_BASE;
-  // walk_mmet_cap = walk_mmet_cap - MMET_BASE;
 
   // PAF
   const base_PAF = {};
@@ -149,7 +137,8 @@ const _calc = (
 const calc = (
   project_time_frame,
   county_life_expectancy,
-  benefits,
+  population,
+  health_benefits,
   bike_pop_factors,
   walk_pop_factors,
 ) => {
@@ -160,23 +149,15 @@ const calc = (
     total: {},
   }
 
-  const {
-    miles: travelBenefits,
-  } = benefits.travel;
-
-  const {
-    raw: healthBenefits,
-  } = benefits.health;
-
   for(const estimate of ESTIMATES) {
 
     const result = _calc(
       project_time_frame,
       county_life_expectancy,
-      travelBenefits.bike.total[estimate],
-      travelBenefits.pedestrian.total[estimate],
-      healthBenefits.bike[estimate],
-      healthBenefits.pedestrian[estimate],
+      population.bike[estimate],
+      population.walk[estimate],
+      health_benefits.bike[estimate],
+      health_benefits.pedestrian[estimate],
       bike_pop_factors,
       walk_pop_factors,
     )

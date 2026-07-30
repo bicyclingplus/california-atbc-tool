@@ -9,18 +9,13 @@ const Increase = (props) => {
     subtype,
   } = props;
 
-  const totalIncrease = (
-    benefits.miles.bike.total.mean +
-    benefits.miles.pedestrian.total.mean
-  );
-
   return (
     <>
     <div className="stat-row">
       <div className="stat-card plain">
         <div className="stat-text">
           <div className="lbl">Total daily increase in users</div>
-          <div className="val">{readableNumber(totalIncrease)}</div>
+          <div className="val">{readableNumber(benefits.total.mean)}</div>
         </div>
       </div>
 
@@ -36,7 +31,7 @@ const Increase = (props) => {
         </div>
         <div className="stat-text">
           <div className="lbl">Average daily increase in bicycle users</div>
-          <div className="val">{readableNumber(benefits.miles.bike.total.mean)}</div>
+          <div className="val">{readableNumber(benefits.bike.mean)}</div>
         </div>
       </div>
       : null }
@@ -51,7 +46,7 @@ const Increase = (props) => {
         </div>
         <div className="stat-text">
           <div className="lbl">Average daily increase in pedestrians</div>
-          <div className="val">{readableNumber(benefits.miles.pedestrian.total.mean)}</div>
+          <div className="val">{readableNumber(benefits.walk.mean)}</div>
         </div>
       </div>
       : null }

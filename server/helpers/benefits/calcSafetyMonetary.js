@@ -74,31 +74,26 @@ const _calc = (
 const calc = (
   project_time_frame,
   county_life_expectancy,
-  benefits,
+  safety_benefits,
   bike_pop_factors,
   walk_pop_factors,
 ) => {
   const monetary = {}
 
+  const {
+    bicycling,
+    walking,
+  } = safety_benefits;
+
   for(const estimate of ESTIMATES) {
-
-    const {
-      bicycling,
-      walking,
-    } = benefits.raw.change;
-
-    const bike_injuries = bicycling.injury[estimate];
-    const walk_injuries = walking.injury[estimate];
-    const bike_fatalities = bicycling.death[estimate];
-    const walk_fatalities = walking.death[estimate];
 
     monetary[estimate] = _calc(
       project_time_frame,
       county_life_expectancy,
-      bike_injuries,
-      walk_injuries,
-      bike_fatalities,
-      walk_fatalities,
+      bicycling.injury[estimate],
+      walking.injury[estimate],
+      bicycling.death[estimate],
+      walking.death[estimate],
       bike_pop_factors,
       walk_pop_factors,
     );

@@ -22,7 +22,7 @@ const Quantitative = (props) => {
     </div>
 
     <Increase
-      benefits={benefits.travel}
+      benefits={benefits.population}
       subtype={subtype}
     />
 
