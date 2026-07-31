@@ -1,5 +1,8 @@
 import calcProjectQualitative from './calcProjectQualitative.js';
-import calcTravel from './calcTravel.js';
+import {
+	calcTravelMiles,
+	calcTravelCapita,
+} from './calcTravel.js';
 import calcVMTReductions from './calcVMTReductions.js';
 import calcEmissions from './calcEmissions.js';
 import calcHealth from './calcHealth.js';
@@ -33,7 +36,7 @@ const calcBenefits = (
 
 		if(!hasOnlyUserMapSelections) {
 
-      benefits.travel = calcTravel(
+      benefits.travel = calcTravelMiles(
       	selectedInfrastructure,
       	existingTravel,
       	project_length,
@@ -41,6 +44,9 @@ const calcBenefits = (
 
       // project population by mode
       benefits.population = calcPopulation(benefits.travel.miles);
+
+      benefits.travel.capita = calcTravelCapita(
+      	benefits.travel.miles, benefits.population);
 
       benefits.vmtReductions = calcVMTReductions(
       	benefits.travel, project_time_frame, project_transit);

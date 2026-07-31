@@ -46,7 +46,7 @@ const Increase = (props) => {
         </div>
         <div className="stat-text">
           <div className="lbl">Average daily increase in pedestrians</div>
-          <div className="val">{readableNumber(benefits.walk.mean)}</div>
+          <div className="val">{readableNumber(benefits.pedestrian.mean)}</div>
         </div>
       </div>
       : null }

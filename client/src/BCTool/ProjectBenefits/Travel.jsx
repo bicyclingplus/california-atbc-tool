@@ -83,27 +83,27 @@ const Travel = (props) => {
             <tr>
               <td>&nbsp;&nbsp;Car Shift</td>
               <td>{readableNumber(benefits.miles.bike.carShift.mean)}</td>
-              <td>TODO</td>
+              <td>{benefits.capita.bike.carShift.mean.toFixed(3)}</td>
             </tr>
             <tr>
               <td>&nbsp;&nbsp;Route Shift</td>
               <td>{readableNumber(benefits.miles.bike.routeShift.mean)}</td>
-              <td>TODO</td>
+              <td>{benefits.capita.bike.routeShift.mean.toFixed(3)}</td>
             </tr>
             <tr>
               <td>&nbsp;&nbsp;Induced Travel</td>
               <td>{readableNumber(benefits.miles.bike.inducedTravel.mean)}</td>
-              <td>TODO</td>
+              <td>{benefits.capita.bike.inducedTravel.mean.toFixed(3)}</td>
             </tr>
             <tr>
               <td>&nbsp;&nbsp;Shift from Other Modes</td>
               <td>{readableNumber(benefits.miles.bike.otherShift.mean)}</td>
-              <td>TODO</td>
+              <td>{benefits.capita.bike.otherShift.mean.toFixed(3)}</td>
             </tr>
             <tr className="total-row">
               <td>Total</td>
               <td>{readableNumber(benefits.miles.bike.total.mean)}</td>
-              <td>TODO</td>
+              <td>{benefits.capita.bike.total.mean.toFixed(3)}</td>
             </tr>
           </tbody>
         </table>
@@ -179,27 +179,27 @@ const Travel = (props) => {
             <tr>
               <td>&nbsp;&nbsp;Car Shift</td>
               <td>{readableNumber(benefits.miles.pedestrian.carShift.mean)}</td>
-              <td>TODO</td>
+              <td>{benefits.capita.pedestrian.carShift.mean.toFixed(3)}</td>
             </tr>
             <tr>
               <td>&nbsp;&nbsp;Route Shift</td>
               <td>{readableNumber(benefits.miles.pedestrian.routeShift.mean)}</td>
-              <td>TODO</td>
+              <td>{benefits.capita.pedestrian.routeShift.mean.toFixed(3)}</td>
             </tr>
             <tr>
               <td>&nbsp;&nbsp;Induced Travel</td>
               <td>{readableNumber(benefits.miles.pedestrian.inducedTravel.mean)}</td>
-              <td>TODO</td>
+              <td>{benefits.capita.pedestrian.inducedTravel.mean.toFixed(3)}</td>
             </tr>
             <tr>
               <td>&nbsp;&nbsp;Shift from Other Modes</td>
               <td>{readableNumber(benefits.miles.pedestrian.otherShift.mean)}</td>
-              <td>TODO</td>
+              <td>{benefits.capita.pedestrian.otherShift.mean.toFixed(3)}</td>
             </tr>
             <tr className="total-row">
               <td></td>
               <td>{readableNumber(benefits.miles.pedestrian.total.mean)}</td>
-              <td>TODO</td>
+              <td>{benefits.capita.pedestrian.total.mean.toFixed(3)}</td>
             </tr>
           </tbody>
         </table>

@@ -212,7 +212,7 @@ const _calc = (
   return travel;
 };
 
-const calcTravel = (
+const calcTravelMiles = (
   selectedInfrastructure,
   travel,
   project_length,
@@ -226,8 +226,8 @@ const calcTravel = (
   result.miles = _calc(selectedInfrastructure, travel.miles,
             project_length, num_intersections);
 
-  result.capita = _calc(selectedInfrastructure, travel.capita,
-            project_length, num_intersections);
+  // result.capita = _calc(selectedInfrastructure, travel.capita,
+  //           project_length, num_intersections);
 
   result.jobs = _calc(selectedInfrastructure, travel.jobs,
             project_length, num_intersections);
@@ -259,9 +259,41 @@ const calcTravel = (
   return result;
 };
 
-// export default calcTravel;
+const calcTravelCapita = (travel, population) => {
+  const result = {};
+
+  const modes = ['bike', 'pedestrian'];
+  const columns = [
+    'carShift',
+    'routeShift',
+    'inducedTravel',
+    'otherShift',
+    'total',
+  ];
+
+  for(const mode of modes) {
+    result[mode] = {}
+
+    for(const column of columns) {
+      result[mode][column] = {};
+
+      for(const estimate of ESTIMATES) {
+
+        const miles = travel[mode][column][estimate];
+        const pop = population[mode][estimate];
+        const capita = miles / pop;
+
+        result[mode][column][estimate] = capita;
+      }
+    }
+  }
+
+  return result;
+};
 
 export {
-  calcTravel as default,
+  calcTravelMiles as default,
+  calcTravelMiles,
+  calcTravelCapita,
   _calc,
-}
+};

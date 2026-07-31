@@ -155,7 +155,7 @@ const calc = (
       project_time_frame,
       county_life_expectancy,
       population.bike[estimate],
-      population.walk[estimate],
+      population.pedestrian[estimate],
       health_benefits.bike[estimate],
       health_benefits.pedestrian[estimate],
       bike_pop_factors,

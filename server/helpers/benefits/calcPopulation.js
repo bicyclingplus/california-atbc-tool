@@ -8,7 +8,7 @@ const calcPopulation = (travel_benefits) => {
 
   const population = {
     bike: {},
-    walk: {},
+    pedestrian: {},
     total: {},
   };
 
@@ -17,7 +17,7 @@ const calcPopulation = (travel_benefits) => {
     const walk_pop = travel_benefits.pedestrian.total[estimate] / AVG_WALK_DIST;
 
     population.bike[estimate] = bike_pop;
-    population.walk[estimate] = walk_pop;
+    population.pedestrian[estimate] = walk_pop;
     population.total[estimate] = bike_pop + walk_pop;
   }
 
