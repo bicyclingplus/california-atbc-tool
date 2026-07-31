@@ -5,8 +5,6 @@ import {
     TRANSIT_WALK_FRACTION,
 } from './constants.js';
 
-import calcDiscount from './calcDiscount.js';
-
 const _calcBike = (travel) => {
   return (
     travel *
@@ -26,35 +24,28 @@ const _calcPed = (travel, transit) => {
   ));
 };
 
-const _calc = (travel, time_frame, transit, discount=true) => {
+const calcVMTReductions = (travel, transit, population) => {
 
-  const benefits = {};
+  const results = {
+    reduction: {},
+    capita: {},
+  };
 
-  for(let k of ESTIMATES) {
-
-    // daily bike and ped vmt benefits
+  for(const estimate of ESTIMATES) {
     const combined = (
-      _calcBike(travel.bike.carShift[k]) +
-      _calcPed(travel.pedestrian.carShift[k], transit)
+      _calcBike(travel.bike.carShift[estimate]) +
+      _calcPed(travel.pedestrian.carShift[estimate], transit)
     );
 
-    const benefit = combined * 365;
+    const reduction = combined * 365;
+    const pop = population.total[estimate];
+    const capita = reduction / pop;
 
-    // annualize and calc benefits over project time frame
-    benefits[k] = discount ? calcDiscount(benefit, time_frame) : benefit;
+    results.reduction[estimate] = reduction;
+    results.capita[estimate] = capita;
   }
 
-  return benefits;
-};
-
-const calcVMTReductions = (travel, time_frame, transit) => {
-
-  return {
-    miles: _calc(travel.miles, time_frame, transit),
-    capita: _calc(travel.capita, time_frame, transit),
-    jobs: _calc(travel.jobs, time_frame, transit),
-    raw: _calc(travel.miles, time_frame, transit, false),
-  };
+  return results;
 };
 
 export default calcVMTReductions;

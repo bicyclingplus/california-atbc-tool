@@ -8,7 +8,7 @@ const Emissions = (props) => {
 
   const {
     emissions,
-    vmtReductions,
+    vmt,
   } = props;
 
   return (
@@ -23,11 +23,11 @@ const Emissions = (props) => {
     <div className="vmt-row">
       <div className="vmt-card">
         <div className="lbl">Annual Vehicle Miles Traveled (VMT) reductions</div>
-        <div className="val">{readableNumber(vmtReductions.raw.mean)}</div>
+        <div className="val">{readableNumber(vmt.reduction.mean)}</div>
       </div>
       <div className="vmt-card">
         <div className="lbl">Annual VMT reductions per person</div>
-        <div className="val">TODO</div>
+        <div className="val">{vmt.capita.mean.toFixed(1)}</div>
       </div>
     </div>
 

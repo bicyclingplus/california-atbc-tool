@@ -43,7 +43,7 @@ const Quantitative = (props) => {
     { benefits.emissions && !hasOnlyUserMapSelections ?
     <Emissions
       emissions={benefits.emissions}
-      vmtReductions={benefits.vmtReductions}
+      vmt={benefits.vmt}
     />
     : null }
 

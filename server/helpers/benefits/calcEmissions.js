@@ -92,13 +92,13 @@ const _calc = (county, year, vmtReductions) => {
   return benefits;
 };
 
-const calcEmissions = (county, year, vmtReductions) => {
+const calcEmissions = (county, year, vmt) => {
 
   return {
-    miles: _calc(county, year, vmtReductions.miles),
-    capita: _calc(county, year, vmtReductions.capita),
-    jobs: _calc(county, year, vmtReductions.jobs),
-    raw: _calc(county, year, vmtReductions.raw),
+    // miles: _calc(county, year, vmtReductions.miles),
+    // capita: _calc(county, year, vmtReductions.capita),
+    // jobs: _calc(county, year, vmtReductions.jobs),
+    raw: _calc(county, year, vmt.reduction),
   };
 };
 

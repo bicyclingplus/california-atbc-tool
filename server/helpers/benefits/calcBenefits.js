@@ -48,11 +48,11 @@ const calcBenefits = (
       benefits.travel.capita = calcTravelCapita(
       	benefits.travel.miles, benefits.population);
 
-      benefits.vmtReductions = calcVMTReductions(
-      	benefits.travel, project_time_frame, project_transit);
+      benefits.vmt = calcVMTReductions(
+      	benefits.travel.miles, project_transit, benefits.population);
 
       benefits.emissions = calcEmissions(
-        project_county, project_year, benefits.vmtReductions);
+        project_county, project_year, benefits.vmt);
 
       benefits.health = calcHealth(benefits.travel.miles, benefits.population);
 
