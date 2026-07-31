@@ -6,8 +6,6 @@ import {
   BIKE_MMET,
 } from './constants.js';
 
-import calcDiscount from './calcDiscount.js';
-
 // Calculate health benefits
 // (travel increase in miles / speed in mph)
 //    * Marginal Metabolic Equivalent of Task (MMET) per hour
@@ -15,7 +13,7 @@ import calcDiscount from './calcDiscount.js';
 
 const _calcMMET = (travel, estimate, speed, mmet) => {
 
-  let combined_travel = (
+  const combined_travel = (
     travel.inducedTravel[estimate] +
     travel.carShift[estimate] +
     travel.otherShift[estimate]
@@ -24,48 +22,42 @@ const _calcMMET = (travel, estimate, speed, mmet) => {
   return ((combined_travel * 365) / speed[estimate]) * mmet[estimate];
 };
 
-const _calc = (travel, time_frame, discount=true) => {
+const calcHealth = (travel, population) => {
 
-  let benefits = {};
+  const modes = ['bike', 'pedestrian', 'total'];
+  const result = {};
 
-  benefits.pedestrian = {};
+  result.mmet = {};
 
-  for(let k of ESTIMATES) {
-
-    const mmet = _calcMMET(travel.pedestrian, k, WALK_SPEED, WALK_MMET);
-
-    benefits.pedestrian[k] = discount ? calcDiscount(mmet, time_frame) : mmet;
+  for(const mode of modes) {
+    result.mmet[mode] = {};
   }
 
-  benefits.bike = {};
+  for(const estimate of ESTIMATES) {
+    const bike = _calcMMET(travel.bike, estimate, BIKE_SPEED, BIKE_MMET);
+    const walk = _calcMMET(travel.pedestrian, estimate, WALK_SPEED, WALK_MMET);
+    const total = bike + walk;
 
-  for(let k of ESTIMATES) {
-
-    const mmet = _calcMMET(travel.bike, k, BIKE_SPEED, BIKE_MMET);
-
-    benefits.bike[k] = discount ? calcDiscount(mmet, time_frame) : mmet;
+    result.mmet.bike[estimate] = bike;
+    result.mmet.pedestrian[estimate] = walk;
+    result.mmet.total[estimate] = total;
   }
 
-  benefits.total = {};
+  result.capita = {};
 
-  for(let k of ESTIMATES) {
-    benefits.total[k] = (
-      benefits.bike[k] +
-      benefits.pedestrian[k]
-    );
+  for(const mode of modes) {
+    result.capita[mode] = {};
+
+    for(const estimate of ESTIMATES) {
+      const mmet = result.mmet[mode][estimate];
+      const pop = population[mode][estimate];
+      const capita = mmet / pop;
+
+      result.capita[mode][estimate] = capita;
+    }
   }
 
-  return benefits;
-};
-
-const calcHealth = (travel, time_frame) => {
-
-  return {
-    miles: _calc(travel.miles, time_frame),
-    capita: _calc(travel.capita, time_frame),
-    jobs: _calc(travel.jobs, time_frame),
-    raw: _calc(travel.miles, time_frame, false),
-  }
+  return result;
 }
 
 export default calcHealth;

@@ -54,7 +54,7 @@ const calcBenefits = (
       benefits.emissions = calcEmissions(
         project_county, project_year, benefits.vmtReductions);
 
-      benefits.health = calcHealth(benefits.travel, project_time_frame);
+      benefits.health = calcHealth(benefits.travel.miles, benefits.population);
 
       benefits.safetyQuantitative = calcSafetyQuantitative(
       	selectedWays,

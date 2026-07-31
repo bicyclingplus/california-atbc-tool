@@ -39,7 +39,7 @@ const calcMonetary = async (
     timeframe,
     county_life_expectancy,
     benefits.population,
-    benefits.health.raw,
+    benefits.health.mmet,
     bike_pop_factors,
     walk_pop_factors,
   );
