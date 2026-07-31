@@ -218,29 +218,45 @@ const calcTravel = (
   project_length,
   num_intersections) => {
 
+  const result = {};
+
   c.setPrepends('travel', 'projected', ['travel']);
   c.setPrepends('travel', 'adjustments', ['travel']);
 
-  const miles = _calc(selectedInfrastructure, travel.miles,
+  result.miles = _calc(selectedInfrastructure, travel.miles,
             project_length, num_intersections);
 
-  c.setPrepends('travel', 'projected', ['capita']);
-  c.setPrepends('travel', 'adjustments', ['capita']);
-
-  const capita = _calc(selectedInfrastructure, travel.capita,
+  result.capita = _calc(selectedInfrastructure, travel.capita,
             project_length, num_intersections);
 
-  c.setPrepends('travel', 'projected', ['jobs']);
-  c.setPrepends('travel', 'adjustments', ['jobs']);
-
-  const jobs = _calc(selectedInfrastructure, travel.jobs,
+  result.jobs = _calc(selectedInfrastructure, travel.jobs,
             project_length, num_intersections);
 
-  return {
-    miles: miles,
-    capita: capita,
-    jobs: jobs,
-  };
+
+  result.percent_increase = {};
+
+  for(const mode of ['bike', 'pedestrian']) {
+
+    result.percent_increase[mode] = {};
+
+    for(const estimate of ESTIMATES) {
+      result.percent_increase[mode][estimate] = (
+        (
+          (
+            result.miles[mode].projected[estimate]
+            -
+            result.miles[mode].existing[estimate]
+          )
+          /
+          result.miles[mode].existing[estimate]
+        )
+        *
+        100
+      );
+    }
+  }
+
+  return result;
 };
 
 // export default calcTravel;

@@ -26,34 +26,6 @@ const Travel = (props) => {
     };
   }, [])
 
-  const bikePercentIncrease = (
-    (
-      (
-        benefits.miles.bike.projected.mean
-        -
-        benefits.miles.bike.existing.mean
-      )
-      /
-      benefits.miles.bike.existing.mean
-    )
-    *
-    100
-  );
-
-  const walkPercentIncrease = (
-    (
-      (
-        benefits.miles.pedestrian.projected.mean
-        -
-        benefits.miles.pedestrian.existing.mean
-      )
-      /
-      benefits.miles.pedestrian.existing.mean
-    )
-    *
-    100
-  );
-
   return (
     <>
 
@@ -86,7 +58,7 @@ const Travel = (props) => {
             <div className="travel-title">Biking Miles Traveled</div>
             <div className="travel-sub">Estimated Average Daily Bike Miles Traveled (BMT)</div>
           </div>
-          <div className="pct-badge">↑ {readableNumber(bikePercentIncrease)}% Daily BMT</div>
+          <div className="pct-badge">↑ {readableNumber(benefits.percent_increase.bike.mean)}% Daily BMT</div>
         </div>
 
         <div className="exist-row">
@@ -186,7 +158,7 @@ const Travel = (props) => {
             <div className="travel-title">Walking Miles Traveled</div>
             <div className="travel-sub">Estimated Average Daily Walk Miles Traveled (WMT)</div>
           </div>
-          <div className="pct-badge walk">↑ {readableNumber(walkPercentIncrease)}% Daily WMT</div>
+          <div className="pct-badge walk">↑ {readableNumber(benefits.percent_increase.pedestrian.mean)}% Daily WMT</div>
         </div>
 
         <div className="exist-row">
