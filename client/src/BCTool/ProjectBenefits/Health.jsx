@@ -33,7 +33,7 @@ const HealthBenefits = (props) => {
       </div>
       <div className="mmet-card">
         <div className="lbl">Annual MMET increase per person</div>
-        <div className="val">{benefits.capita.total.mean.toFixed(1)}</div>
+        <div className="val">{readableNumber(benefits.capita.total.mean, 1)}</div>
       </div>
       <table className="mmet-tbl">
         <thead>
@@ -55,7 +55,7 @@ const HealthBenefits = (props) => {
               </svg>
             </td>
             <td>{readableNumber(benefits.mmet.bike.mean)}</td>
-            <td>{benefits.capita.bike.mean.toFixed(1)}</td>
+            <td>{readableNumber(benefits.capita.bike.mean, 1)}</td>
           </tr>
           : null }
 
@@ -68,7 +68,7 @@ const HealthBenefits = (props) => {
               </svg>
             </td>
             <td>{readableNumber(benefits.mmet.pedestrian.mean)}</td>
-            <td>{benefits.capita.pedestrian.mean.toFixed(1)}</td>
+            <td>{readableNumber(benefits.capita.pedestrian.mean, 1)}</td>
           </tr>
           : null }
 

@@ -2,37 +2,34 @@ const numberWithCommas = (x) => {
     return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 };
 
-const readableNumber = (number, places = 3, suffix = '') => {
+const _format = (val, places, style="decimal") => {
+  return val.toLocaleString('en-US', {
+    minimumFractionDigits: places,
+    maximumFractionDigits: places,
+    style,
+    currency: "USD",
+  });
+}
 
-  if(Number.isNaN(number)) {
+const readableNumber = (val, places, places2, suffix = '') => {
+
+  if(Number.isNaN(val)) {
+    return "ERR";
+  }
+
+  if(val === null) {
     return "N/A";
   }
 
-  if(number === null) {
-    return "N/A";
+  if(val < 10) {
+    return _format(val, places ?? 3) + suffix;
   }
 
-  if(number < 1 && number > -1) {
-    let factor = Math.pow(10, places);
-
-    return numberWithCommas(Math.round((number + Number.EPSILON) * factor) / factor) + suffix;
-  }
-
-  return numberWithCommas(Math.round((number + Number.EPSILON))) + suffix;
-
+  return _format(val, places2 ?? 0) + suffix;
 };
 
-const moneyFmt = (val) => {
-
-  const valAbs = Math.abs(val);
-
-  const formatted = valAbs.toLocaleString('en-US', {
-    minimumFractionDigits: 2,
-    maximumFractionDigits: 2,
-  });
-
-  return val >= 0 ? `$${formatted}` : `- $${formatted}`;
-
+const moneyFmt = (val, places) => {
+  return _format(val, places ?? 2, "currency");
 };
 
 export {

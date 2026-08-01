@@ -80,11 +80,11 @@ const calc = (
 
   const {
     "PM2.5": pm25_reduction_grams,
-  } = benefits.raw.reductions;
+  } = benefits.reductions;
 
   const {
-    equivalent: co2_reduction_grams
-  } = benefits.raw;
+    equivalent: co2_reduction_grams,
+  } = benefits;
 
   for(const estimate of ESTIMATES) {
     air_quality[estimate] = _calc_air_quality_monetary(

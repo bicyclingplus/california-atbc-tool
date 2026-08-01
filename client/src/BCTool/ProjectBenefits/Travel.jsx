@@ -82,28 +82,28 @@ const Travel = (props) => {
             </tr>
             <tr>
               <td>&nbsp;&nbsp;Car Shift</td>
-              <td>{readableNumber(benefits.miles.bike.carShift.mean)}</td>
-              <td>{benefits.capita.bike.carShift.mean.toFixed(3)}</td>
+              <td>{readableNumber(benefits.miles.bike.carShift.mean, 0)}</td>
+              <td>{readableNumber(benefits.capita.bike.carShift.mean)}</td>
             </tr>
             <tr>
               <td>&nbsp;&nbsp;Route Shift</td>
-              <td>{readableNumber(benefits.miles.bike.routeShift.mean)}</td>
-              <td>{benefits.capita.bike.routeShift.mean.toFixed(3)}</td>
+              <td>{readableNumber(benefits.miles.bike.routeShift.mean, 0)}</td>
+              <td>{readableNumber(benefits.capita.bike.routeShift.mean)}</td>
             </tr>
             <tr>
               <td>&nbsp;&nbsp;Induced Travel</td>
-              <td>{readableNumber(benefits.miles.bike.inducedTravel.mean)}</td>
-              <td>{benefits.capita.bike.inducedTravel.mean.toFixed(3)}</td>
+              <td>{readableNumber(benefits.miles.bike.inducedTravel.mean, 0)}</td>
+              <td>{readableNumber(benefits.capita.bike.inducedTravel.mean)}</td>
             </tr>
             <tr>
               <td>&nbsp;&nbsp;Shift from Other Modes</td>
-              <td>{readableNumber(benefits.miles.bike.otherShift.mean)}</td>
-              <td>{benefits.capita.bike.otherShift.mean.toFixed(3)}</td>
+              <td>{readableNumber(benefits.miles.bike.otherShift.mean, 0)}</td>
+              <td>{readableNumber(benefits.capita.bike.otherShift.mean)}</td>
             </tr>
             <tr className="total-row">
               <td>Total</td>
-              <td>{readableNumber(benefits.miles.bike.total.mean)}</td>
-              <td>{benefits.capita.bike.total.mean.toFixed(3)}</td>
+              <td>{readableNumber(benefits.miles.bike.total.mean, 0)}</td>
+              <td>{readableNumber(benefits.capita.bike.total.mean)}</td>
             </tr>
           </tbody>
         </table>
@@ -127,15 +127,27 @@ const Travel = (props) => {
           </div>
           <div className="chart-body">
             <div className="bar-wrap">
-              <div className="stack-seg top" style={{height: "36.6%", background: "#cfd6df"}}>{readableNumber(benefits.miles.bike.existing.mean)}</div>
+              <div className="stack-seg top" style={{height: "36.6%", background: "#cfd6df"}}>
+                {readableNumber(benefits.miles.bike.existing.mean)}
+              </div>
               <div className="bar-label">Existing</div>
             </div>
             <div className="bar-wrap">
-              <div className="stack-seg top white-text" style={{height: "5.7%", background: "#85d49f"}}>{readableNumber(benefits.miles.bike.otherShift.mean)}</div>
-              <div className="stack-seg white-text" style={{height: "5.7%", background: "#52a86d"}}>{readableNumber(benefits.miles.bike.inducedTravel.mean)}</div>
-              <div className="stack-seg white-text" style={{height: "28.7%", background: "#2d7a47"}}>{readableNumber(benefits.miles.bike.routeShift.mean)}</div>
-              <div className="stack-seg white-text" style={{height: "8.7%", background: "#1b4d2b"}}>{readableNumber(benefits.miles.bike.carShift.mean)}</div>
-              <div className="stack-seg" style={{height: "36.6%", background: "#cfd6df"}}>{readableNumber(benefits.miles.bike.existing.mean)}</div>
+              <div className="stack-seg top white-text" style={{height: "5.7%", background: "#85d49f"}}>
+                {readableNumber(benefits.miles.bike.otherShift.mean)}
+              </div>
+              <div className="stack-seg white-text" style={{height: "5.7%", background: "#52a86d"}}>
+                {readableNumber(benefits.miles.bike.inducedTravel.mean)}
+              </div>
+              <div className="stack-seg white-text" style={{height: "28.7%", background: "#2d7a47"}}>
+                {readableNumber(benefits.miles.bike.routeShift.mean)}
+              </div>
+              <div className="stack-seg white-text" style={{height: "8.7%", background: "#1b4d2b"}}>
+                {readableNumber(benefits.miles.bike.carShift.mean)}
+              </div>
+              <div className="stack-seg" style={{height: "36.6%", background: "#cfd6df"}}>
+                {readableNumber(benefits.miles.bike.existing.mean)}
+              </div>
               <div className="bar-label">Existing + Increase</div>
             </div>
           </div>
@@ -178,28 +190,28 @@ const Travel = (props) => {
             <tr className="increase-row walk"><td>Increase in Walking</td><td></td><td></td></tr>
             <tr>
               <td>&nbsp;&nbsp;Car Shift</td>
-              <td>{readableNumber(benefits.miles.pedestrian.carShift.mean)}</td>
-              <td>{benefits.capita.pedestrian.carShift.mean.toFixed(3)}</td>
+              <td>{readableNumber(benefits.miles.pedestrian.carShift.mean, 0)}</td>
+              <td>{readableNumber(benefits.capita.pedestrian.carShift.mean)}</td>
             </tr>
             <tr>
               <td>&nbsp;&nbsp;Route Shift</td>
-              <td>{readableNumber(benefits.miles.pedestrian.routeShift.mean)}</td>
-              <td>{benefits.capita.pedestrian.routeShift.mean.toFixed(3)}</td>
+              <td>{readableNumber(benefits.miles.pedestrian.routeShift.mean, 0)}</td>
+              <td>{readableNumber(benefits.capita.pedestrian.routeShift.mean)}</td>
             </tr>
             <tr>
               <td>&nbsp;&nbsp;Induced Travel</td>
-              <td>{readableNumber(benefits.miles.pedestrian.inducedTravel.mean)}</td>
-              <td>{benefits.capita.pedestrian.inducedTravel.mean.toFixed(3)}</td>
+              <td>{readableNumber(benefits.miles.pedestrian.inducedTravel.mean, 0)}</td>
+              <td>{readableNumber(benefits.capita.pedestrian.inducedTravel.mean)}</td>
             </tr>
             <tr>
               <td>&nbsp;&nbsp;Shift from Other Modes</td>
-              <td>{readableNumber(benefits.miles.pedestrian.otherShift.mean)}</td>
-              <td>{benefits.capita.pedestrian.otherShift.mean.toFixed(3)}</td>
+              <td>{readableNumber(benefits.miles.pedestrian.otherShift.mean, 0)}</td>
+              <td>{readableNumber(benefits.capita.pedestrian.otherShift.mean)}</td>
             </tr>
             <tr className="total-row">
               <td></td>
-              <td>{readableNumber(benefits.miles.pedestrian.total.mean)}</td>
-              <td>{benefits.capita.pedestrian.total.mean.toFixed(3)}</td>
+              <td>{readableNumber(benefits.miles.pedestrian.total.mean, 0)}</td>
+              <td>{readableNumber(benefits.capita.pedestrian.total.mean)}</td>
             </tr>
           </tbody>
         </table>

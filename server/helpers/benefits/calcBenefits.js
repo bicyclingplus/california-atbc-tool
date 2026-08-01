@@ -52,7 +52,7 @@ const calcBenefits = (
       	benefits.travel.miles, project_transit, benefits.population);
 
       benefits.emissions = calcEmissions(
-        project_county, project_year, benefits.vmt);
+        project_county, project_year, benefits.vmt, benefits.population);
 
       benefits.health = calcHealth(benefits.travel.miles, benefits.population);
 

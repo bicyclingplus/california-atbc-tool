@@ -27,7 +27,7 @@ const Emissions = (props) => {
       </div>
       <div className="vmt-card">
         <div className="lbl">Annual VMT reductions per person</div>
-        <div className="val">{vmt.capita.mean.toFixed(1)}</div>
+        <div className="val">{readableNumber(vmt.capita.mean, 1)}</div>
       </div>
     </div>
 
@@ -50,24 +50,24 @@ const Emissions = (props) => {
           <tbody>
             <tr>
               <td>CO<span className="sub-num">2</span></td>
-              <td>{readableNumber(emissions.raw.reductions.CO2.mean)}</td>
-              <td>TODO</td>
+              <td>{readableNumber(emissions.reductions.CO2.mean)}</td>
+              <td>{readableNumber(emissions.capita.CO2.mean, 3, 1)}</td>
             </tr>
             <tr>
               <td>CH<span className="sub-num">4</span></td>
-              <td>{readableNumber(emissions.raw.reductions.CH4.mean)}</td>
-              <td>TODO</td>
+              <td>{readableNumber(emissions.reductions.CH4.mean)}</td>
+              <td>{readableNumber(emissions.capita.CH4.mean)}</td>
             </tr>
             <tr>
               <td>N<span className="sub-num">2</span>O</td>
-              <td>{readableNumber(emissions.raw.reductions.N2O.mean)}</td>
-              <td>TODO</td>
+              <td>{readableNumber(emissions.reductions.N2O.mean)}</td>
+              <td>{readableNumber(emissions.capita.N2O.mean)}</td>
             </tr>
           </tbody>
         </table>
         <div className="co2eq" style={{width: "auto"}}>
           <div className="lbl">Annual CO<span className="sub-num">2</span> equivalent</div>
-          <div className="val">{readableNumber(emissions.raw.equivalent.mean)} <span className="units">grams</span></div>
+          <div className="val">{readableNumber(emissions.equivalent.mean)} <span className="units">grams</span></div>
         </div>
       </div>
       <div>
@@ -89,33 +89,33 @@ const Emissions = (props) => {
           <tbody>
             <tr>
               <td>NO<span className="sub-num">x</span></td>
-              <td>{readableNumber(emissions.raw.reductions.NOx.mean)}</td>
-              <td>TODO</td>
+              <td>{readableNumber(emissions.reductions.NOx.mean)}</td>
+              <td>{readableNumber(emissions.capita.NOx.mean)}</td>
             </tr>
             <tr>
               <td>PM<span className="sub-num">2.5</span></td>
-              <td>{readableNumber(emissions.raw.reductions["PM2.5"].mean)}</td>
-              <td>TODO</td>
+              <td>{readableNumber(emissions.reductions["PM2.5"].mean)}</td>
+              <td>{readableNumber(emissions.capita["PM2.5"].mean)}</td>
             </tr>
             <tr>
               <td>PM<span className="sub-num">10</span></td>
-              <td>{readableNumber(emissions.raw.reductions.PM10.mean)}</td>
-              <td>TODO</td>
+              <td>{readableNumber(emissions.reductions.PM10.mean)}</td>
+              <td>{readableNumber(emissions.capita.PM10.mean)}</td>
             </tr>
             <tr>
               <td>NH<span className="sub-num">3</span></td>
-              <td>{readableNumber(emissions.raw.reductions.NH3.mean)}</td>
-              <td>TODO</td>
+              <td>{readableNumber(emissions.reductions.NH3.mean)}</td>
+              <td>{readableNumber(emissions.capita.NH3.mean)}</td>
             </tr>
             <tr>
               <td>CO</td>
-              <td>{readableNumber(emissions.raw.reductions.CO.mean)}</td>
-              <td>TODO</td>
+              <td>{readableNumber(emissions.reductions.CO.mean)}</td>
+              <td>{readableNumber(emissions.capita.CO.mean)}</td>
             </tr>
             <tr>
               <td>SO<span className="sub-num">x</span></td>
-              <td>{readableNumber(emissions.raw.reductions.SOx.mean)}</td>
-              <td>TODO</td>
+              <td>{readableNumber(emissions.reductions.SOx.mean)}</td>
+              <td>{readableNumber(emissions.capita.SOx.mean)}</td>
             </tr>
           </tbody>
         </table>

@@ -1,4 +1,4 @@
-import { moneyFmt } from '../helpers/formatting';
+import { readableNumber, moneyFmt } from '../helpers/formatting';
 
 import "./Monetary.css";
 
@@ -29,7 +29,7 @@ const Monetary = (props) => {
         <div className="ratio-card">
           <div className="lbl">Benefit-cost ratio</div>
           <div className="val">
-            <span>{ratio.toFixed(3)} : 1</span>
+            <span>{readableNumber(ratio)} : 1</span>
             <span className="gauge">
               <svg viewBox="0 0 56 32">
                 <path
@@ -48,7 +48,7 @@ const Monetary = (props) => {
         </div>
         <div className="ratio-card light">
           <div className="lbl">Total quantified benefit ({timeframe} yr)</div>
-          <div className="val">{moneyFmt(total)}</div>
+          <div className="val">{moneyFmt(total, 0)}</div>
         </div>
       </div>
 

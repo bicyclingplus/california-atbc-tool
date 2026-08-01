@@ -92,14 +92,23 @@ const _calc = (county, year, vmtReductions) => {
   return benefits;
 };
 
-const calcEmissions = (county, year, vmt) => {
+const calcEmissions = (county, year, vmt, population) => {
 
-  return {
-    // miles: _calc(county, year, vmtReductions.miles),
-    // capita: _calc(county, year, vmtReductions.capita),
-    // jobs: _calc(county, year, vmtReductions.jobs),
-    raw: _calc(county, year, vmt.reduction),
-  };
+  const results = _calc(county, year, vmt.reduction);
+
+  results.capita = {};
+
+  for(const item in results.reductions) {
+    results.capita[item] = {};
+    for(const estimate of ESTIMATES) {
+      const reduction = results.reductions[item][estimate];
+      const pop = population.total[estimate];
+      const capita = reduction / pop;
+      results.capita[item][estimate] = capita;
+    }
+  }
+
+  return results;
 };
 
 export default calcEmissions;
